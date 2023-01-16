@@ -1,0 +1,103 @@
+{{STRIPE_HANDLER}}
+<div id="plan_{{PLAN_ID}}_methodPopup" class="payMethodPopup popupOverlay">
+    <div class="payMethodJar popupContainer">
+        <div class="headerJar popupHeader">
+            <div class="floatLeft">
+                <i class="fa fa-credit-card"></i> @choose_payment_method@
+            </div>
+
+            <div class="floatRight">
+                <i class="fa fa-times-circle"></i>
+            </div>
+
+            <div class="floatClear"></div>
+        </div>
+        <div class="methodJar">
+            <a data-paywith="paypal"><img src="{{CONFIG_THEME_URL}}/images/paywithpaypal.png"></a>
+            <a data-paywith="card"><img src="{{CONFIG_THEME_URL}}/images/paywithvisa.png"></a>
+            <a data-paywith="card"><img src="{{CONFIG_THEME_URL}}/images/paywithmastercard.png"></a>
+            <a data-paywith="card"><img src="{{CONFIG_THEME_URL}}/images/paywithamericanexpress.png"></a>
+            <a data-paywith="card"><img src="{{CONFIG_THEME_URL}}/images/paywithdiscover.png"></a>
+            <a data-paywith="card"><img src="{{CONFIG_THEME_URL}}/images/paywithjcb.png"></a>
+            <a data-paywith="card"><img src="{{CONFIG_THEME_URL}}/images/paywithdinersclub.png"></a>
+        </div>
+    </div>
+    
+    <script>
+    methodPopup = $('#plan_{{PLAN_ID}}_methodPopup');
+    cancelButton = methodPopup.find('i.fa-times-circle');
+
+    cancelButton.click(function()
+    {
+        methodPopup.fadeOut('fast', function()
+        {
+            $(this).remove();
+        });
+    });
+
+    $(document.body).on('click', 'a[data-paywith]', function(e)
+    {
+        paytag = $(this);
+        paywith = paytag.attr('data-paywith');
+        recurring = {{IS_RECURRING}};
+        notpaytag = methodPopup.find('a[data-paywith!="' + paywith + '"]');
+
+        notpaytag.removeAttr('data-paywith').find('img').addClass('disabled');
+        paytag.addClass('selected');
+        
+        if (paywith === "paypal")
+        {
+            $.get(
+                Sk_requestPath(),
+                {
+                    t: 'subscription_plans',
+                    a: 'paypal_go',
+                    plan_id: {{PLAN_ID}}
+                },
+                function (data)
+                {
+                    if (data.status === 200)
+                    {
+                        window.location = data.url;
+                    }
+                }
+            );
+        }
+        else if (paywith === "card")
+        {
+            if (recurring == 1)
+            {
+                $.get(
+                    Sk_requestPath(),
+                    {
+                        t: 'subscription_plans',
+                        a: 'payment_cards',
+                        plan_id: {{PLAN_ID}}
+                    },
+                    function (data)
+                    {
+                        methodPopup.fadeOut('fast', function()
+                        {
+                            methodPopup.remove();
+                            $(document.body).prepend(data.html);
+                        })
+                    }
+                );
+            }
+            else
+            {
+                stripeHandler.open({
+                    opened: function()
+                    {
+                        methodPopup.fadeOut('fast', function()
+                        {
+                            $(this).remove();
+                        });
+                    }
+                });
+            }
+        }
+    });
+    methodPopup.fadeIn('fast');
+    </script>
+</div>

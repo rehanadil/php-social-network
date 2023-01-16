@@ -1,0 +1,82 @@
+<div class="listJar list-admins">
+    <div class="multiTabJar">
+        <div class="boldTab">@pages_admin_roles_label@</div>
+    </div>
+    
+    {{ADMINS_LIST}}
+
+    <div class="infoColumn">
+        @admin_editor_difference@
+    </div>
+</div>
+
+<div class="listJar list-potentials">
+    <div class="multiTabJar">
+        <div class="boldTab">@pages_add_admins_label@</div>
+    </div>
+    
+    {{POTENTIAL_ADMINS_LIST}}
+</div>
+
+<script>
+$(".list-admins .userColumn").each(function(){
+    $this = $(this);
+    if ($this.attr("data-role") === "Admin")
+    {
+        $this.find(".makeAdmin").remove();
+    }
+    else if ($this.attr("data-role") === "Editor")
+    {
+        $this.find(".makeEditor").remove();
+    }
+});
+function SK_changeAdminRole(page_id, admin_id, admin_role) {
+    
+    $.post(Sk_requestPath() + '?t=page&a=add_admin', {page_id: page_id, admin_id: admin_id, admin_role: admin_role}, function (data) {
+        
+        if (data.status == 200) {
+            
+            if ($('.list-popup-alert').length == 0) {
+                $('.list-admins .list-header').after('<div class="list-popup-alert hidden">@changes_saved@</div>');
+            }
+            
+            $('.list-popup-alert').fadeIn('fast');
+        }
+        else {
+            $('.list-popup-alert').fadeOut('fast', function () {
+                $(this).remove();
+            });
+        }
+    });
+}
+
+function SK_addAdmin(page_id, admin_id, admin_role) {
+    $('.potential-admin-'+admin_id).find('a[data-add-role="' + admin_role + '"]').removeAttr("onclick").text('@adding@...');
+    
+    $.post(Sk_requestPath() + '?t=page&a=add_admin', {page_id: page_id, admin_id: admin_id, admin_role: admin_role}, function (data) {
+        
+        if (data.status == 200) {
+            $('.potential-admin-'+admin_id).find('a[data-add-role="' + admin_role + '"]').removeAttr("onclick").text('@added@');
+        }
+
+        setTimeout(function(){
+            $('.potential-admin-'+admin_id).slideUp('fast', function () {
+                $(this).remove();
+            });
+        }, 500);
+    });
+}
+
+function SK_removeAdmin(page_id, admin_id) {
+    $('.page-admin-'+admin_id).find('.remove-btn').val('@removing@...');
+    
+    $.post(Sk_requestPath() + '?t=page&a=remove_admin', {page_id: page_id, admin_id: admin_id},function (data) {
+        
+        if (data.status == 200) {
+            $('.page-admin-' + admin_id).slideUp(function () {
+                $(this).remove();
+            });
+        }
+    });
+}
+</script>

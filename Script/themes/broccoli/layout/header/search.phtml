@@ -1,0 +1,48 @@
+<div id="headerLiveSearch">
+    <i class="fa fa-search"></i>
+    <input placeholder="@header_search_textarea_label@" type="text" onkeyup="SK_headerSearch(this.value);">
+</div>
+
+<script>
+function SK_headerSearch(query)
+{
+	$(".headerDropdownOverlay:not(#searchDropdownOverlay)").hide();
+    $('.mainHeaderNav').removeClass('mainHeaderNav-active');
+    search_wrapper = $('#searchDropdownOverlay');
+    
+    if (query.length == 0)
+    {
+        $('#headerLiveSearch').find('input').val('');
+        search_wrapper.hide();
+    }
+    else
+    {
+        search_wrapper.show();
+        SK_progressIconLoader(search_wrapper.find('#searchDropdownHeader'));
+        
+        $.get(Sk_requestPath(), {t: 'search', a: 'header', q: query}, function (data) {
+            
+            if (data.status == 200) {
+                
+                if (data.html.length == 0)
+                {
+                    search_wrapper
+                    .find('.searchDropdownContent')
+                        .html('<div class="noText">@no_result_found@</div>')
+                    .end().find('a.viewMore')
+                            .hide();
+                } else {
+                    search_wrapper
+                        .find('.searchDropdownContent')
+                            .html(data.html)
+                        .end()
+                        .find('a.viewMore')
+                            .attr('href', data.link).show();
+                }
+            }
+            
+            SK_progressIconLoader(search_wrapper.find('#searchDropdownHeader'));
+        });
+    }
+}
+</script>

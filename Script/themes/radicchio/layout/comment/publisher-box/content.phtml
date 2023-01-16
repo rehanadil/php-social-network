@@ -1,0 +1,18 @@
+<div class="commentJar">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td width="40px" align="left" valign="top">
+            <a href="{{PUBLISHER_USERNAME}}">
+                <img class="avatar" src="{{PUBLISHER_THUMBNAIL_URL}}" width="32px" height="32px">
+            </a>
+        </td>
+        <td align="left" valign="top">
+            <form class="comment-textarea" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="timeline_id" value="{{PUBLISHER_ID}}">
+                {{COMMENT_TEXTAREA}}
+                {{COMMENT_PHOTO_UPLOADER}}
+            </form>
+        </td>
+    </tr>
+    </table>
+</div>

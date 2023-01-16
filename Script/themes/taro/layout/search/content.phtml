@@ -1,0 +1,85 @@
+<div class="page-margin"></div>
+
+{{PAGE_NAVIGATION}}
+
+<div class="floatLeft span52">
+    <div class="listJar searchForm">
+        <div class="multiTabJar">
+            <div class="boldTab">
+                <i class="fa fa-search"></i>
+                @search_header_label@
+            </div>
+        </div>
+        
+        <div class="inputTextColumn">
+            <div class="inputContainer">
+                <i class="fa fa-search loadPeopleSearchIcon" data-icon="search"></i>
+                <input type="text" placeholder="@search_textarea_label@" onkeyup="Sk_keyupSearch(this.value);" onkeydown="Sk_keydownSeach(this.value);">
+            </div>
+        </div>
+
+        <div class="searchResults">
+            {{LIST_SEARCH_RESULTS}}
+        </div>
+    </div>
+</div>
+
+<div class="floatRight span30">
+    {{USER_SUGGESTIONS}}
+
+    {{PAGE_SUGGESTIONS}}
+
+    {{GROUP_SUGGESTIONS}}
+
+    {{TRENDINGS}}
+
+    {{EVENT_BAR}}
+
+    {{CONFIG_AD_PLACE_HASHTAG}}
+
+    {{SIDEBAR_FOOTER}}
+</div>
+
+<div class="floatClear"></div>
+<script>
+var searchQuery;
+var typingTimer;
+
+function Sk_keyupSearch(q)
+{
+    searchQuery = q;
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(function(){
+        oldestStoryId = 0;
+        Sk_getSearch();
+    }, 300);
+}
+
+function Sk_keydownSeach()
+{
+    clearTimeout(typingTimer);
+}
+
+function Sk_getSearch()
+{
+    iconProgress($(".loadPeopleSearchIcon"));
+    $.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: "search",
+            a: "search",
+            query: searchQuery
+        },
+        dataType: "json",
+        success: function(result)
+        {
+            iconProgress($(".loadPeopleSearchIcon"));
+            if (result.status === 200)
+            {
+                $(".searchResults").html(result.html);
+            }
+        }
+    });
+}
+</script>

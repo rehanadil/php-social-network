@@ -1,0 +1,300 @@
+.eventStatisticsWrapper {
+	color: #8a919e;
+	padding: 15px;
+	font-size: 13px;
+}
+.eventStatisticsWrapper .floatLeft {
+	margin-top: 2px;
+}
+.eventStatisticsWrapper .floatLeft a {
+	color: #637290;
+}
+.eventStatisticsWrapper .floatLeft a:hover {
+	text-decoration: underline;
+}
+.event-name {
+	font-size: 28px !important;
+	font-weight: 400 !important;
+}
+.event-info {
+	color: #e9e9e9;
+	font-size: 14px;
+}
+.event-time {
+	margin-right: 7px;
+}
+.event-location {
+	margin-left: 7px;
+}
+
+.event-header-wrapper .timeline-name-wrapper {
+    bottom: 14px;
+    left: 90px;
+}
+
+.event-date-wrapper {
+	width: 50px;
+	text-align: center;
+	position: absolute;
+	left: 15px;
+	bottom: 10px;
+	background: rgba(0, 0, 0, 0.1);
+	color: white;
+	font-size: 18px;
+	padding: 2px;
+	border: 2px solid white;
+	border-radius: 6px;
+}
+
+.actionButtons, .deleteButton {
+	display: inline-block;
+}
+.coverRepositionButtons {
+	display: none;
+}
+.actionButtons button, .coverRepositionButtons button, .deleteButton button {
+	margin: 0 -2px;
+	padding: 6px 15px;
+	border-radius: 0;
+	outline: 0;
+}
+.deleteButton button {
+	border-radius: 5px;
+	margin: 0 0 0 8px;
+}
+.actionButtons button:not(:first-of-type):not(:last-of-type), .coverRepositionButtons button:not(:first-of-type):not(:last-of-type) {
+	border-width: 1px 0;
+}
+.actionButtons button:first-of-type, .coverRepositionButtons button:first-of-type {
+	border-radius: 5px 0 0 5px;
+}
+.actionButtons button:last-of-type, .coverRepositionButtons button:last-of-type {
+	border-radius: 0 5px 5px 0;
+}
+.actionButtons button.true, .coverRepositionButtons button.true, .deleteButton button.true {
+	background: #eaebec;
+    background: linear-gradient(#ebeced, #e7e8e9);
+    color: #7a7b7c;
+    border: 1px solid #b6b7b8
+}
+.actionButtons button i, .coverRepositionButtons button i, .deleteButton button i {
+	display: none;
+}
+.actionButtons button.true i, .coverRepositionButtons button.true i, .deleteButton button.true i {
+	display: inline;
+}
+.actionButtons button:active, .coverRepositionButtons button:active, .deleteButton button:active {
+	background: linear-gradient(#f5f6f7, #f0f0f0);
+}
+.actionButtons button.true:active, .coverRepositionButtons button.true:active, .deleteButton button.true:active {
+	background: linear-gradient(#2399a7, #1b8592);
+}
+
+.eventDescription, .eventEditDescription {
+	position: relative;
+	background: #fff;
+	color: #4e5665;
+	font-size: 18px;
+	margin-bottom: 10px;
+	padding: 15px;
+	border-radius: 3px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .07);
+}
+.eventDescription .editBtn {
+    position: absolute;
+    right: 5px;
+    bottom: -4px;
+    background: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 5px;
+    border: 1px solid rgba(99, 114, 144, 0.15);
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .07);
+}
+.eventDescription:hover .editBtn {
+	display: block;
+}
+.eventEditDescription {
+	display: none;
+	padding: 10px;
+}
+.eventEditDescription textarea {
+	font-size: 15px !important;
+	width: 98%;
+	height: 50px;
+}
+.eventEditDescription .submitDiv {
+	background: rgba(160, 183, 185, 0.34);
+    margin-top: -4px;
+    padding: 3px;
+    text-align: right;
+}
+.eventEditDescription button{
+	margin: 0;
+}
+
+
+.eventInviteWrapper {
+    background: #fff;
+    margin-bottom: 15px;
+    border: 1px solid rgba(212, 213, 214, .75);
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .07)
+}
+
+.eventInviteWrapper .eventHeader {
+    background: #fafafa;
+    color: #444;
+    font-weight: 500;
+    padding: 10px;
+    border-bottom: 3px solid #7888a7;
+    border-radius: 3px 3px 0 0
+}
+
+.eventSearchWrapper {
+	padding: 5px;
+}
+
+.eventSearch {
+	border: 1px solid #e8e8e8;
+	border-radius: 4px;
+}
+.eventSearch i {
+	color: #ccc;
+	padding: 0 0px 0 8px;
+}
+.eventSearch input {
+	width: 86%;
+	border: 0px solid white;
+	outline: 0;
+	box-shadow: 0 0 0 white;
+}
+.eventInviteColumn {
+    display: block;
+    background: #fff;
+    color: #4e5665;
+    padding: 6px 10px;
+}
+.eventInviteColumn button {
+	font-size: 13px !important;
+	padding: 3px 7px;
+}
+
+.eventInviteStatistics {
+	background: white;
+    color: #6e7788;
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0 0 10px;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .07);
+}
+.eventInviteStatistics a {
+	color: #6e7788;
+}
+.eventInviteStatistics td:first-child, .eventInviteStatistics td:nth-child(2) {
+	border-right: 1px solid rgba(99, 114, 144, 0.145);
+}
+.eventInviteStatistics td {
+	font-size: 18px;
+}
+
+.eventBar {
+	background: #fff;
+    margin-bottom: 15px;
+    border: 1px solid rgba(212, 213, 214, .75);
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .07);
+}
+.eventBar .barHeader {
+	background: #fafafa;
+    color: #444;
+    font-weight: 500;
+    padding: 10px;
+    border-bottom: 3px solid #7888a7;
+    border-radius: 3px 3px 0 0;
+}
+.eventBar .barData {
+	padding: 10px 10px 0;
+	border-bottom: 1px solid #e9eaeb;
+}
+.eventBar .barData .info {
+	font-size: 13px;
+	color: #888;
+	margin: 0 0 10px;
+}
+.eventBar .viewMore {
+	text-align: center;
+}
+.eventBar .viewMore a {
+	padding: 10px;
+	font-weight: 500;
+	display: block;
+}
+
+
+.eventListHeader
+{
+    background: #fafafa;
+    color: #444;
+    font-weight: 500;
+    padding: 10px;
+    border-radius: 3px 3px 0 0
+}
+.eventListHeader .eventType
+{
+	color: #aaa;
+	padding: 7px 0;
+	border-bottom: 3px solid #aaa;
+}
+.eventListHeader .eventType:after
+{
+	content: "\00B7";
+	color: #aaa;
+	padding: 7px 13px;
+	border-bottom: 3px solid white;
+}
+.eventListHeader .eventType:last-child:after
+{
+	content: "";
+}
+.eventListHeader .active
+{
+	color: #637290;
+	border-color: inherit;
+}
+
+.eventButtons a[data-active="1"] {
+	background: #637290;
+	color: white;
+}
+
+@media only screen and (max-device-width:960px),
+only screen and (max-width:960px) {
+	.eventListHeader {
+		font-size: 12px;
+	}
+	.eventListHeader i {
+		display: none;
+	}
+	.eventListHeader .eventType:after
+	{
+		padding: 7px 5px;
+	}
+	.event-name {
+		font-size: 19px !important;
+	}
+	.eventStatisticsWrapper .floatLeft {
+		margin-top: 0;
+	}
+	.eventStatisticsWrapper .floatRight {
+		margin-top: 15px;
+	}
+	.actionButtons button {
+		font-size: 13px !important;
+	}
+	.actionButtons button i {
+		display: none !important;
+	}
+}

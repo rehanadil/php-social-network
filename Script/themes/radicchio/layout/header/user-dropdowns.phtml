@@ -1,0 +1,231 @@
+<div id="notificationDropdownOverlay" class="headerDropdownOverlay">
+    <div id="notificationDropdownContainer" class="headerDropdownContainer">
+        <div class="notificationDropdown headerDropdown floatRight">
+            <div id="notificationDropdownHeader" class="headerDropdownHeader">
+                <i class="fa fa-globe loadNotificationDropdownIcon" data-icon="globe"></i>
+                @notification_header_label@
+            </div>
+            
+            <div class="notificationDropdownContent"></div>
+        </div>
+        
+        <div class="floatClear"></div>
+    </div>
+</div>
+
+<div id="messagesDropdownOverlay" class="headerDropdownOverlay">
+    <div id="messagesDropdownContainer" class="headerDropdownContainer">
+        <div class="messagesDropdown listJar headerDropdown floatRight">
+            <div id="messagesDropdownHeader" class="headerDropdownHeader">
+                <i class="fa fa-comments loadMessagesDropdownIcon" data-icon="comments"></i>
+                @messages_label@
+            </div>
+            
+            <div class="messagesDropdownContent"></div>
+
+            <a class="viewMore" href="{{MESSAGES_PAGE_URL}}" data-href="?a=messages">@view_more@</a>
+        </div>
+        
+        <div class="floatClear"></div>
+    </div>
+</div>
+
+<div id="searchDropdownOverlay" class="headerDropdownOverlay">
+    <div id="searchDropdownContainer" class="headerDropdownContainer">
+        <div class="searchDropdown headerDropdown floatLeft">
+            <div id="searchDropdownHeader" class="headerDropdownHeader">
+                <i class="fa fa-search loadSearchDropdownIcon"></i>
+                @header_search_header_label@
+            </div>
+            
+            <div class="searchDropdownContent"></div>
+            
+            <a class="viewMore" href="{{SEARCH_PAGE_URL}}">@view_more@</a>
+        </div>
+        <div class="floatClear"></div>
+    </div>
+</div>
+
+<div id="userDropdownOverlay" class="headerDropdownOverlay">
+    <div id="userDropdownContainer" class="headerDropdownContainer">
+        <div class="userDropdown headerDropdown floatRight">
+            <div class="userDropdownContent">
+                <a class="more-list" href="{{SUBSCRIPTION_UPGRADE_URL}}" data-href="?a=subscription-plans&b=upgrade">
+                    <i class="fa fa-star"></i> @upgrade_subscription@
+                </a>
+
+                <a class="more-list" href="{{USER_URL}}" data-href="?a=timeline&id={{USER_USERNAME}}">
+                    <i class="icon ski-user"></i> @my_profile_label@
+                </a>
+
+                <a class="more-list" href="{{SAVEDPOSTS_PAGE_URL}}" data-href="?a=saved-posts">
+                    <i class="fa fa-file-text-o"></i> @saved_posts@
+                </a>
+
+                <a class="more-list" href="{{BOOSTEDPOSTS_PAGE_URL}}" data-href="?a=boosted-posts">
+                    <i class="fa fa-bullhorn"></i> @boosted_posts@
+                </a>
+
+                <hr>
+
+                {{DROPDOWN_CREATE_PAGE}}
+
+                <a class="more-list" href="{{MY_PAGES_URL}}" data-href="?a=my-pages">
+                    <i class="icon fa fa-cubes"></i> @my_pages@
+                </a>
+
+                <a class="more-list" href="{{RECOMMENDED_PAGES_URL}}" data-href="?a=recommended&b=pages">
+                    <i class="icon fa fa-ellipsis-h"></i> @recommended@
+                </a>
+
+                <hr>
+
+                {{DROPDOWN_CREATE_GROUP}}
+
+                <a class="more-list" href="{{MY_GROUPS_URL}}" data-href="?a=my-groups">
+                    <i class="icon ski ski-group"></i> @my_groups@
+                </a>
+
+                <a class="more-list" href="{{RECOMMENDED_GROUPS_URL}}" data-href="?a=recommended&b=groups">
+                    <i class="icon fa fa-ellipsis-h"></i> @recommended@
+                </a>
+
+                <hr>
+
+                {{DROPDOWN_CREATE_EVENT}}
+
+                <a class="more-list" href="{{EVENTS_PAGE_URL}}" data-href="?a=events">
+                    <i class="fa fa-calendar"></i> @events_label@
+                </a>
+
+                <hr>
+
+                <a class="more-list" href="{{SEARCH_PAGE_URL}}" data-href="?a=search">
+                    <i class="icon fa fa-search"></i> @search_header_label@
+                </a>
+
+                {{ADMIN_AREA}}
+
+                <a class="more-list" href="{{SETTINGS_PAGE_URL}}" data-href="?a=settings">
+                    <i class="icon fa fa-gear"></i> @more_settings_label@
+                </a>
+
+                <a class="more-list" href="{{LOGOUT_URL}}">
+                    <i class="icon fa fa-sign-out"></i> @logout@
+                </a>
+            </div>
+        </div>
+        
+        <div class="floatClear"></div>
+    </div>
+</div>
+<script>
+var useChat = {{USER_SUBSCRIPTION_PLAN_CHAT}};
+function Sk_openNotifications()
+{
+    $(".headerDropdownOverlay:not(#notificationDropdownOverlay)").hide();
+    $("#notificationDropdownOverlay").toggle();
+    $(".mainHeaderNav").removeClass('mainHeaderNav-active');
+    
+    if ($("#notificationDropdownOverlay").css('display') === "block")
+    {
+        $('#notificationNav').addClass('mainHeaderNav-active');
+        iconProgress($(".loadNotificationDropdownIcon"));
+        
+        $.get(Sk_requestPath(), {t: 'notifications'}, function (data) {
+            iconProgress($(".loadNotificationDropdownIcon"));
+            SK_intervalUpdates();
+            if (data.status == 200) {
+                
+                if (data.html.length == 0) {
+                    $('.notificationDropdownContent').html('<div class="noText" align="center">@no_notifications@</div>');
+                } else {
+                    $('.notificationDropdownContent').html(data.html);
+                }
+            }
+        });
+    } else {
+        $('#notificationNav').removeClass('mainHeaderNav-active');
+    }
+}
+function Sk_openMessages()
+{
+    $(".headerDropdownOverlay:not(#messagesDropdownOverlay)").hide();
+    $("#messagesDropdownOverlay").toggle();
+    $(".mainHeaderNav").removeClass('mainHeaderNav-active');
+    
+    if ($("#messagesDropdownOverlay").css('display') === "block")
+    {
+        $('#messageNav').addClass('mainHeaderNav-active');
+        iconProgress($(".loadMessagesDropdownIcon"));
+        SK_intervalUpdates();
+        $.get(
+            Sk_requestPath(),
+            {
+                t: 'search',
+                a: 'recipients',
+                limit: 10,
+                header: true
+            },
+            function (data)
+            {
+                iconProgress($(".loadMessagesDropdownIcon"));
+                if (data.status == 200)
+                {
+                    $(".messagesDropdownContent").html(data.html);
+                }
+            }
+        );
+    }
+}
+function SK_moreToggle()
+{
+    windowHeight = $(window).height();
+    dropdownHeight = $("#userDropdownOverlay").height();
+
+    $(".headerDropdownOverlay:not(#userDropdownOverlay)").hide();
+    $('#userDropdownOverlay').toggle();
+    $(".mainHeaderNav").removeClass('mainHeaderNav-active');
+
+    if (windowHeight < dropdownHeight)
+    {
+        $('#userDropdownOverlay').height((windowHeight - 50) + "px");
+        $('#userDropdownOverlay').css("overflow-y", "scroll");
+    }
+}
+
+function Sk_openMessage(rid, rname, ruid)
+{
+    if (useChat == 0)
+    {
+        window.location = "{{SUBSCRIPTION_UPGRADE_URL}}";
+    }
+    else
+    {
+        Sk_openMessages();
+        if ($("#chatOverlay").length == 1)
+        {
+            Sk_openChat(rid, rname, ruid);
+        }
+        else
+        {
+            $.get(
+                Sk_requestPath(),
+                {
+                    t: "chat",
+                    a: "load_messages",
+                    receiver_id: rid
+                },
+                function(t)
+                {
+                    window.location = t.href;
+                }
+            );
+        }
+    }
+}
+$(document).on("click", ".headerDropdownOverlay", function(e){
+    $(".headerDropdownOverlay").hide();
+    $(".mainHeaderNav").removeClass('mainHeaderNav-active');
+});
+</script>

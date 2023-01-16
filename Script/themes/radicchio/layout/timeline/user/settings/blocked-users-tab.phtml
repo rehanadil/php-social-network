@@ -1,0 +1,28 @@
+<div class="listJar">
+    <div class="multiTabJar">
+        <div class="boldTab">
+            <i class="ski ski-user-minus"></i>
+            @blocked_users@
+        </div>
+    </div>
+    {{BLOCKED_USERS}}
+</div>
+<script>
+function Sk_unblockUser(buid)
+{
+    $.ajax({
+        type: 'POST',
+        url: Sk_requestPath() + '?t=user&a=unblock',
+        data: {
+            id: buid
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            $("#blocked-user-" + buid).slideUp('fast', function(){
+                $(this).remove();
+            });
+        }
+    });
+}
+</script>

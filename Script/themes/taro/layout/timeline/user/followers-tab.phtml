@@ -1,0 +1,45 @@
+<div class="listJar">
+    <div class="multiTabJar">
+        <div class="boldTab"><i class="ski ski-friends"></i> @followers_label@</div>
+    </div>
+
+    <div class="list-followers">
+    	{{LIST_FOLLOWERS}}
+    </div>
+
+    <a class="infoColumn view-more-anchor hide" align="center" onclick="listFollowers();">
+    	@view_more@
+    </a>
+</div>
+<script>
+$(function(){
+	if ($(".list-followers").find(".userColumn").length > 0) $(".view-more-anchor").removeClass("hide");
+});
+
+function listFollowers() {
+	lastFollowId = $(".list-followers").find(".userColumn:last").attr('data-user-id');
+	$.get(
+		Sk_requestPath(),
+		{
+			t: "user",
+			a: "list_followers",
+			timeline_id: {{TIMELINE_ID}},
+			before_id: lastFollowId
+		},
+		function(data)
+		{
+			if (data.status == 200)
+			{
+				if (data.html.length > 0)
+				{
+					$(".list-followers").append(data.html);
+				}
+				else
+				{
+					$(".view-more-anchor").hide();
+				}
+			}
+		}
+	);
+}
+</script>

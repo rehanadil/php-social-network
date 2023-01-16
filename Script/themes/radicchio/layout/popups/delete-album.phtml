@@ -1,0 +1,30 @@
+<div id="delete-album-{{ALBUM_ID}}" class="popupOverlay">
+    <div class="popupContainer">
+        <div class="popupHeader">
+            <div class="floatLeft">
+                <i class="fa fa-trash-o"></i> @delete_album@
+            </div>
+
+            <div class="floatRight">
+                <i class="fa fa-times-circle" onclick="Sk_popupClear();"></i>
+            </div>
+
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="popupContent">
+            @delete_album_confirmation@
+        </div>
+
+        <div class="popupButtons">
+            <button class="btn btnBlue" onclick="Sk_popupClear();">
+                @cancel@
+            </button>
+
+            <button class="btn btnRed" onclick="SK_deleteAlbum({{ALBUM_ID}});">
+                <i class="fa fa-trash"></i> @delete_album@
+            </button>
+        </div>
+    </div>
+</div>
+<script>$("#delete-album-{{ALBUM_ID}}").fadeIn('fast');</script>

@@ -1,0 +1,86 @@
+<div id="plan_{{PLAN_ID}}_cardPopup" class="payCardPopup popupOverlay">
+    <div class="payCardJar popupContainer">
+        <div class="headerJar popupHeader">
+            <div class="floatLeft">
+                <i class="fa fa-credit-card"></i> @choose_credit_card@
+            </div>
+
+            <div class="floatRight">
+                <i class="fa fa-times-circle"></i>
+            </div>
+
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="cardJar">
+            <label class="radio"> 
+                <input type="radio" name="pay_card" data-type="onfile">
+                <span>{{CARD_ON_FILE}}</span> 
+            </label>
+
+            <label class="radio"> 
+                <input type="radio" name="pay_card" data-type="new">
+                <span>{{NEW_CARD}}</span> 
+            </label>
+        </div>
+
+        <div class="buttonJar popupButtons">
+            <button class="continue btn btnBlue" disabled>@continue@ <i class="fa fa-arrow-circle-right"></i></button>
+        </div>
+    </div>
+    <script>
+    cardPopup = $('#plan_{{PLAN_ID}}_cardPopup');
+    cardInput = cardPopup.find('input[name="pay_card"]');
+    continueButton = cardPopup.find('button.continue');
+    cancelButton = cardPopup.find('i.fa-times-circle');
+
+    cancelButton.click(function(){
+        cardPopup.fadeOut('fast', function()
+        {
+            $(this).remove();
+        });
+    });
+
+    cardInput.click(function(){
+        continueButton.attr('disabled', false);
+    });
+
+    continueButton.click(function()
+    {
+        type = cardPopup.find('input[name="pay_card"]:checked').attr('data-type');
+        if (type === "new")
+        {
+            continueButton.attr('disabled', true).html('@please_wait@...');
+            cardInput.attr('disabled', true);
+            setTimeout(function(){
+                stripeHandler.open();
+                $('.payCardPopup').fadeOut('fast', function(){
+                    $(this).remove();
+                });
+            }, 500);
+        }
+        else if (type === "onfile")
+        {
+            continueButton.attr('disabled', true).html('@please_wait@...');
+            cardInput.attr('disabled', true);
+            $.post(
+                Sk_requestPath() + '?t=subscription_plans&a=stripe_upgrade_recurring',
+                {
+                    plan_id: {{PLAN_ID}}
+                },
+                function (data)
+                {
+                    if (data.status === 200)
+                    {
+                        continueButton.removeClass('btnBlue').addClass('btnGreen').attr('disabled', false).html('<i class="fa fa-check-circle"></i> @payment_successful@');
+                        setTimeout(function(){
+                            window.location = data.url;
+                        }, 1500);
+                    }
+                }
+            );
+        }
+    });
+    cardPopup.fadeIn('fast');
+    </script>
+</div>

@@ -1,0 +1,34 @@
+<div class="listJar">
+    <div class="multiTabJar">
+        <div class="boldTab">@group_requests_label@</div>
+    </div>
+    
+    {{GROUP_REQUEST_USERLISTS}}
+</div>
+<script>
+function SK_acceptGroupMember(group_id, member_id) {
+    $('.group-member-' + member_id).find('.acceptBtn').text('@accepting@..');
+    
+    $.post(Sk_requestPath() + '?t=group&a=accept_member', {group_id: group_id, member_id: member_id}, function (data) {
+        
+        if (data.status == 200) {
+            $('.group-member-' + member_id).slideUp(function () {
+                $(this).remove();
+            });
+        }
+    });
+}
+
+function SK_declineGroupMember(group_id, member_id) {
+    $('.group-member-' + member_id).find('.declineBtn').val('@declining@..');
+    
+    $.post(Sk_requestPath() + '?t=group&a=remove_member', {group_id: group_id, member_id: member_id}, function (data) {
+        
+        if (data.status == 200) {
+            $('.group-member-' + member_id).slideUp(function () {
+                $(this).remove();
+            });
+        }
+    });
+}
+</script>

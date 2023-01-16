@@ -1,0 +1,48 @@
+<div class="listJar pageSuggestionsJar">
+    <div class="headerJar multiTabJar">
+        <div class="floatLeft">
+            <div class="semiBoldTab lightColor">
+                <i class="fa fa-cubes"></i> @page_like_suggestions_label@
+            </div>
+        </div>
+
+        <div class="floatRight">
+            {{NEW_PAGE_LINK}}
+            
+            <a class="miniBoldTab cursorPointer" onclick="refreshPageSuggestions();" title="@refresh_label@">
+                <i class="fa fa-refresh progress-icon" data-default-icon="fa-refresh"></i>
+            </a>
+        </div>
+
+        <div class="floatClear"></div>
+    </div>
+
+    <div class="pageSuggestions">
+        {{LIST_PAGES}}
+    </div>
+</div>
+<script>
+function refreshPageSuggestions()
+{
+    mainJar = $('.pageSuggestionsJar');
+    iconProgress(mainJar.find('i.fa-refresh'));
+    
+    $.get(
+        Sk_requestPath(),
+        {
+            t: 'search',
+            a: 'suggestions',
+            type: 'page'
+        },
+        function (data)
+        {
+            if (data.status == 200)
+            {
+                mainJar.find('.pageSuggestions').html(data.html);
+            }
+            
+            iconProgress(mainJar.find('i.fa-refresh'));
+        }
+    );
+}
+</script>

@@ -1,0 +1,60 @@
+<div id="delete-story-{{STORY_ID}}" class="popupOverlay">
+    <div class="popupContainer">
+        <div class="popupHeader">
+            <div class="floatLeft">
+                <i class="fa fa-trash-o"></i> @delete_story@
+            </div>
+
+            <div class="floatRight">
+                <i class="fa fa-times-circle" onclick="Sk_popupClear();"></i>
+            </div>
+
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="popupContent">
+            @delete_story_confirmation@
+        </div>
+
+        <div class="popupButtons">
+            <button class="btn btnBlue" onclick="Sk_popupClear();">@cancel@</button>
+            <button class="btn btnRed" onclick="Sk_deleteStory({{STORY_ID}});"><i class="fa fa-trash"></i> @delete_story@</button>
+        </div>
+    </div>
+</div>
+<script>
+function Sk_deleteStory()
+{
+    $.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: 'post',
+            post_id: {{STORY_ID}},
+            a: 'remove'
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            $("#delete-story-{{STORY_ID}}").find(".btnRed").attr("disabled", true);
+            setTimeout(function(){
+                Sk_popupClear();
+            }, 100);
+        },
+        success: function(result)
+        {
+            if (result.status === 200)
+            {
+                $("#story_{{STORY_ID}}").slideUp(function(){
+                    $(this).remove();
+                });
+
+                $(".photo_{{STORY_ID}}").fadeOut(function(){
+                    $(this).remove();
+                });
+            }
+        }
+    });
+}
+$("#delete-story-{{STORY_ID}}").fadeIn('fast');
+</script>

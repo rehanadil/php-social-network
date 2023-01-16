@@ -1,0 +1,135 @@
+<div class="page-margin"></div>
+
+{{PAGE_NAVIGATION}}
+
+<div class="floatLeft span52">
+    <form class="listJar hashtag-search-form" method="get" action="{{CONFIG_SITE_URL}}/index.php">
+        <div class="multiTabJar">
+            <div class="boldTab">
+                <i class="fa fa-line-chart"></i>
+                @hashtag_search_header_label@
+            </div>
+        </div>
+
+        <div class="inputTextColumn">
+            <div class="inputContainer">
+                <i class="fa fa-search loadTrendStoriesSearchIcon" data-icon="search"></i>
+                <input class="query-input" type="text" name="query" placeholder="@hashtag_search_textarea_label@" onkeyup="Sk_keyupTrendSearch(this.value);" onkeydown="Sk_keydownTrendSearch(this.value);">
+            </div>
+        </div>
+        
+        <input type="hidden" name="a" value="hashtag">
+    </form>
+
+    <div class="storiesContainer">
+        {{STORIES}}
+    </div>
+
+    <div align="center">
+        <a class="viewMoreJar" onclick="Sk_getMoreTrendingPosts();">
+            <i class="fa fa-align-justify loadMoreTrendingStoriesIcon" data-icon="align-justify"></i>
+            @view_more@
+        </a>
+    </div>
+</div>
+
+<div class="floatRight span30">
+    {{USER_SUGGESTIONS}}
+
+    {{PAGE_SUGGESTIONS}}
+
+    {{GROUP_SUGGESTIONS}}
+
+    {{TRENDINGS}}
+
+    {{EVENT_BAR}}
+
+    {{CONFIG_AD_PLACE_HASHTAG}}
+
+    {{SIDEBAR_FOOTER}}
+</div>
+
+<div class="floatClear"></div>
+
+<script>
+var oldestStoryId = 0;
+var trend;
+var typingTimer;
+
+function Sk_keyupTrendSearch(q)
+{
+    trend = q;
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(function(){
+        oldestStoryId = 0;
+        Sk_getTrendingPosts();
+    }, 300);
+}
+
+function Sk_keydownTrendSearch()
+{
+    clearTimeout(typingTimer);
+}
+
+function Sk_getTrendingPosts()
+{
+    iconProgress($(".loadTrendStoriesSearchIcon"));
+    $(".viewMoreJar").hide();
+    $.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: "post",
+            a: "trend",
+            trend: trend
+        },
+        dataType: "json",
+        success: function(result)
+        {
+            iconProgress($(".loadTrendStoriesSearchIcon"));
+            if (result.status === 200 && result.is_empty === false)
+            {
+                $(".storiesContainer").html(result.html);
+                $(".viewMoreJar").show();
+            }
+        }
+    });
+}
+function Sk_getMoreTrendingPosts()
+{
+    iconProgress($(".loadMoreTrendingStoriesIcon"));
+    _continue = false;
+    if ($(".singleStoryJar").length > 0)
+    {
+        if ($(".singleStoryJar:last-of-type").attr("data-story-id") !== oldestStoryId)
+        {
+            oldestStoryId = $(".singleStoryJar:last-of-type").attr("data-story-id");
+            $.ajax({
+                type: 'GET',
+                url: Sk_requestPath(),
+                data: {
+                    t: "post",
+                    a: "trend",
+                    trend: trend,
+                    after_id: oldestStoryId
+                },
+                dataType: "json",
+                success: function(result)
+                {
+                    iconProgress($(".loadMoreTrendingStoriesIcon"));
+                    if (result.status === 200 && result.is_empty === false)
+                    {
+                        $(".storiesContainer").append(result.html);
+                        $(".viewMoreJar").show();
+                        _continue = true;
+                    }
+                }
+            });
+        }
+    }
+
+    if (!_continue) $(".viewMoreJar").hide();
+}
+</script>
+
+{{END}}

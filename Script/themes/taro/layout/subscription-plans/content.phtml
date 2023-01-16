@@ -1,0 +1,46 @@
+<div class="page-margin"></div>
+
+{{PAGE_NAVIGATION}}
+
+<div class="floatLeft span52">
+    <div class="currentPlanContainer">
+        <div class="multiTabJar" align="left">
+            <div class="boldTab">@subscription_plan@</div>
+        </div>
+
+        <div class="currentPlan">
+            <div class="currentPlanIcon">
+                <img src="{{USER_SUBSCRIPTION_PLAN_PLAN_ICON}}">
+            </div>
+            
+            <div class="currentPlanText">
+                {{CURRENTLY_SUBSCRIBED_TO}}
+            </div>
+
+            <a class="upgradePlanBtn" href="{{SUBSCRIPTION_UPGRADE_URL}}" data-href="?a=subscription-plans&b=upgrade">@upgrade_plan@</a>
+        </div>
+    </div>
+</div>
+
+<div class="floatRight span30">
+    {{FEATURED_USERS}}
+    
+    {{USER_SUGGESTIONS}}
+
+    {{PAGE_SUGGESTIONS}}
+
+    {{GROUP_SUGGESTIONS}}
+    
+    {{TRENDINGS}}
+    
+    {{EVENT_BAR}}
+    
+    {{CONFIG_AD_PLACE_HOME}}
+
+    {{SIDEBAR_FOOTER}}
+</div>
+<div class="floatClear"></div>
+<script>
+var planColor = "{{USER_SUBSCRIPTION_PLAN_PLAN_COLOR}}";
+$(".currentPlanText span").css("color", "#" + planColor);
+</script>

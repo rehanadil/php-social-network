@@ -1,0 +1,104 @@
+<div id="pageNavigation" class="floatLeft span16">
+    <a href="{{USER_URL}}" data-href="?a=timeline&id={{USER_USERNAME}}">
+        <img class="borderRadius100" src="{{USER_THUMBNAIL_URL}}" width="20px">
+        <span>{{USER_NAME}}</span>
+    </a>
+
+    <a href="{{SETTINGS_PAGE_URL}}" data-href="?a=settings">
+        <i class="fa fa-pencil-square"></i> @edit_profile_label@
+    </a>
+
+    {{NAV_ADMIN_AREA}}
+
+
+    <em>@favorites@</em>
+
+
+    <a href="{{HOME_PAGE_URL}}" data-href="?a=home">
+        <i class="fa fa-newspaper-o"></i> @newsfeed@
+    </a>
+
+    <a href="{{MESSAGES_PAGE_URL}}" data-href="?a=messages">
+        <i class="fa fa-comments"></i> @messages_label@
+    </a>
+
+    <a href="{{PHOTOS_PAGE_URL}}" data-href="?a=photos">
+        <i class="fa fa-image"></i> @photos@
+    </a>
+
+    <a href="{{ALBUMS_PAGE_URL}}" data-href="?a=albums">
+        <i class="fa fa-folder-open"></i> @albums@
+    </a>
+
+    <a href="{{SAVEDPOSTS_PAGE_URL}}" data-href="?a=saved-posts">
+        <i class="fa fa-file-text-o"></i> @saved_posts@
+    </a>
+
+    <a href="{{BOOSTEDPOSTS_PAGE_URL}}" data-href="?a=boosted-posts">
+        <i class="fa fa-bullhorn"></i> @boosted_posts@
+    </a>
+
+    <a href="{{RECOMMENDED_USERS_URL}}" data-href="?a=recommended&b=users" data-complete="1">
+        <i class="fa fa-ellipsis-h"></i> @recommended@
+    </a>
+
+
+    <em>@pages@</em>
+
+
+    {{NAV_CREATE_PAGE}}
+
+    <a href="{{MY_PAGES_URL}}" data-href="?a=my-pages">
+        <i class="fa fa-cubes"></i> @my_pages@
+    </a>
+
+    <a href="{{RECOMMENDED_PAGES_URL}}" data-href="?a=recommended&b=pages">
+        <i class="fa fa-ellipsis-h"></i> @recommended@
+    </a>
+
+
+    <em>@groups_label@</em>
+
+
+    {{NAV_CREATE_GROUP}}
+
+    <a href="{{MY_GROUPS_URL}}" data-href="?a=my-groups">
+        <i class="ski ski-group"></i> @my_groups@
+    </a>
+
+    <a href="{{RECOMMENDED_GROUPS_URL}}" data-href="?a=recommended&b=groups">
+        <i class="fa fa-ellipsis-h"></i> @recommended@
+    </a>
+
+
+    <em>@events_label@</em>
+
+
+    {{NAV_CREATE_EVENT}}
+
+    <a href="{{EVENTS_PAGE_URL}}" data-href="?a=events&b=upcoming">
+        <i class="fa fa-calendar"></i> @events_label@
+    </a>
+</div>
+<script>
+var smooth_link = {{CONFIG_SMOOTH_LINKS}};
+if (smooth_link == 1)
+{
+    var current_href = window.location.href.split('#')[0].split('?')[0].replace(/(.*?)\/$/, '$1');
+    var split_href = "{{CONFIG_SITE_URL}}/" + window.location.href.replace("{{CONFIG_SITE_URL}}/", "").split("/")[0].split('#')[0].split('?')[0];
+}
+else
+{
+    var current_href = window.location.href;
+}
+
+$("#pageNavigation a").removeClass("selected");
+if ($('#pageNavigation a[href="' + current_href + '"]').length == 1)
+{
+    $('#pageNavigation a[href="' + current_href + '"]').addClass("selected");
+}
+else
+{
+    $('#pageNavigation a[href^="' + split_href + '"]').addClass("selected");
+}
+</script>

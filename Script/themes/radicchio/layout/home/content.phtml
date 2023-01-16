@@ -1,0 +1,84 @@
+<div class="page-margin"></div>
+
+{{PAGE_NAVIGATION}}
+
+<div class="floatLeft span52">
+    {{ANNOUNCEMENTS}}
+
+    {{STORY_POSTBOX}}
+
+    {{STORY_FILTERS}}
+
+    {{STORIES}}
+</div>
+
+<div class="floatRight span30">
+    <div class="miniProfile">
+        <div class="short-cover">
+            <img src="{{USER_COVER_URL}}" width="100%" alt="{{USER_NAME}}">
+
+            <a class="short-avatar" href="{{USER_URL}}" data-href="?a=timeline&id={{USER_USERNAME}}">
+                <img src="{{USER_AVATAR_URL}}" width="70px" alt="{{USER_NAME}}">
+            </a>
+        </div>
+
+        <div class="short-info">
+            <a class="short-name" href="{{USER_URL}}" data-href="?a=timeline&id={{USER_USERNAME}}">
+                <strong>{{USER_NAME}}</strong>
+            </a>
+
+            <br>
+
+            @{{USER_USERNAME}}
+        </div>
+    </div>
+
+    {{FEATURED_USERS}}
+    
+    {{USER_SUGGESTIONS}}
+
+    {{PAGE_SUGGESTIONS}}
+
+    {{GROUP_SUGGESTIONS}}
+    
+    {{TRENDINGS}}
+    
+    {{EVENT_BAR}}
+    
+    {{CONFIG_AD_PLACE_HOME}}
+
+    {{SIDEBAR_FOOTER}}
+</div>
+<div class="floatClear"></div>
+<script>
+$(function()
+{
+    setInterval(function()
+    {
+        if ($('.singleStoryJar').length > 0)
+        {
+            element = $('.stories-container');
+            request_data = new Object();
+            request_data.t = 'post';
+            request_data.a = 'filter';
+            request_data.exclude_activity = 1;
+            request_data.before_id = $('.singleStoryJar:first').attr('data-story-id');
+            
+            if (typeof(element.attr('data-story-type') != "undefined")) {
+                request_data.type = element.attr('data-story-type');
+            }
+            
+            if (typeof(element.attr('data-story-timeline') != "undefined")) {
+                request_data.timeline_id = element.attr('data-story-timeline');
+            }
+            
+            $.get(Sk_requestPath(), request_data, function(data) {
+                
+                if (data.status == 200) {
+                    $('.stories-wrapper').prepend(data.html);
+                }
+            });
+        }
+    }, 120000);
+});
+</script>

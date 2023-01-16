@@ -1,0 +1,21 @@
+<div class="userColumn" data-invite-id="{{LIST_INVITE_ID}}">
+    <div class="floatLeft imageJar">
+        <a href="{{LIST_INVITE_URL}}" data-href="?a=timeline&id={{LIST_INVITE_USERNAME}}">
+            <img class="borderRadius100" src="{{LIST_INVITE_THUMBNAIL_URL}}" alt="{{LIST_INVITE_NAME}}">
+        </a>
+    </div>
+
+    <div class="floatLeft textJar">
+        <strong>
+            <a href="{{LIST_INVITE_URL}}" data-href="?a=timeline&id={{LIST_INVITE_USERNAME}}">{{LIST_INVITE_NAME}}</a>
+        </strong>
+
+        <small>{{LIST_INVITE_INFO}}</small>
+    </div>
+
+    <div class="floatRight buttonJar">
+        <a onclick="eventInvite({{LIST_INVITE_ID}});">@invite_label@</a>
+    </div>
+
+    <div class="floatClear"></div>
+</div>

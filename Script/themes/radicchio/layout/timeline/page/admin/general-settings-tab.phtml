@@ -1,0 +1,118 @@
+<form class="update-general-settings" method="post">
+    <div class="form-container">
+        <div class="multiTabJar">
+            <div class="boldTab">
+                <i class="fa fa-gear"></i>
+                @general_settings_label@
+            </div>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label class="floatLeft span20">
+                @username_label@:
+            </label>
+            <div class="input floatLeft span70">
+                <input type="text" name="username" value="{{TIMELINE_USERNAME}}" autocomplete="off" onkeyup="SK_checkUsername(this.value,{{TIMELINE_ID}},'.check-username-result',true);">
+                <div class="check-username-result ajax-result"></div>
+            </div>
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label class="floatLeft span20">
+                @pages_name_label@:
+            </label>
+            <div class="input floatLeft span70">
+                <input type="text" name="name" value="{{TIMELINE_NAME}}">
+            </div>
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label class="floatLeft span20">
+                @about_label@:
+            </label>
+            <div class="input floatLeft span70">
+                <textarea valign="top" name="about">{{TIMELINE_ABOUT}}</textarea>
+            </div>
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label class="floatLeft span20">
+                @address_label@:
+            </label>
+            <div class="input floatLeft span70">
+                <input type="text" name="address" value="{{TIMELINE_ADDRESS}}" autocomplete="off">
+            </div>
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label class="floatLeft span20">
+                @awards_label@:
+            </label>
+            <div class="input floatLeft span70">
+                <input type="text" name="awards" value="{{TIMELINE_AWARDS}}" autocomplete="off">
+            </div>
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label class="floatLeft span20">
+                @phone_label@:
+            </label>
+            <div class="input floatLeft span70">
+                <input type="text" name="phone" autocomplete="off" {{PHONE_VALUE_ATTR}}>
+            </div>
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label class="floatLeft span20">
+                @products_label@:
+            </label>
+            <div class="input floatLeft span70">
+                <textarea name="products" valign="top">{{TIMELINE_PRODUCTS}}</textarea>
+            </div>
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="form-input-wrapper">
+            <button class="active">
+                <i class="fa fa-lightbulb progress-icon hide"></i> 
+                @save_changes_button@
+            </button>
+        </div>
+    </div>
+    <input name="timeline_id" value="{{TIMELINE_ID}}" type="hidden">
+</form>
+
+<script>
+autosize($("textarea"));
+$ (function ()
+{
+    $('form.update-general-settings').ajaxForm({
+        url: Sk_requestPath() + '?t=page&a=update',
+        
+        success: function (responseText) {
+            
+            if (responseText.status == 200) {
+                
+                if ( $('.success-message').length == 0 ) {
+                    $('.form-header').after('<div class="success-message hidden">@changes_saved@.</div>');
+                    $('.success-message').fadeIn('fast',function () {
+                            $(this).fadeOut(1500, function() {
+                                $(this).remove();
+                            });
+                        });
+                }
+                
+                setTimeout(function () {
+                    window.location = responseText.url;
+                }, 1000);
+            }
+        }
+    });
+});
+</script>

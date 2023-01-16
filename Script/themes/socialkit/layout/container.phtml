@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{HEADER_TAGS}}
+</head>
+
+<body data-rewrite="{{BODY_REWRITE_ATTR}}">
+    {{HEADER}}
+
+    <div id="pageContainer">{{PAGE_CONTENT}}</div>
+
+    {{FOOTER_TAGS}}
+    
+    {{FOOTER}}
+    
+    {{ONLINE_SIDEBAR}}
+
+    <audio id="notification-sound" preload="auto">
+    	<source src="{{CONFIG_THEME_URL}}/sounds/notification.ogg" type="audio/ogg">
+    	<source src="{{CONFIG_THEME_URL}}/sounds/notification.mp3" type="audio/mpeg">
+    	<source src="{{CONFIG_THEME_URL}}/sounds/notification.wav" type="audio/wav">
+    </audio>
+</body>
+</html>

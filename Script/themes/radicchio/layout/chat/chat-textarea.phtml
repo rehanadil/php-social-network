@@ -1,0 +1,44 @@
+<div class="txtareaJar">
+    <div id="chat-{{RECEIVER_ID}}-txtArea" contenteditable="true" class="txtArea" placeholder="Type a message..." onkeyup="Sk_typeTxt({{RECEIVER_ID}},event);" onfocus="Sk_chatFocusTxt({{RECEIVER_ID}});" onpaste="Sk_pasteTxt({{RECEIVER_ID}},event)"></div>
+
+    <div class="optionsJar">
+        <form id="chat-{{RECEIVER_ID}}-sndFile" method="post" enctype="multipart/form-data" style="display:inline;">
+	       <i id="chat-{{RECEIVER_ID}}-sndFileIcon" class="ski ski-attachment" data-icon="attachment" onclick="javascript:$('form#chat-{{RECEIVER_ID}}-sndFile input').click();"></i>
+           <input class="hidden" name="sharedfiles[]" type="file" onchange="Sk_sndFile({{RECEIVER_ID}});">
+           <input type="hidden" name="receiver_id" value="{{RECEIVER_ID}}">
+        </form>
+
+        <form id="chat-{{RECEIVER_ID}}-sndAudio" method="post" enctype="multipart/form-data" style="display:inline;">
+         <i id="chat-{{RECEIVER_ID}}-sndAudioIcon" class="fa fa-file-audio-o" data-icon="file-audio-o" onclick="javascript:$('form#chat-{{RECEIVER_ID}}-sndAudio input').click();"></i>
+           <input class="hidden" name="audio[]" type="file" onchange="Sk_sndAudio({{RECEIVER_ID}});">
+           <input type="hidden" name="receiver_id" value="{{RECEIVER_ID}}">
+        </form>
+
+        <form id="chat-{{RECEIVER_ID}}-sndVid" method="post" enctype="multipart/form-data" style="display:inline;">
+         <i id="chat-{{RECEIVER_ID}}-sndVidIcon" class="fa fa-file-video-o" data-icon="file-video-o" onclick="javascript:$('form#chat-{{RECEIVER_ID}}-sndVid input').click();"></i>
+           <input class="hidden" name="vid[]" type="file" onchange="Sk_sndVid({{RECEIVER_ID}});">
+           <input type="hidden" name="receiver_id" value="{{RECEIVER_ID}}">
+        </form>
+
+        <form id="chat-{{RECEIVER_ID}}-sndPhoto" method="post" enctype="multipart/form-data" style="display:inline;">
+           <i id="chat-{{RECEIVER_ID}}-sndPhotoIcon" class="ski ski-camera-add" data-icon="camera-add" onclick="javascript:$('form#chat-{{RECEIVER_ID}}-sndPhoto input').click();"></i>
+           <input class="hidden" name="photos[]" type="file" accept="image/jpeg,image/png" onchange="Sk_sndPhoto({{RECEIVER_ID}});">
+           <input type="hidden" name="receiver_id" value="{{RECEIVER_ID}}">
+        </form>
+
+        <div class="skemojiBtn">
+          <i class="ski-smileface cursorPointer" onclick="Sk_toggleChatSkemoji({{RECEIVER_ID}});"></i>
+          <div id="chat-{{RECEIVER_ID}}-skemojiContainer" class="skemojiContainer mouseScroll"></div>
+        </div>
+
+        <div id="chat-{{RECEIVER_ID}}-colorPicker" class="colorPickerJar" onclick="javascript:$(this).find('.simplecolorpicker').toggle();">
+            <select class="colorpicker"></select>
+            <span class="colorShower"></span>
+        </div>
+    </div>
+
+    <form id="chat-{{RECEIVER_ID}}-sndTxt" class="hidden" method="post">
+        <textarea class="txtInpt hidden" name="txt"></textarea>
+        <input class="receiverId" type="hidden" name="receiver_id" value="{{RECEIVER_ID}}">
+    </form>
+</div>

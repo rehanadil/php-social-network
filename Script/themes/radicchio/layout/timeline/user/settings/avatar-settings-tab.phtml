@@ -1,0 +1,29 @@
+<form class="update-timeline-form" method="post" enctype="multipart/form-data" action="{{CONFIG_SITE_URL}}/request.php?t=avatar&a=post_upload">
+    <div class="form-container">
+        <div class="multiTabJar">
+            <div class="boldTab">
+                <i class="fa fa-camera"></i>
+                @change_avatar_label@
+            </div>
+        </div>
+
+        <div class="form-input-wrapper">
+            <table border="0" width="95%">
+            <tr>
+                <td align="left" valign="middle">
+                    <img class="radius3" src="{{USER_AVATAR_URL}}" width="48px" height="auto" alt="{{USER_NAME}}">
+                </td>
+
+                <td align="left" valign="middle">
+                    <input type="file" name="image" accept="image/jpeg,image/png" style="width: 80%;">
+                    <button class="active">
+                        @upload_button@
+                    </button>
+                </td>
+            </tr>
+            </table>
+        </div>
+    </div>
+    
+    <input name="timeline_id" value="{{USER_ID}}" type="hidden">
+</form>

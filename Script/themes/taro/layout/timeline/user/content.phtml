@@ -1,0 +1,90 @@
+<div class="timeline-header-wrapper">
+    <div class="cover-container">
+        <div class="cover-wrapper">
+            <img src="{{TIMELINE_COVER_URL}}" alt="{{TIMELINE_NAME}}">
+            <div class="cover-progress"></div>
+        </div>
+        
+        <div class="cover-resize-wrapper">
+            <img src="{{TIMELINE_ACTUAL_COVER_URL}}" alt="{{TIMELINE_NAME}}">
+            <div class="drag-div" align="center">@reposition_drag_label@</div>
+            <div class="cover-progress"></div>
+        </div>
+        
+        <div class="avatar-wrapper">
+            <img class="avatar" src="{{TIMELINE_AVATAR_URL}}" alt="{{TIMELINE_NAME}}">
+
+            {{CHANGE_AVATAR_HTML}}
+        </div>
+
+        <div class="timeline-name-wrapper">
+            <a href="{{TIMELINE_URL}}" data-href="?a=timeline&id={{TIMELINE_USERNAME}}">
+                {{TIMELINE_NAME}}
+            </a>
+            
+            {{VERIFIED_BADGE}}
+        </div>
+    </div>
+    
+    <div class="timeline-statistics-wrapper">
+        <table border="0" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            {{FOLLOW_REQUESTS_LINK}}
+            
+            {{STORIES_LINK}}
+            
+            {{FOLLOWING_LINK}}
+
+            <td class="statistic" align="center" valign="middle">
+                <a href="{{PAGE_LIKES_TAB_URL}}" data-href="?a=timeline&b=likes&id={{TIMELINE_USERNAME}}">
+                    {{PAGE_LIKES_NUM}} @likes_label@
+                </a>
+            </td>
+
+            <td class="statistic" align="center" valign="middle">
+                <a href="{{GROUPS_JOINED_TAB_URL}}" data-href="?a=timeline&b=groups&id={{TIMELINE_USERNAME}}">
+                    {{GROUPS_JOINED_NUM}} @groups_label@
+                </a>
+            </td>
+        </tr>
+        </table>
+    </div>
+</div>
+
+<div class="floatLeft span35">
+    {{TIMELINE_PLAN_VIEW}}
+
+    {{TIMELINE_BUTTONS}}
+    
+    <div class="listJar">
+        <div class="multiTabJar">
+            <div class="semiBoldTab lightColor">
+                <i class="fa fa-info-circle"></i> @about_label@
+            </div>
+        </div>
+
+        {{INFO_GENDER_ROW}}
+
+        {{INFO_BIRTHDAY_ROW}}
+        
+        {{INFO_LOCATION_ROW}}
+        
+        {{INFO_HOMETOWN_ROW}}
+        
+        {{INFO_ABOUT_ROW}}
+    </div>
+
+    {{SIDEBAR_PHOTOS}}
+
+    {{SIDEBAR_ALBUMS}}
+
+    {{CONFIG_AD_PLACE_TIMELINE}}
+</div>
+
+<div class="floatRight span63">
+    {{TAB_CONTENT}}
+</div>
+
+<div class="floatClear"></div>
+
+{{END}}

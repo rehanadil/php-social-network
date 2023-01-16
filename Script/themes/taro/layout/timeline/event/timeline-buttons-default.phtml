@@ -1,0 +1,50 @@
+<div class="eventButtons timeline-buttons">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="center" valign="middle">
+            <a class="goingBtn" onclick="eventAction('going');" data-active="{{IS_GOING}}">
+                <i class="fa fa-check" data-icon="check"></i>
+                <span>@event_going_label@</span>
+            </a>
+        </td>
+
+        <td align="center" valign="middle">
+            <a class="interestedBtn" onclick="eventAction('interested');" data-active="{{IS_INTERESTED}}">
+                <i class="fa fa-star" data-icon="star"></i>
+                <span>@event_interested_label@</span>
+            </a>
+        </td>
+
+        <td align="center" valign="middle">
+            <a class="invitedBtn" data-active="{{IS_INVITED}}">
+                <i class="fa fa-inbox" data-icon="inbox"></i>
+                <span>@event_invited_label@</span>
+            </a>
+        </td>
+    </tr>
+    </table>
+</div>
+<script>
+function Sk_blockUserPopup()
+{
+	$.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: "user",
+            a: "block_popup",
+            id: {{TIMELINE_ID}}
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            iconProgress($(".blockBtn").find("i"));
+        },
+        success: function(result)
+        {
+            iconProgress($(".blockBtn").find("i"));
+            if (result.status === 200) $(document.body).append(result.html);
+        }
+    });
+}
+</script>

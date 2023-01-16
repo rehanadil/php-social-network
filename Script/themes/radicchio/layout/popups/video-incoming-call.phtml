@@ -1,0 +1,84 @@
+<div id="incomingVideoCall-{{CALL_ID}}" class="incomingVideoCallContainer popupOverlay" data-manual="yes">
+    <div class="videoCallJar popupContainer">
+        <div class="callingJar">
+            <img src="{{CALLER_AVATAR_URL}}" width="64px">
+
+            <div class="receiverInfo">
+                <div class="receiverName">{{CALLER_NAME}}</div>
+                <div class="receiverUsername">@{{CALLER_USERNAME}}</div>
+            </div>
+
+            <div class="callingText"><i class="fa fa-video-camera"></i> <span>@incoming_video_call@</span></div>
+            
+            <div class="popupButtons buttonJar">
+                <button class="btn btnBlue accept"><i class="fa fa-check"></i> <span class="text">Accept</span></button>
+                <button class="btn btnRed decline"><i class="fa fa-times"></i> <span class="text">Decline</span></button>
+            </div>
+        </div>
+    </div>
+    <audio preload="auto" autoplay="yes" loop="yes">
+        <source src="{{CONFIG_THEME_URL}}/sounds/incoming_video_call.ogg" type="audio/ogg">
+        <source src="{{CONFIG_THEME_URL}}/sounds/incoming_video_call.mp3" type="audio/mpeg">
+        <source src="{{CONFIG_THEME_URL}}/sounds/incoming_video_call.wav" type="audio/wav">
+    </audio>
+    <script>
+    var incomingVideoPopup = $('#incomingVideoCall-{{CALL_ID}}');
+    var incomingVideo_acceptButton = incomingVideoPopup.find('button.accept');
+    var incomingVideo_declineButton = incomingVideoPopup.find('button.decline');
+
+    incomingVideo_acceptButton.click(function(){
+        incomingVideo_acceptButton
+        .attr('disabled', true)
+            .find('span.text')
+            .text('@accepting@...');
+        $.get(
+            Sk_requestPath(),
+            {
+                t: "video_call",
+                a: "accept",
+                id: {{CALL_ID}}
+            },
+            function(response)
+            {
+                if (response.status === 200)
+                {
+                    if ($(window).width() > 960)
+                    {
+                        Sk_popupClear();
+                        $(document.body).append(response.html);
+                    }
+                    else
+                    {
+                        window.location = response.url;
+                    }
+                }
+            }
+        );
+    });
+    incomingVideo_declineButton.click(function(){
+        incomingVideo_declineButton.attr('disabled', true);
+        $.get(
+            Sk_requestPath(),
+            {
+                t: "video_call",
+                a: "decline",
+                id: {{CALL_ID}}
+            },
+            function(response)
+            {
+                if (response.status === 200)
+                {
+                    Sk_popupClear();
+                }
+            }
+        );
+    });
+    setTimeout(function(){
+        incomingVideoPopup.find('.callingText').html('<i class="fa fa-phone"></i> <span>@no_answer@</span>');
+        incomingVideoPopup.fadeOut('fast', function(){
+            $(this).remove();
+        });
+    }, 45000);
+    incomingVideoPopup.fadeIn('fast');
+    </script>
+</div>

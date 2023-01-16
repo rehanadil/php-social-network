@@ -1,0 +1,36 @@
+<div class="form-input-wrapper">
+        <label class="floatLeft span20">
+            @privacy_label@:
+        </label>
+
+        <div class="input floatLeft span65">
+            <div style="margin-top: 5px;">
+                <input valign="top" type="radio" name="group_privacy" value="open"{{GROUP_PRIVACY_OPEN_CHECKED_ATTR}}>
+                <i class="fa fa-globe" style="margin-right: 3px;"></i> @open_group@
+                <br>
+                <small>
+                    @open_group_description@.
+                </small>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <input valign="top" type="radio" name="group_privacy" value="closed"{{GROUP_PRIVACY_CLOSED_CHECKED_ATTR}}>
+                <i class="fa fa-lock" style="margin-right: 3px;"></i> @closed_group@
+                <br>
+                <small>
+                    @closed_group_description@.
+                </small>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <input valign="top" type="radio" name="group_privacy" value="secret"{{GROUP_PRIVACY_SECRET_CHECKED_ATTR}}>
+                <i class="fa fa-shield" style="margin-right: 3px;"></i> @secret_group@
+                <br>
+                <small>
+                    @secret_group_description@.
+                </small>
+            </div>
+        </div>
+
+        <div class="floatClear"></div>
+    </div>

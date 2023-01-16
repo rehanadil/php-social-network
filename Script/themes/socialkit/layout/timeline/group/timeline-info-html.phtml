@@ -1,0 +1,37 @@
+<div class="listJar">
+    <div class="multiTabJar">
+        <div class="semiBoldTab lightColor">
+            <i class="fa fa-info-circle"></i> @about_label@
+        </div>
+    </div>
+
+    <div class="infoColumn">
+        <div class="iconJar floatLeft">
+            <i id="groupPrivacyIcon" class="fa fa-lock"></i>
+        </div>
+        
+        <div class="textJar floatLeft">
+            <span id="groupPrivacyTag">{{TIMELINE_GROUP_PRIVACY}}</span>
+        </div>
+
+        <div class="floatClear"></div>
+    </div>
+
+    {{TIMELINE_INFO_ABOUT_HTML}}
+</div>
+<script>
+switch ($("#groupPrivacyTag").text())
+{
+	case "Open":
+		$("#groupPrivacyIcon").removeClass("fa-lock fa-shield").addClass("fa-globe");
+		break;
+
+	case "Closed":
+		$("#groupPrivacyIcon").removeClass("fa-globe fa-shield").addClass("fa-lock");
+		break;
+
+	case "Secret":
+		$("#groupPrivacyIcon").removeClass("fa-globe fa-lock").addClass("fa-shield");
+		break;
+};
+</script>

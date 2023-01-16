@@ -1,0 +1,809 @@
+<div class="stories-container" data-story-timeline="{{STORY_TIMELINE_ID}}" data-boosted="{{BOOSTED}}" data-saved="{{SAVED}}">
+    <div class="stories-wrapper">
+        {{STORY_LIST}}
+    </div>
+
+    <div id="viewMoreStories" align="center">
+        <div class="load-btn" onclick="Sk_loadOldStories();">
+            <i id="viewMoreStoriesIcon" class="fa fa-align-justify" data-icon="align-justify"></i>
+            @view_previous_posts_label@
+        </div>
+    </div>
+</div>
+
+<script>
+var oldestStoryId = 0;
+
+// Pin Post
+function Sk_boostStory(sid)
+{
+    $.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: "post",
+            a: "boost",
+            post_id: sid
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            iconProgress($("#story_" + sid).find(".loadBoostStoryIcon"));
+        },
+        success: function(result)
+        {
+            iconProgress($("#story_" + sid).find(".loadBoostStoryIcon"));
+            if (result.status === 200)
+            {
+                $("#story_" + sid).find(".boostControl").after(result.html).remove();
+                $("#story_" + sid).attr("data-boosted", 1);
+            }
+            else if (typeof(result.error.message) !== "undefined")
+            {
+                $(document.body).append(result.error.message);
+            }
+        }
+    });
+}
+
+// Unpin Post
+function Sk_unboostStory(sid)
+{
+    $.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: "post",
+            a: "unboost",
+            post_id: sid
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            iconProgress($("#story_" + sid).find(".loadBoostStoryIcon"));
+        },
+        success: function(result)
+        {
+            iconProgress($("#story_" + sid).find(".loadBoostStoryIcon"));
+            if (result.status == 200)
+            {
+                $("#story_" + sid).find(".boostControl").after(result.html).remove();
+                $("#story_" + sid).removeAttr("data-boosted");
+            }
+        }
+    });
+}
+
+// Pin Post
+function Sk_pinStory(sid)
+{
+    $.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: "post",
+            a: "pin",
+            post_id: sid
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            iconProgress($("#story_" + sid).find(".loadPinStoryIcon"));
+        },
+        success: function(result)
+        {
+            iconProgress($("#story_" + sid).find(".loadPinStoryIcon"));
+            if (result.status == 200)
+            {
+                $("#story_" + sid).find(".pinControl").after(result.html).remove();
+            }
+        }
+    });
+}
+// Unpin Post
+function Sk_unpinStory(sid)
+{
+    $.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: "post",
+            a: "unpin",
+            post_id: sid
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            iconProgress($("#story_" + sid).find(".loadPinStoryIcon"));
+        },
+        success: function(result)
+        {
+            iconProgress($("#story_" + sid).find(".loadPinStoryIcon"));
+            if (result.status == 200)
+            {
+                $("#story_" + sid).find(".pinControl").after(result.html).remove();
+            }
+        }
+    });
+}
+// Save Post
+function Sk_saveStory(sid)
+{
+    $.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: "post",
+            a: "save",
+            post_id: sid
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            iconProgress($("#story_" + sid).find(".loadSaveStoryIcon"));
+        },
+        success: function(result)
+        {
+            iconProgress($("#story_" + sid).find(".loadSaveStoryIcon"));
+            if (result.status == 200)
+            {
+                $("#story_" + sid).find(".saveControl").after(result.html).remove();
+            }
+        }
+    });
+}
+// Unsave Post
+function Sk_unsaveStory(sid)
+{
+    $.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: "post",
+            a: "unsave",
+            post_id: sid
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            iconProgress($("#story_" + sid).find(".loadSaveStoryIcon"));
+        },
+        success: function(result)
+        {
+            iconProgress($("#story_" + sid).find(".loadSaveStoryIcon"));
+            if (result.status == 200)
+            {
+                $("#story_" + sid).find(".saveControl").after(result.html).remove();
+            }
+        }
+    });
+}
+// Edit Post
+function Sk_editStoryPopup(sid)
+{
+    iconProgress($("#story_" + sid).find('.loadEditStoryIcon'));
+    $.get(
+        Sk_requestPath(),
+        {
+            t: 'post',
+            post_id: sid,
+            a: 'edit_popup'
+        },
+        function(data)
+        {
+            if (data.status === 200)
+            {
+                $(document.body).append(data.html).css('overflow','hidden');
+                
+                if ($('#mainHeaderJar').width() < 920) $('.window-wrapper').css('margin-top',($(document).scrollTop()+10)+'px');
+            }
+            iconProgress($("#story_" + sid).find('.loadEditStoryIcon'));
+        }
+    );
+}
+
+function submitEditPost(pid){
+    post = $('#story_' + pid);
+    textWrap = post.find('.textJar');
+    editText = post.find('textarea.edit-post');
+    text = editText.val();
+    $.post(
+        Sk_requestPath() + '?t=post&a=edit&post_id=' + pid,
+
+        {
+            edit_text: text
+        },
+
+        function(data)
+        {
+            if (data.status == 200)
+            {
+                textWrap.after(data.html);
+                textWrap.remove();
+                post.find('textarea.edit-post').hide();
+                post.find('div.edit-post-submit').hide();
+            }
+        }
+    );
+}
+
+function selectCommentPhoto(pid){
+    storyWrap = $('.story_' + pid);
+    storyWrap.find('input.comment-file-input').click();
+}
+
+function previewCommentPhoto(input, pid){
+    if (input.files && input.files[0]) {
+        storyWrap = $('.story_' + pid);
+        commentForm = storyWrap.find('form.comment-textarea');
+        previewWrap = commentForm.find('div.photo-preview');
+        previewImg = previewWrap.find('img');
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            previewImg.attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+        previewWrap.show();
+    }
+    
+}
+
+function submitComment(event,pid){
+    if (event.keyCode == 13 && event.shiftKey == 0)
+    {
+        event.preventDefault();
+        postComment(pid);
+    }
+}
+
+function postComment(pid){
+    $('.story_' + pid).find('form.comment-textarea').ajaxSubmit({
+        url: Sk_requestPath() + '?t=post&a=comment&post_id=' + pid,
+        
+        beforeSend: function() {
+            postWrap = $('.story_' + pid);
+            textareaWrap = postWrap.find('.comment-textarea');
+            textarea = textareaWrap.find('textarea');
+            uploadIcon = textareaWrap.find('i.img-upload-icon');
+            previewWrap = textareaWrap.find('div.photo-preview');
+            previewImg = previewWrap.find('img');
+            textarea.val('');
+
+            uploadIcon.hide();
+
+            SK_progressIconLoader(textareaWrap);
+        },
+        
+        uploadProgress: function(event, position, total, percentComplete) {},
+        
+        success: function(responseText) {
+            if (responseText.status == 200) {
+                postWrap.find('.commentJar:last').before(responseText.html);
+                postWrap.find('.story-comment-activity').html(responseText.activity_html);
+            }
+
+            SK_progressIconLoader(textareaWrap);
+            previewWrap.hide();
+            previewImg.attr('src', '');
+            uploadIcon.show();
+        }
+    });
+}
+
+
+
+// Like story
+function set_reaction(reaction, sid)
+{
+    story_container = $(".story_" + sid);
+    like_button = story_container.find('.story-like-btn');
+    like_activity_button = story_container.find('.story-like-activity');
+
+    iconProgress(like_button.find("i"));
+    
+    $.get(
+        Sk_requestPath(),
+
+        {
+            t: 'post',
+            a: 'like',
+            reaction: reaction,
+            post_id: sid
+        },
+
+        function(data)
+        {
+            if (data.status == 200)
+            {
+                if (data.liked == true)
+                {
+                    like_button
+                        .after(data.button_html)
+                        .remove();
+
+                    like_activity_button
+                        .html(data.activity_html);
+                } else {
+                    like_button
+                        .after(data.button_html)
+                        .remove();
+
+                    like_activity_button
+                        .html(data.activity_html);
+                }
+            }
+        }
+    );
+
+}
+
+function SK_registerStoryLike(post_id) {
+    main_elem = $(".story_" + post_id);
+    like_btn = main_elem.find('.story-like-btn');
+    like_activity_btn = main_elem.find('.story-like-activity');
+    
+    SK_progressIconLoader(like_btn);
+    
+    $.get(Sk_requestPath(), {t: 'post', post_id: post_id, a: 'like'}, function(data) {
+        if (data.status == 200) {
+            if (data.liked == true) {
+                like_btn
+                    .after(data.button_html)
+                    .remove();
+                like_activity_btn
+                    .html(data.activity_html);
+            } else {
+                like_btn
+                    .after(data.button_html)
+                    .remove();
+                like_activity_btn
+                    .html(data.activity_html);
+            }
+        }
+    });
+}
+
+// Share story
+function SK_registerStoryShare(post_id) {
+    main_elem = $('.story_'+post_id);
+    share_btn = main_elem.find('.story-share-btn');
+    share_activity_btn = main_elem.find('.story-share-activity');
+    
+    SK_progressIconLoader(share_btn);
+    
+    $.get(Sk_requestPath(), {t: 'post', post_id: post_id, a: 'share'}, function(data) {
+        if (data.status == 200) {
+            if (data.shared == true) {
+                share_btn
+                    .after(data.button_html)
+                    .remove();
+                share_activity_btn
+                    .html(data.activity_html);
+            } else {
+                share_btn
+                    .after(data.button_html)
+                    .remove();
+                share_activity_btn
+                    .html(data.activity_html);
+            }
+        }
+    });
+}
+
+// Follow story
+function SK_registerStoryFollow(post_id) {
+    main_elem = $('.story_'+post_id);
+    follow_btn = main_elem.find('.story-follow-btn');
+    follow_activity_btn = main_elem.find('.story-follow-activity');
+    
+    SK_progressIconLoader(follow_btn);
+    
+    $.get(Sk_requestPath(), {t: 'post', post_id: post_id, a: 'follow'}, function(data) {
+        if (data.status == 200) {
+            if (data.shared == true) {
+                follow_btn
+                    .after(data.button_html)
+                    .remove();
+                follow_activity_btn
+                    .html(data.activity_html);
+            } else {
+                follow_btn
+                    .after(data.button_html)
+                    .remove();
+                follow_activity_btn
+                    .html(data.activity_html);
+            }
+        }
+    });
+}
+
+// Show post likes window (popup)
+function getStoryReactions(post_id) {
+    main_elem = $('.story_' + post_id);
+    like_activity_btn = main_elem.find('.like-activity');
+    SK_progressIconLoader(like_activity_btn);
+    
+    $.get(Sk_requestPath(), {t: 'post', post_id: post_id, a: 'view_likes'}, function(data) {
+        
+        if (data.status == 200) {
+            $(document.body)
+                .append(data.html)
+                .css('overflow','hidden');
+            
+            if ($('#mainHeaderJar').width() < 920) {
+                $('.window-wrapper').css('margin-top',($(document).scrollTop()+10)+'px');
+            }
+        }
+        
+        SK_progressIconLoader(like_activity_btn);
+    });
+}
+
+// Show post shares window
+function SK_getStoryShares(post_id) {
+    main_elem = $('.story_' + post_id);
+    share_activity_btn = main_elem.find('.share-activity');
+    SK_progressIconLoader(share_activity_btn);
+    
+    $.get(Sk_requestPath(), {t: 'post', post_id: post_id, a: 'view_shares'}, function(data) {
+        
+        if (data.status == 200) {
+            $(document.body)
+                .append(data.html)
+                .css('overflow','hidden');
+            
+            if ($('#mainHeaderJar').width() < 920) {
+                $('.window-wrapper').css('margin-top',($(document).scrollTop()+10)+'px');
+            }
+        }
+        
+        SK_progressIconLoader(share_activity_btn);
+    });
+}
+
+// Show delete post window
+function Sk_deleteStoryPopup(sid)
+{
+    iconProgress($("#story_" + sid).find('.loadDeleteStoryIcon'));
+    $.get(
+        Sk_requestPath(),
+        {
+            t: 'post',
+            post_id: sid,
+            a: 'view_remove'
+        },
+        function(data)
+        {
+            if (data.status === 200)
+            {
+                $(document.body).append(data.html).css('overflow','hidden');
+                
+                if ($('#mainHeaderJar').width() < 920) $('.window-wrapper').css('margin-top',($(document).scrollTop()+10)+'px');
+            }
+            iconProgress($("#story_" + sid).find('.loadDeleteStoryIcon'));
+        }
+    );
+}
+
+// Cancel remove
+function SK_cancelRemove(post_id) {
+    main_wrapper = $('#story_' + post_id);
+    SK_progressIconLoader(main_wrapper.find('.remove-btn'));
+    SK_closeWindow();
+}
+
+// Delete post
+function SK_removePost(post_id) {
+    SK_closeWindow();
+    $.get(Sk_requestPath(), {t: 'post', post_id: post_id, a: 'remove'}, function(data) {
+        
+        if (data.status == 200) {
+            $('.story_' + post_id).slideUp(function(){
+                $(this).remove();
+            });
+
+            $('.photo_' + post_id).fadeOut(function(){
+                $(this).remove();
+            });
+        }
+    });
+}
+
+// Report Post
+function SK_reportPost(post_id)
+{
+    main_wrapper = $('#story_' + post_id);
+    iconProgress(main_wrapper.find('.loadReportStoryIcon'));
+    
+    $.get (Sk_requestPath(), {t: 'post', post_id: post_id, a: 'report'}, function(data)
+    {
+        if (data.status == 200)
+        {
+            main_wrapper.find(".reportControl").after(data.html).remove();
+        }
+        
+        iconProgress(main_wrapper.find('.loadReportStoryIcon'));
+    });
+}
+
+// Load old stories
+function Sk_loadOldStories()
+{
+    if ($('.singleStoryJar:last-of-type').attr("data-story-id") !== oldestStoryId)
+    {
+        oldestStoryId = $('.singleStoryJar:last-of-type').attr("data-story-id");
+        body_wrapper = $('.stories-container');
+        button_wrapper = $('.stories-container').find('.load-btn');
+        
+        iconProgress($("#viewMoreStoriesIcon"));
+        
+        outgoing_data = new Object();
+        outgoing_data.t = 'post';
+        outgoing_data.a = 'filter';
+        
+        if (typeof(body_wrapper.attr('data-story-type')) !== "undefined")
+        {
+            outgoing_data.type = body_wrapper.attr('data-story-type');
+        }
+        
+        if (typeof(body_wrapper.attr('data-story-timeline')) =="string")
+        {
+            outgoing_data.timeline_id = body_wrapper.attr('data-story-timeline');
+        }
+
+        if (typeof(body_wrapper.attr('data-boosted')) !== "undefined")
+            outgoing_data.boosted = body_wrapper.attr('data-boosted');
+
+        if (typeof(body_wrapper.attr('data-saved')) !== "undefined")
+            outgoing_data.saved = body_wrapper.attr('data-saved');
+        
+        outgoing_data.after_id = $('.singleStoryJar:last-of-type').attr("data-story-id");
+        
+        $.get(Sk_requestPath(), outgoing_data, function (data)
+        {
+            iconProgress($("#viewMoreStoriesIcon"));
+
+            if (data.status == 200)
+            {
+                $('.stories-wrapper').append(data.html);
+
+                if (data.html.length == 0)
+                {
+                    button_wrapper.text('@no_more_stories_to_show@').removeAttr('onclick');
+                }
+            }
+        });
+    }
+}
+
+/* Like comment */
+function likeComment(comment_id) {
+    main_elem = $('.comment_' + comment_id);
+    like_btn = main_elem.find('.comment-like-btn');
+    like_activity_btn = main_elem.find('.comment-like-activity');
+    
+    iconProgress(main_elem.find(".commentLikeBtnIcon"));
+    
+    $.get(
+        Sk_requestPath(),
+
+        {
+            t: 'comment',
+            comment_id: comment_id,
+            a: 'like'
+        },
+
+        function(data) {
+            if (data.status == 200)
+            {
+                if (data.liked == true)
+                {
+                    like_btn
+                        .after(data.button_html)
+                        .remove();
+                    like_activity_btn
+                        .html(data.activity_html);
+                }
+                else
+                {
+                    like_btn
+                        .after(data.button_html)
+                        .remove();
+                    like_activity_btn
+                        .html(data.activity_html);
+                }
+            }
+        }
+    );
+}
+
+/* View comment likes */
+function viewCommentLikes(comment_id) {
+    main_elem = $('.comment_' + comment_id);
+    like_activity_btn = main_elem.find('.comment-like-activity');
+    SK_progressIconLoader(like_activity_btn);
+    
+    $.get(
+        Sk_requestPath(),
+
+        {
+            t: 'comment',
+            comment_id: comment_id,
+            a: 'view_likes'
+        },
+
+        function(data) {
+            if (data.status == 200)
+            {
+                $(document.body)
+                    .append(data.html)
+                    .css('overflow','hidden');
+                
+                if ($('#mainHeaderJar').width() < 920)
+                {
+                    $('.window-wrapper').css('margin-top', ($(document).scrollTop() + 10) + 'px');
+                }
+            }
+            
+            SK_progressIconLoader(like_activity_btn);
+        }
+    );
+}
+
+/* Report Comment */
+function reportComment(comment_id)
+{
+    main_wrapper = $('.comment_' + comment_id);
+    SK_progressIconLoader(main_wrapper.find('.report-btn'));
+    
+    $.get (
+        Sk_requestPath(),
+
+        {
+            t: 'comment',
+            comment_id: comment_id,
+            a: 'report'
+        },
+
+        function(data)
+        {
+            if (data.status == 200)
+            {
+                main_wrapper.find('.report-btn').text('Reported!').fadeOut(1500);
+            }
+            SK_progressIconLoader($('.comment_' + comment_id).find('.report-btn'));
+        }
+    );
+}
+
+/* View comment remove */
+function viewCommentRemove(comment_id) {
+    main_wrapper = $('.comment_' + comment_id);
+    button_wrapper = main_wrapper.find('.comment-remove-btn');
+    
+    SK_progressIconLoader(button_wrapper);
+    
+    $.get(
+        Sk_requestPath(),
+
+        {
+            t: 'comment',
+            comment_id: comment_id,
+            a: 'view_remove'
+        },
+
+        function(data)
+        {
+            if (data.status == 200)
+            {
+                $(document.body)
+                    .append(data.html)
+                    .css('overflow','hidden');
+                
+                if ($('#mainHeaderJar').width() < 920)
+                {
+                    $('.window-wrapper').css('margin-top', ($(document).scrollTop()+10)+'px');
+                }
+            }
+            
+            SK_progressIconLoader(button_wrapper);
+        }
+    );
+}
+
+/* Cancel comment remove */
+function cancelCommentRemove(comment_id) {
+    button = $('.comment_' + comment_id).find('.remove-btn');
+    SK_progressIconLoader(button);
+    SK_closeWindow();
+}
+
+/* Remove comment */
+function removeComment(comment_id) {
+    SK_closeWindow();
+
+    $.get(
+        Sk_requestPath(),
+
+        {
+            t: 'comment',
+            comment_id: comment_id,
+            a: 'remove'
+        },
+
+        function(data)
+        {
+            if (data.status == 200)
+            {
+                $('.comment_' + comment_id).slideUp(function()
+                {
+                    $(this).remove();
+                });
+            }
+        }
+    );
+}
+
+/* View all comments */
+function viewAllComments(post_id) {
+    main_wrapper = $('.story_' + post_id);
+    view_more_wrapper = main_wrapper.find('.viewMoreJar');
+    
+    SK_progressIconLoader(view_more_wrapper);
+    
+    $.get(Sk_requestPath(), {t: 'post', a: 'view_all_comments', post_id: post_id}, function (data) {
+        
+        if (data.status == 200) {
+            main_wrapper.find('.comments-wrapper').html(data.html);
+            view_more_wrapper.remove();
+        }
+    });
+}
+
+$(document).on("click", "input.storyPrivacyChange", function(){
+    privacy = $(this).val();
+    storyTag = $(this).parents(".singleStoryJar");
+    sid = storyTag.attr("data-story-id");
+    $.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: "post",
+            a: "change_privacy",
+            post_id: sid,
+            privacy: privacy
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            storyTag.find(".storyPrivacyContainer").attr("data-privacy", privacy);
+            storyTag.find(".storyPrivacyDropdown").fadeOut('fast');
+        },
+        success: function(result)
+        {
+            if (result.status === 200) storyTag.find(".storyPrivacyContainer").attr("data-privacy", privacy);
+        }
+    });
+});
+
+$(document.body).on('mousewheel DOMMouseScroll', function (e)
+{
+    scrollDirection = (e.originalEvent.wheelDelta || -e.originalEvent.detail);
+
+    if (scrollDirection < 0)
+    {
+        if ($(window).width() > 920)
+        {
+            scrollHeightDifference = parseInt($(document.body).prop('scrollHeight') - $(window).height()) - 500;
+            if ($(document.body).scrollTop() > scrollHeightDifference)
+            {
+                Sk_loadOldStories();
+            }
+        }
+    }
+});
+
+if ($(".singleStoryJar").length < 5) $("#viewMoreStories").remove();
+</script>

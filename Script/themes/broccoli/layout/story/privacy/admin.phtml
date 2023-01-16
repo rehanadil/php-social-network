@@ -1,0 +1,23 @@
+<div class="storyPrivacyContainer cursorPointer" data-privacy="{{STORY_PRIVACY}}" onclick="$('#story_{{STORY_ID}}').find('.storyPrivacyDropdown').fadeToggle('fast');">
+    <i class="fa fa-globe"></i>
+    <i class="ski ski-friends"></i>
+    <div class="storyPrivacyDropdownContainer">
+        <i class="fa fa-caret-down"></i>
+
+        <div class="storyPrivacyDropdown">
+            <a class="publicPrivacy">
+                <input class="storyPrivacyChange cursorPointer" type="radio" value="public">
+                <i class="fa fa-globe"></i>
+                <span>@public@</span>
+                <small>@public_privacy_description@</small>
+            </a>
+
+            <a class="friendsPrivacy">
+                <input class="storyPrivacyChange cursorPointer" type="radio" value="friends">
+                <i class="ski ski-friends"></i>
+                <span>{{FOLLOWING_PRIVACY_TITLE}}</span>
+                <small>{{FOLLOWING_PRIVACY_DESCRIPTION}}</small>
+            </a>
+        </div>
+    </div>
+</div>

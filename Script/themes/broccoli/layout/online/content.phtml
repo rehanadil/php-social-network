@@ -1,0 +1,143 @@
+<div id="sidebarOnline" data-hover="0">
+    <div class="inputsContainer">
+        <div class="floatLeft inputTextContainer">
+            <i class="fa fa-search loadOnlineSearchIcon" data-icon="search"></i> <input type="text" placeholder="Search" onkeyup="Sk_keyupOnlineSearch(this.value);" onkeydown="Sk_keydownOnlineSearch(this.value);">
+        </div>
+
+        <div class="floatRight inputBtnContainer">
+            <div id="goOfflineBtn" class="cursorPointer" data-offline="{{IS_OFFLINE}}">
+                <i class="fa fa-gear"></i>
+                <div id="goOfflineContainer">
+                    <a class="onlineBtn" onclick="goOffline(false,event);">
+                        <i class="fa fa-check"></i>
+                        <i class="fa fa-eye"></i>
+                        Online
+                    </a>
+
+                    <a class="offlineBtn" onclick="goOffline(true,event);">
+                        <i class="fa fa-check"></i>
+                        <i class="fa fa-eye-slash"></i>
+                        Offline
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="floatClear"></div>
+    </div>
+    
+    <div class="onlineJar"><ul></ul></div>
+</div>
+<script>
+var onlineTypingTimer;
+
+$(document).on("click", "#goOfflineBtn", function(e){
+    $("#goOfflineContainer").toggle();
+});
+function goOffline(b,event)
+{
+    event.stopPropagation();
+    status = (b === true) ? 0 : 1;
+    $.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: "online",
+            a: "go_offline",
+            status: status
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            $("#goOfflineBtn").attr("data-offline", (status == 1) ? 0 : 1);
+        },
+        success: function(result)
+        {
+            $("#goOfflineBtn").attr("data-offline", result.is_offline);
+        }
+    });
+}
+// Search online users on the sidebar
+function Sk_keyupOnlineSearch(q)
+{
+    clearTimeout(onlineTypingTimer);
+    onlineTypingTimer = setTimeout(function(){
+        Sk_searchOnline(q);
+    }, 300);
+}
+function Sk_keydownOnlineSearch(q)
+{
+    clearTimeout(onlineTypingTimer);
+}
+function Sk_searchOnline(q)
+{
+    iconProgress($("#sidebarOnline").find(".loadOnlineSearchIcon"));
+    $.get(
+        Sk_requestPath(),
+        {
+            t: "online",
+            a: "all",
+            query: q
+        },
+        function (data)
+        {
+            iconProgress($("#sidebarOnline").find(".loadOnlineSearchIcon"));
+            if (data.status === 200)
+            {
+                $("#sidebarOnline").find("ul").html(data.html);
+            }
+        }
+    );
+}
+// Get online users each minute
+setInterval(function()
+{
+    if ($('#sidebarOnline .inputTextContainer input[type="text"]').val() == "")
+    {
+        $.get(
+            Sk_requestPath(),
+            {
+                t: "online",
+                a: "new"
+            },
+            function (data)
+            {
+                if (data.status == 200)
+                {
+                    $.each(data.ids, function(i, val)
+                    {
+                        $("#online_" + val).remove();
+                    });
+
+                    $("#sidebarOnline").find("ul").prepend(data.html);
+
+                    $.each(data.offline_ids, function(i, val)
+                    {
+                        $("#online_" + val).find("em").attr("data-time-short", new Date().getTime()/1000);
+                    });
+                }
+            }
+        );
+    }
+}, 30000); // 30 seconds
+$(document).on("click", "#onlineLauncherNav", function(){
+    if ($(window).width() < 1281)
+    {
+        $("#sidebarOnline").slideToggle(500, function(){
+            if ($("#sidebarOnline").css("display") === "none")
+                $(document.body).css("overflow-y", "scroll");
+            else
+                $(document.body).css("overflow-y", "hidden");
+        });
+    }
+});
+$(window).resize(function(){
+    if ($(window).width() > 1280)
+    {
+        $("#sidebarOnline").show();
+        $(document.body).css("overflow-y", "scroll");
+    }
+});
+// Send the initial request to display all friends on sidebar
+Sk_searchOnline("");
+</script>

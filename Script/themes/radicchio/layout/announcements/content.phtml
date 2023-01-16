@@ -1,0 +1,27 @@
+<div class="announcement-container">
+    <div class="announcement-header">
+        <div class="floatLeft">
+            {{ANNOUNCEMENT_TITLE}}
+        </div>
+
+        <div class="floatRight">
+            <a onclick="javascript:closeAnnouncements({{ANNOUNCEMENT_ID}});">
+                <i class="fa fa-times-circle" title="@close@"></i>
+            </a>
+        </div>
+
+        <div class="floatClear"></div>
+    </div>
+
+    <div class="announcementJar">
+        <div class="text">
+            {{ANNOUNCEMENT_TEXT}}
+        </div>
+    </div>
+</div>
+<script>
+function closeAnnouncements(aid) {
+    $('.announcement-container').remove();
+    $.get(Sk_requestPath(), {t: 'announcements', a: 'read', announcement_id: aid});
+}
+</script>

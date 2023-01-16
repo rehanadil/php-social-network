@@ -1,0 +1,3 @@
+<?php
+  $bannedIps = array();
+  ?>

@@ -1,0 +1,142 @@
+<div class="page-margin"></div>
+
+{{PAGE_NAVIGATION}}
+
+<div class="floatLeft span52">
+    <form class="create-group-form" method="post">
+        <div class="form-container">
+            <div class="multiTabJar">
+                <div class="boldTab">
+                    <i class="ski ski-group"></i>
+                    @group_create_label@
+                </div>
+            </div>
+
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">@group_name_label@:</label>
+                
+                <div class="input floatLeft span70">
+                    <input type="text" value="@group_name_textarea_label@" placeholder="@group_name_textarea_label@" data-placeholder="@group_name_textarea_label@" onkeyup="SK_generateUsername(this.value);" data-copy-to=".group-name-input">
+                    
+                    <input class="group-name-input" type="hidden" name="group_name">
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">@username_label@:</label>
+                
+                <div class="input floatLeft span70">
+                    <input class="username-textinput" type="text" value="@group_username_textarea_label@" placeholder="@group_username_textarea_label@" data-placeholder="@group_username_textarea_label@" autocomplete="off" data-copy-to=".group-username-input" onkeyup="SK_checkUsername(this.value,0,'.check-username-result',true);">
+                    
+                    <input class="group-username-input" type="hidden" name="group_username">
+                    
+                    <div class="check-username-result"></div>
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">
+                    @about_label@:
+                </label>
+                
+                <div class="input floatLeft span70">
+                    <textarea valign="top" name="group_about" placeholder="@group_description_textarea_label@" data-placeholder="@group_description_textarea_label@">@group_description_textarea_label@</textarea>
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">
+                    @privacy_label@:
+                </label>
+                
+                <div class="input floatLeft span70">
+                    <div style="margin-bottom: 15px;">
+                        <input valign="top" type="radio" name="group_privacy" value="open" style="width:18px;display:inline-block;vertical-align:middle;">
+
+                        <label><i class="fa fa-globe"></i> @open_group@</label>
+
+                        <div class="short-descr">
+                            @open_group_description@.
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <input valign="top" type="radio" name="group_privacy" value="closed" checked style="width:18px;display:inline-block;vertical-align:middle;">
+
+                        <label><i class="fa fa-lock"></i> @closed_group@</label>
+
+                        <div class="short-descr">
+                            @closed_group_description@.
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <input valign="top" type="radio" name="group_privacy" value="secret" style="width:18px;display:inline-block;vertical-align:middle;">
+
+                        <label><i class="fa fa-shield"></i> @secret_group@</label>
+                        
+                        <div class="short-descr">
+                            @secret_group_description@.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <button id="createGroupBtn" class="active">
+                    <i id="createGroupBtnIcon" class="fa fa-check hide"></i>
+                    @group_create_label@
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="floatRight span30">
+    {{USER_SUGGESTIONS}}
+
+    {{PAGE_SUGGESTIONS}}
+
+    {{GROUP_SUGGESTIONS}}
+    
+    {{TRENDINGS}}
+    
+    {{EVENT_BAR}}
+    
+    {{CONFIG_AD_PLACE_HOME}}
+
+    {{SIDEBAR_FOOTER}}
+</div>
+
+<div class="floatClear"></div>
+
+<script>
+$(function(){
+    autosize($("textarea"));
+    $('form.create-group-form').ajaxForm({
+        url: Sk_requestPath() + '?t=group&a=create',
+        
+        beforeSend: function()
+        {
+            iconProgress($("#createGroupBtnIcon"));
+        },
+        
+        success: function(responseText)
+        {
+            iconProgress($("#createGroupBtnIcon"));
+            if (responseText.status === 200)
+            {
+                window.location = responseText.url;
+            }
+        }
+    });
+});
+</script>

@@ -1,0 +1,23 @@
+<div class="userColumn page-admin-{{LIST_ADMIN_ID}}" data-role="{{LIST_ADMIN_ROLE}}">
+    <div class="floatLeft imageJar">
+        <a href="{{LIST_ADMIN_URL}}" data-href="?a=timeline&id={{LIST_ADMIN_USERNAME}}">
+            <img class="borderRadius100" src="{{LIST_ADMIN_THUMBNAIL_URL}}" alt="{{LIST_ADMIN_NAME}}">
+        </a>
+    </div>
+
+    <div class="floatLeft textJar">
+        <strong>
+            <a href="{{LIST_ADMIN_URL}}" data-href="?a=timeline&id={{LIST_ADMIN_USERNAME}}">{{LIST_ADMIN_NAME}}</a>
+        </strong>
+
+        <small>{{LIST_ADMIN_ROLE}}</small>
+    </div>
+
+    <div class="floatRight buttonJar">
+        <a class="makeAdmin" onclick="SK_changeAdminRole({{TIMELINE_ID}},{{LIST_ADMIN_ID}},'admin');">@make_admin@</a>
+        <a class="makeEditor" onclick="SK_changeAdminRole({{TIMELINE_ID}},{{LIST_ADMIN_ID}},'editor');">@make_editor@</a>
+        <a onclick="SK_removeAdmin({{TIMELINE_ID}},{{LIST_ADMIN_ID}});">@remove@</a>
+    </div>
+
+    <div class="floatClear"></div>
+</div>

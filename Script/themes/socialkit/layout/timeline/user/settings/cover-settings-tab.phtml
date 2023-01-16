@@ -1,0 +1,24 @@
+<form class="update-timeline-form" method="post" enctype="multipart/form-data" action="{{CONFIG_SITE_URL}}/request.php?t=cover&a=post_upload">
+    <div class="form-container">
+        <div class="multiTabJar">
+            <div class="boldTab">
+                <i class="fa fa-image"></i>
+                @change_cover_label@
+            </div>
+        </div>
+
+        <div align="center">
+            <img src="{{USER_COVER_URL}}" width="100%" height="auto" alt="{{USER_NAME}}">
+        </div>
+
+        <div class="form-input-wrapper">
+            <input type="file" name="image" accept="image/jpeg,image/png" style="width: 85%;">
+
+            <button class="active">
+                @upload_button@
+            </button>
+        </div>
+    </div>
+
+    <input name="timeline_id" value="{{USER_ID}}" type="hidden">
+</form>

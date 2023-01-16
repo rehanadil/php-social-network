@@ -1,0 +1,41 @@
+<script>
+$(document).on("click", "[data-href]", function(event){
+    event.preventDefault();
+    pageAnchor = $(this);
+    historyState++;
+    $.ajax({
+        type: 'GET',
+        url: Sk_pagePath() + pageAnchor.attr("data-href"),
+        dataType: "json",
+        beforeSend: function()
+        {
+            $("#pageLoadingBar").show().width(50+30*Math.random()+"%");
+        },
+        success: function(result)
+        {
+            if (result.status == 200)
+            {
+                if (typeof(result.url) !== "undefined")
+                {
+                    window.location = result.url;
+                }
+                else
+                {
+                    window.history.pushState({state:historyState}, result.title, pageAnchor.attr("href"));
+                    document.title = result.title;
+                    $("#pageContainer").html(result.html);
+                }
+            }
+            $("#pageLoadingBar").width("101%").delay(200).fadeOut(400,function(){
+                $(this).width(0);
+            });
+            window.scrollTo(0, 0);
+        }
+    });
+});
+window.onpopstate = function(event) {
+    $(window).unbind("popstate");
+    window.location.href = document.location;
+    return;
+}
+</script>

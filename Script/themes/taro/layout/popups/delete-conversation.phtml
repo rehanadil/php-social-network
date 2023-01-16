@@ -1,0 +1,56 @@
+<div id="delete-conversation-{{RECEIVER_ID}}" class="popupOverlay">
+    <div class="popupContainer">
+        <div class="popupHeader">
+            <div class="floatLeft">
+                <i class="fa fa-trash-o"></i> @delete_conversation@
+            </div>
+
+            <div class="floatRight">
+                <i class="fa fa-times-circle" onclick="Sk_popupClear();"></i>
+            </div>
+
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="popupContent">
+            @delete_conversation_confirmation@
+        </div>
+
+        <div class="popupButtons">
+            <button class="btn btnBlue" onclick="Sk_popupClear();">@cancel@</button>
+            <button class="btn btnRed" onclick="Sk_deleteConversation({{RECEIVER_ID}});"><i class="fa fa-trash"></i> @delete_conversation@</button>
+        </div>
+    </div>
+</div>
+<script>
+function Sk_deleteConversation(cid)
+{
+    $.ajax({
+        type: 'POST',
+        url: Sk_requestPath() + '?t=message&a=delete',
+        data: {
+            id: cid,
+            conversation: true
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            $("#delete-conversation-{{RECEIVER_ID}}").find(".btnRed").attr("disabled", true);
+            setTimeout(function(){
+                Sk_popupClear();
+            }, 100);
+        },
+        success: function(result)
+        {
+            if (result.status == 200)
+            {
+                $('#receiver-' + cid).slideUp(function(){
+                    $(this).remove();
+                    $(".messagingPeopleJar").find(".userColumn:first").click();
+                });
+            }
+        }
+    });
+}
+$("#delete-conversation-{{RECEIVER_ID}}").fadeIn('fast');
+</script>

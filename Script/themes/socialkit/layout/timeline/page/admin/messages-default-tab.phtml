@@ -1,0 +1,79 @@
+<div id="messagingPeopleContainer" class="listJar">
+    <div class="multiTabJar">
+        <div class="boldTab">
+            <i class="fa fa-comments"></i>
+            @messages_label@
+        </div>
+    </div>
+
+    <div class="messagingPeopleJar" data-query=""></div>
+    <div class="viewMoreJar cursorPointer" onclick="Sk_viewMoreRecipients();">
+        <i class="fa fa-caret-down"></i> View more
+    </div>
+</div>
+<script>
+var typingTimer;
+var recipientStart = 1;
+var recipientLimit = 10;
+var messagingPeopleContainer = $("#messagingPeopleContainer");
+var viewMoreRecipients = messagingPeopleContainer.find(".viewMoreJar");
+var messagingPeopleJar = $(".messagingPeopleJar");
+var receiverRefreshInterval = 7000;
+$(function()
+{
+    Sk_refreshReceivers();
+    setTimeout(function(){
+        Sk_refreshReceivers();
+    }, receiverRefreshInterval);
+});
+function Sk_refreshReceivers()
+{
+    $.get(
+        Sk_requestPath(),
+        {
+            t: 'search',
+            a: 'recipients',
+            timeline_id: {{TIMELINE_ID}},
+            limit: (recipientLimit * recipientStart)
+        },
+        function (data)
+        {
+            if (data.status == 200)
+            {
+                messagingPeopleJar.html(data.html);
+                updateCountAlert();
+                $(".userColumn").each(function(){
+                	$this = $(this);
+                	$this.removeAttr("onclick").attr("data-href", "?a=timeline&b=settings&id=asfasf&c=messages&recipient_id=" + $this.attr("data-username"));
+                });
+            }
+        }
+    );
+}
+function Sk_viewMoreRecipients()
+{
+    query = messagingPeopleJar.attr('data-query');
+    $.get(
+        Sk_requestPath(),
+        {
+            t: 'search',
+            a: 'recipients',
+            timeline_id: {{TIMELINE_ID}},
+            limit: recipientLimit,
+            start: recipientStart
+        },
+        function (data)
+        {
+            if (data.status === 200)
+            {
+                messagingPeopleJar.append(data.html);
+            }
+            else
+            {
+                viewMoreRecipients.slideUp('fast');
+            }
+        }
+    );
+    recipientStart += 1;
+}
+</script>

@@ -1,0 +1,21 @@
+<div class="userColumn follower-id-{{ADD_MEMBER_USER_ID}}" data-user-id="{{ADD_MEMBER_USER_ID}}">
+    <div class="floatLeft imageJar">
+        <a href="{{ADD_MEMBER_USER_URL}}" data-href="?a=timeline&id={{ADD_MEMBER_USER_USERNAME}}">
+            <img class="borderRadius100" src="{{ADD_MEMBER_USER_THUMBNAIL_URL}}" alt="{{ADD_MEMBER_USER_NAME}}">
+        </a>
+    </div>
+
+    <div class="floatLeft textJar">
+        <strong>
+            <a href="{{ADD_MEMBER_USER_URL}}" data-href="?a=timeline&id={{ADD_MEMBER_USER_USERNAME}}">{{ADD_MEMBER_USER_NAME}}</a>
+        </strong>
+
+        <small>{{ADD_MEMBER_USER_INFO}}</small>
+    </div>
+
+    <div class="floatRight buttonJar">
+        <a class="addBtn" onclick="SK_addGroupMember({{TIMELINE_ID}},{{ADD_MEMBER_USER_ID}});">@add@</a>
+    </div>
+
+    <div class="floatClear"></div>
+</div>

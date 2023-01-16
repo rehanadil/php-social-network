@@ -1,0 +1,190 @@
+body {
+	background: #eeeeee;
+	margin: 0;
+	padding: 0 0 35px;
+	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-size: 15px;
+}
+.floatLeft {
+	float: left;
+	width: 23%;
+	text-align: left;
+}
+.floatRight {
+	float: right;
+	width: 75%;
+	text-align: left;
+}
+.floatClear {
+	clear: both;
+}
+
+.font13 {
+	font-size: 13px;
+}
+.font14 {
+	font-size: 14px;
+}
+.font15 {
+	font-size: 15px;
+}
+.font16 {
+	font-size: 16px;
+}
+
+hr {
+    background-color: #efefef;
+    height: 1px;
+    border: 0;
+}
+
+.installerContainer {
+	margin: 25px auto 0;
+	max-width: 920px;
+}
+.installMenu {
+	border-radius: 4px;
+	color: #515151;
+	background: white;
+	box-shadow: 0 0 5px rgba(99, 114, 144, 0.4);
+	padding: 5px 0;
+}
+.installMenu .menuLi {
+	padding: 12px 8px;
+}
+.installMenu .menuLi.current {
+	background: #5687a5;
+	color: white;
+	border-color: #5687a5;
+}
+
+.installContentContainer {
+	background: white;
+	box-shadow: 0 0 5px rgba(99, 114, 144, 0.4);
+}
+.installContentContainer .header {
+	display: block;
+    background: inherit;
+    font-size: 22px;
+    color: #515151;
+    padding: 11px 8px 8px;
+    border-width: 0 0 3px;
+    border-style: solid;
+    border-color: #5687a5;
+    border-radius: 5px 5px 0 0;
+}
+.installContent {
+	padding: 0 10px 8px;
+	color: #515151;
+}
+.line {
+	margin: 15px 0;
+}
+.para {
+	margin-top: 30px;
+}
+.para div {
+	margin: 4px 0;
+}
+
+.requirementTable {
+	width: 100%;
+    margin-top: 5px;
+}
+.requirementTable th {
+	border-bottom: 2px solid #e5e6e8;
+}
+.requirementTable th,
+.requirementTable td {
+	padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+}
+
+.formInputContent {
+    display: block;
+    padding: 15px 8px;
+}
+.formInputContent label {
+    padding: 10px 15px 5px 0;
+    text-align: right;
+    font-weight: bold;
+    width: 22%;
+}
+.formInputContent label i {
+    color: #aaa;
+    font-size: 13px
+}
+.formInputContent .input {
+    width: 70%;
+}
+.formInputContent small {
+	display: block;
+    color: #898f9c;
+    font-size: 13px;
+    margin: 5px 0 0 0
+}
+.formInputContent input,
+.formInputContent textarea,
+.formInputContent select {
+    margin: 0;
+    border-radius: 2px;
+    padding: 10px 7px;
+    background: white;
+    border: 1px solid rgba(99, 114, 144, 0.2);
+    box-shadow: 0 0 4px rgba(99, 114, 144, 0.2);
+    transition: all 200ms ease-in-out;
+}
+.formInputContent input[type="text"]:focus,
+.formInputContent input[type="password"]:focus,
+.formInputContent textarea:focus,
+.formInputContent select:focus {
+    border-color: #98b2e6;
+    box-shadow: 0 0 5px rgba(93, 129, 202, 0.7);
+}
+.formInputContent input,
+.formInputContent select,
+.formInputContent textarea {
+    width: 96%
+}
+.formInputContent .note {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.errorThrows {
+	background: #d46b6b;
+	color: white;
+	border-radius: 4px;
+}
+.errorThrows li {
+	padding: 8px;
+}
+
+.btn {
+	background: #5687a5;
+    color: white;
+    text-align: center;
+    font-size: 13px;
+    padding: 8px;
+    border: 0;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    cursor: pointer;
+}
+.btn:hover {
+	text-decoration: none;
+}
+.btn:disabled,
+.btn[disabled] {
+	background: #e6e6e6;
+    color: #adadad;
+	cursor: default;
+}
+.btn.success {
+	background: #68bb68;
+	padding: 12px;
+	text-transform: uppercase;
+	font-weight: bold;
+}

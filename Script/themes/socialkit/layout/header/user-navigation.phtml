@@ -1,0 +1,33 @@
+<a id="homeNav" class="mainHeaderNav floatLeft" href="{{HOME_PAGE_URL}}" title="@home_label@" data-href="?a=home">
+    <i class="icon fa fa-home"></i>
+</a>
+
+<a id="notificationNav" class="mainHeaderNav floatLeft" title="@notification_label@" onclick="Sk_openNotifications();">
+    <i class="icon fa fa-globe"></i>
+    <span class="newAlert"></span>
+</a>
+
+<a id="messageNav" class="mainHeaderNav floatLeft" title="@message_label@" onclick="Sk_openMessages();">
+    <i class="icon fa fa-comments"></i>
+    <span class="newAlert"></span>
+</a>
+
+<a id="followersNav" class="mainHeaderNav floatLeft" href="{{FOLLOWING_PAGE_URL}}" title="{{FOLLOWING_LABEL}}" data-href="{{FOLLOWING_PAGE_URL_SMOOTHLESS}}">
+    <i class="icon ski-friends"></i>
+    <span class="newAlert"></span>
+</a>
+
+<div id="headerUserDropdown" class="floatLeft cursorPointer">
+    <a id="headerUserLink" href="{{USER_URL}}" data-href="?a=timeline&id={{USER_USERNAME}}">
+        <img id="headerUserImage" src="{{USER_THUMBNAIL_URL}}" width="24px" alt="{{USER_NAME}}">
+        <strong id="headerUserName">{{USER_FIRST_NAME}}</strong>
+    </a>
+    <i class="fa fa-caret-down icon"></i>
+    <span class="dropdown-overlay-wrap" onclick="SK_moreToggle();"></span>
+</div>
+
+<a id="onlineLauncherNav" class="mainHeaderNav floatLeft">
+    <i class="icon fa fa-address-book"></i>
+</a>
+
+<div class="floatClear"></div>

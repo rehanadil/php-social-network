@@ -1,0 +1,74 @@
+<div id="story_{{STORY_ID}}" class="singleStoryJar story_{{STORY_ID}}" data-story-id="{{STORY_ID}}" data-boosted="{{STORY_BOOSTED}}">
+    <div class="publisherJar">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="48px" align="left" valign="top">
+                <a href="{{STORY_TIMELINE_URL}}" data-href="?a=timeline&id={{STORY_TIMELINE_USERNAME}}">
+                    <img class="avatar" src="{{STORY_TIMELINE_THUMBNAIL_URL}}" width="40px" height="40px" alt="{{STORY_TIMELINE_NAME}}">
+                </a>
+            </td>
+            <td align="left" valign="top">
+                {{STORY_TIMELINE_LINK}}
+                
+                {{STORY_RECIPIENT_HTML}}
+
+                {{STORY_ACTIVITY_TEXT}}
+
+                <div class="other-data">
+                    <span class="time-wrapper" data-time="{{STORY_TIME}}"></span>
+
+                     &#183; 
+
+                    {{STORY_PRIVACY_HTML}}
+                    
+                    {{STORY_LOCATION_HTML}}
+                </div>
+            </td>
+        </tr>
+        </table>
+    </div>
+
+    {{PINNED}}
+    
+    {{STORY_CONTROLS}}
+
+    {{STORY_ACTION_BUTTONS}}
+
+    {{STORY_TEXT_HTML}}
+
+    {{MEDIA_HTML}}
+    
+    <div class="activity-wrapper">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+                <td align="left" valign="middle">
+                    <span class="story-like-activity">
+                        {{STORY_LIKE_ACTIVITY}}
+                    </span><abbr class="space6">&#183;</abbr>
+                    
+                    <span class="story-comment-activity">
+                        {{STORY_COMMENT_ACTIVITY}}
+                    </span>
+                    
+                    <abbr class="space6">&#183;</abbr>
+                    
+                    <span class="story-share-activity">
+                        {{STORY_SHARE_ACTIVITY}}
+                    </span>
+                </td>
+                
+                {{VIA}}
+            </tr>
+        </table>
+    </div>
+    
+    <div class="comments-container">
+        {{VIEW_ALL_COMMENTS_HTML}}
+        
+        <div class="comments-wrapper">
+            {{COMMENTS}}
+        </div>
+        
+        {{COMMENT_PUBLISHER_BOX}}
+    </div>
+</div>

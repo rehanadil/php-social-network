@@ -1,0 +1,41 @@
+<div id="chat-{{RECEIVER_ID}}" class="chatContainer" data-receiver="{{RECEIVER_ID}}">
+    <div class="headerJar">
+        <div class="floatLeft">
+            <div class="offlineIcon">
+                <i class="fa fa-circle"></i>
+            </div>
+
+            <a class="receiverName" href="{{RECEIVER_URL}}">
+                {{RECEIVER_NAME}}
+            </a>
+        </div>
+
+        <div class="floatRight">
+            <a onclick="Sk_msgAudioCall({{RECEIVER_ID}});">
+                <i class="fa fa-phone loadAudioCallIcon" data-icon="phone"></i>
+            </a>
+
+            <a onclick="Sk_msgVideoCall({{RECEIVER_ID}});">
+                <i class="fa fa-video-camera loadVideoCallIcon" data-icon="video-camera"></i>
+            </a>
+
+            <a href="{{RECEIVER_MESSAGE_URL}}">
+                <i class="fa fa-expand"></i>
+            </a>
+
+            <a onclick="Sk_closeChat({{RECEIVER_ID}});">
+                <i class="fa fa-times" title="@close_chat@"></i>
+            </a>
+        </div>
+
+        <div class="floatClear"></div>
+    </div>
+
+    <div class="toggleJar">
+        <div class="msgsContainer">
+            {{MESSAGES_HTML}}
+        </div>
+
+        {{CHAT_TEXTAREA}}
+    </div>
+</div>

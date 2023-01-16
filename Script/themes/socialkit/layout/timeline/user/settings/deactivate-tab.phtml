@@ -1,0 +1,45 @@
+<form class="deactivate-timeline-form" method="post">
+    <div class="form-container">
+        <div class="multiTabJar">
+            <div class="boldTab">
+                <i class="fa fa-power-off"></i>
+                @deactivate_account_label@
+            </div>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label class="floatLeft">
+                @deactivate_account_confirm_message@
+            </label>
+
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="form-input-wrapper">
+            <button class="active">
+                <i id="deactivateIcon" class="fa fa-check hide"></i>
+                @deactivate_account_button@
+            </button>
+        </div>
+    </div>
+</form>
+
+<script>
+$(function () {
+    $('form.deactivate-timeline-form').ajaxForm({
+        url: Sk_requestPath()+'?t=user&a=deactivate',
+
+        beforeSend: function(){
+            iconProgress($("#deactivateIcon"));
+        },
+
+        success: function(responseText)
+        {
+            if (responseText.status === 200)
+            {
+                window.location = responseText.url;
+            }
+        }
+    });
+});
+</script>

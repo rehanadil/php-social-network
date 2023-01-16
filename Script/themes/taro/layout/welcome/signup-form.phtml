@@ -1,0 +1,146 @@
+<form id="signupForm" method="post">
+    <div class="formInfo"></div>
+
+    <div id="regUsernameInput" class="welcomeInput">
+      <i class="ski ski-user"></i>
+      <input id="signupId" type="text" name="username" placeholder="@username_label@" autocomplete="off" required>
+    </div>
+
+    <div id="regNameInput" class="welcomeInput">
+      <i class="ski ski-user-plus"></i>
+      <input id="signupName" type="text" name="name" placeholder="@fullname_label@" autocomplete="off" required>
+    </div>
+
+    <div id="regEmailInput" class="welcomeInput">
+      <i class="fa fa-inbox"></i>
+      <input id="signupEmail" type="text" name="email" placeholder="@email_label@" autocomplete="off" required>
+    </div>
+
+    <div id="regPasswordInput" class="welcomeInput">
+      <i class="fa fa-lock"></i>
+      <input id="signupPassword" type="password" name="password" placeholder="@password_label@" autocomplete="off" required>
+    </div>
+
+    <div id="regGenderInput" class="welcomeInput">
+      <label class="female">
+        <input type="radio" name="gender" value="female" checked>
+        <div class="title"><i class="fa fa-female"></i> @gender_female_label@</div>
+      </label>
+
+      <label class="male">
+        <input type="radio" name="gender" value="male">
+        <div class="title"><i class="fa fa-male"></i> @gender_male_label@</div>
+      </label>
+
+      <div class="floatClear"></div>
+    </div>
+
+    {{SIGNUP_BIRTHDAY_INPUT}}
+
+    {{SIGNUP_CAPTCHA_INPUT}}
+
+    <button id="signupBtn"><i id="signupBtnIcon" class="fa fa-pencil-square" data-icon="pencil-square"></i> @sign_up_label@</button>
+
+    <p class="message">@already_registered@? <a data-expand="loginForm">@log_in@</a></p>
+</form>
+<script>
+var isSignupable = true;
+
+$("#signupBtn").click(function(event){
+  event.preventDefault();
+  isSignupable = true;
+
+  $("#signupForm input").each(function(){
+    if ($(this).val() === "")
+    {
+      isSignupable = false;
+    }
+  });
+
+  if (!isSignupable)
+  {
+    $("#signupForm .formInfo").hide().removeClass("success").addClass("error").html('<i class="fa fa-info-circle"></i> @error_empty_registration@').fadeIn('fast');
+  }
+  else if (!isCaptchaFilled)
+  {
+    $("#signupForm .formInfo").hide().removeClass("success").addClass("error").html('<i class="fa fa-info-circle"></i> @captcha_not_filled@').fadeIn('fast');
+  }
+
+  if (isSignupable && isCaptchaFilled)
+  {
+    $("#signupForm").ajaxSubmit({
+      url: Sk_requestPath() + "?t=register",
+      
+      beforeSend: function()
+      {
+        iconProgress($("#signupBtnIcon"));
+        $("#signupForm input,button").attr("disabled", true);
+      },
+          
+      success: function(responseText)
+      {
+        iconProgress($("#signupBtnIcon"));
+        if (responseText.status === 200)
+        {
+          $("#signupBtn").removeClass("error").addClass("success").html('<i class="fa fa-check-circle"></i> @signup_successful@').attr("disabled", false);
+          setTimeout(function(){
+            window.location = responseText.redirect_url;
+          }, 500);
+        }
+        else
+        {
+          if (responseText.error_type === "INVALID_EMAIL")
+          {
+            $("#signupForm .formInfo").hide().removeClass("success").addClass("error").html('<i class="fa fa-info-circle"></i> @invalid_email_address@').fadeIn('fast');
+            $("#signupBtn").html('<i class="fa fa-info-circle"></i> @signup_failed@');
+            setTimeout(function(){
+              $("#signupBtn").html('<i id="signupBtnIcon" class="fa fa-sign-in"></i> @sign_up_label@').attr("disabled", false);
+              $("#signupForm input,#signupForm button").attr("disabled", false);
+            }, 1000);
+          }
+          else if (responseText.error_type === "INVALID_USERNAME")
+          {
+            $("#signupForm .formInfo").hide().removeClass("success").addClass("error").html('<i class="fa fa-info-circle"></i> @username_requirements@').fadeIn('fast');
+            $("#signupBtn").html('<i class="fa fa-info-circle"></i> @signup_failed@');
+            setTimeout(function(){
+              $("#signupBtn").html('<i id="signupBtnIcon" class="fa fa-sign-in"></i> @sign_up_label@').attr("disabled", false);
+              $("#signupForm input,#signupForm button").attr("disabled", false);
+            }, 1000);
+          }
+          else if (responseText.error_type === "EMAIL_EXISTS")
+          {
+            $("#signupForm .formInfo").hide().removeClass("success").addClass("error").html('<i class="fa fa-info-circle"></i> @error_verify_email@').fadeIn('fast');
+            $("#signupBtn").html('<i class="fa fa-info-circle"></i> @signup_failed@');
+            setTimeout(function(){
+              $("#signupBtn").html('<i id="signupBtnIcon" class="fa fa-sign-in"></i> @sign_up_label@').attr("disabled", false);
+              $("#signupForm input,#signupForm button").attr("disabled", false);
+            }, 1000);
+          }
+          else if (responseText.error_type === "USERNAME_EXISTS")
+          {
+            $("#signupForm .formInfo").hide().removeClass("success").addClass("error").html('<i class="fa fa-info-circle"></i> @username_not_available@').fadeIn('fast');
+            $("#signupBtn").html('<i class="fa fa-info-circle"></i> @signup_failed@');
+            setTimeout(function(){
+              $("#signupBtn").html('<i id="signupBtnIcon" class="fa fa-sign-in"></i> @sign_up_label@').attr("disabled", false);
+              $("#signupForm input,#signupForm button").attr("disabled", false);
+            }, 1000);
+          }
+          else if (responseText.error_type === "VERIFY_EMAIL")
+          {
+            $("#signupForm .formInfo").hide().removeClass("success").addClass("success").html('<i class="fa fa-check-circle"></i> @verification_email_sent@').fadeIn('fast');
+          }
+          else if (responseText.error_type === "BAD_CAPTCHA")
+          {
+            $("#signupForm .formInfo").hide().removeClass("success").addClass("error").html('<i class="fa fa-info-circle"></i> @captcha_not_filled@').fadeIn('fast');
+            $("#signupBtn").html('<i class="fa fa-info-circle"></i> @signup_failed@');
+            setTimeout(function(){
+              $("#signupBtn").html('<i id="signupBtnIcon" class="fa fa-sign-in"></i> @sign_up_label@').attr("disabled", false);
+              $("#signupForm input,#signupForm button").attr("disabled", false);
+            }, 1000);
+          }
+        }
+      }
+    });
+  }
+});
+</script>

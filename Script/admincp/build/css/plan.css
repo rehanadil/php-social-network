@@ -1,0 +1,132 @@
+.planDisplayContainer {
+	display: inline-block;
+	vertical-align: top;
+	width: 304px;
+}
+.planDisplayJar {
+	background-color: #989eaf;
+	margin: 0 8px 15px;
+	border-radius: 8px;
+	text-align: center;
+	color: white;
+	border: 1px solid rgba(0, 0, 0, 0.05);
+}
+.planDisplayJar .nameJar {
+	font-size: 25px;
+	padding: 15px 0;
+}
+.planDisplayJar .nameJar img.icon {
+	width: 28px;
+	display: inline-block;
+	margin-bottom: 3px;
+}
+.planDisplayJar .nameJar img[data-default-icon="1"] {
+	-webkit-filter: invert(100%);
+	filter: invert(100%);
+}
+.planDisplayJar .priceJar {
+	color: #989eaf;
+	display: inline-block;
+	width: 65%;
+	background: white;
+	border-radius: 5px;
+	padding: 10px;
+	margin-top: 7px;
+}
+.planDisplayJar .priceJar .price {
+	color: inherit !important;
+}
+.planDisplayJar .priceJar .currency {
+	font-size: 21px;
+	margin-right: -3px
+}
+.planDisplayJar .priceJar .price {
+	font-size: 23px;
+}
+.planDisplayJar .priceJar .cycle {
+	font-size: 16px;
+	margin-left: -1px
+}
+.planDisplayJar .featureJar {
+	padding: 20px 0;
+	text-align: left;
+	display: inline-block;
+	list-style: none;
+}
+.planDisplayJar .featureJar .feature {
+	color: rgba(255, 255, 255, 0.4);
+	font-size: 16px;
+	padding: 10px 0 0 0;
+	text-decoration: line-through;
+}
+.planDisplayJar .featureJar .feature i {
+	visibility: hidden;
+	font-size: 13px;
+}
+.planDisplayJar .featureJar .feature[data-available="1"] {
+	text-decoration: none;
+	color: white !important;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+.planDisplayJar .featureJar .feature[data-available="1"] i {
+	visibility: visible;
+}
+.planDisplayJar .buyJar {
+	position: relative;
+	padding: 5px 0 15px;
+	font-size: 23px;
+	border-radius: 0 0 8px 8px;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+.planDisplayJar .buyJar .dropdownJar {
+	position: absolute;
+    left: 15%;
+    right: 16%;
+    bottom: 93%;
+    border-radius: 15px;
+	overflow: hidden;
+	display: none;
+}
+.planDisplayJar .buyJar .dropdownJar a {
+	background: white;
+	display: block;
+    font-size: 13px;
+    padding: 10px;
+}
+.planDisplayJar .buyJar .dropdownJar a:hover {
+	background: #eeeeee;
+}
+.planDisplayJar .buyJar .dropdownJar a:first-of-type:hover {
+	border-radius: 15px 15px 0 0;
+}
+.planDisplayJar .buyJar .dropdownJar a:last-of-type {
+	border-radius: 0 0 15px 15px;
+}
+.planDisplayJar .buyJar .dropdownJar a:last-of-type:hover {
+	background: #da5858;
+	color: white;
+}
+.planDisplayJar .buyJar .dropdownJar hr {
+	margin: 0;
+}
+.planDisplayJar .buyJar button {
+	display: inline-block;
+	width: 75%;
+	font-size: 20px !important;
+	background: white;
+	color: #989eaf;
+	border: 1px solid rgba(0, 0, 0, 0.05);
+	border-radius: 15px;
+	padding: 10px 0;
+}
+.planDisplayJar[data-current-plan="1"] .buyJar button {
+	background: rgba(0, 0, 0, 0.1) !important;
+	color: white !important;
+	cursor: auto;
+}
+@media only screen and (max-device-width:1190px),
+only screen and (max-width:1190px) {
+	.planDisplayContainer {
+		width: 100%;
+	}
+}

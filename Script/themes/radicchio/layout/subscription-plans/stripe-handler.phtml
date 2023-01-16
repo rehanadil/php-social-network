@@ -1,0 +1,35 @@
+<script>
+// Stripe Handler
+stripeHandler = StripeCheckout.configure({
+    key: '{{STRIPE_KEY}}',
+    name: '{{PLAN_NAME}}',
+    description: '',
+    image: '{{PLAN_ICON}}',
+    amount: {{PLAN_PRICE}},
+    locale: 'auto',
+    token: function(token)
+    {
+        $.post(
+            Sk_requestPath() + '?t=subscription_plans&a=stripe_upgrade_new',
+            {
+                token_id: token.id,
+                token_email: token.email,
+                card_last4: token.card.last4,
+                plan_id: {{PLAN_ID}}
+            },
+            function (data)
+            {
+                if (data.status == 200)
+                {
+                    window.location = data.url;
+                }
+            }
+        );
+    }
+});
+
+// Close Checkout on page navigation:
+window.addEventListener('popstate', function() {
+  stripeHandler.close();
+});
+</script>

@@ -1,0 +1,88 @@
+<div class="page-margin"></div>
+
+{{PAGE_NAVIGATION}}
+
+<div class="floatLeft span52">
+	<form class="s-album-container" method="post" enctype="multipart/form-data">
+		<div class="multiTabJar">
+			<div class="boldTab">
+				<i class="fa fa-folder-open"></i>
+				@create_an_album@
+			</div>
+		</div>
+
+		<div class="album-field-wrap">
+			<div class="album-label">@name_of_album_label@:</div>
+			<input type="text" name="album_name" placeholder="@name_of_album@">
+		</div>
+
+		<div class="album-field-wrap">
+			<div class="album-label">@description_of_album@:</div>
+			<textarea name="album_descr" placeholder="@description_of_album@"></textarea>
+		</div>
+
+		<div class="album-field-wrap">
+			<div class="album-label">@upload_photos@:</div>
+			<input type="file" name="photos[]" accept="image/jpeg,image/png,image/gif" multiple>
+		</div>
+
+		<div class="album-field-wrap">
+			<button class="active" name="album_btn">
+				<i id="createAlbumIcon" class="fa fa-plus hide"></i>
+                @album_create_label@
+            </button>
+		</div>
+	</form>
+
+	<div class="page-margin"></div>
+</div>
+
+<div class="floatRight span30">
+	{{USER_SUGGESTIONS}}
+
+	{{PAGE_SUGGESTIONS}}
+
+	{{GROUP_SUGGESTIONS}}
+
+    {{TRENDINGS}}
+
+    {{CONFIG_AD_PLACE_TIMELINE}}
+
+    {{SIDEBAR_FOOTER}}
+</div>
+
+<div class="floatClear"></div>
+
+<script>
+$(function (){
+    $('form.s-album-container').ajaxForm({
+        url: Sk_requestPath() + '?t=album&a=create',
+        
+        beforeSend: function() {
+            var formButton = $('form.s-album-container').find('button');
+            iconProgress($("#createAlbumIcon"));
+        },
+
+        uploadProgress: function(event, position, total, percentComplete) {
+            var percentVal = percentComplete + '%';
+            var formButton = $('form.s-album-container').find('button');
+
+            formButton.html('<i id="createAlbumIcon" class="fa fa-spinner fa-spin"></i> @uploading@... ' + percentVal);
+
+            if (percentComplete == 100) {
+                formButton.html('<i id="createAlbumIcon" class="fa fa-spinner fa-spin"></i> @please_wait@...');
+            }
+        },
+        
+        success: function(responseText) {
+            var formButton = $('form.s-album-container').find('button');
+
+            if (responseText.status == 200) {
+                window.location = responseText.url;
+            } else {
+                formButton.html('<i id="createAlbumIcon" class="fa fa-plus hide"></i> @album_create_label@');
+            }
+        }
+    });
+});
+</script>

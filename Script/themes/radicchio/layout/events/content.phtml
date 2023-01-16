@@ -1,0 +1,71 @@
+<div class="page-margin"></div>
+
+{{PAGE_NAVIGATION}}
+
+<div class="floatLeft span50">
+    <div class="eventList listJar">
+        <div class="eventListHeader">
+            {{EVENTS_HEADER}}
+        </div>
+
+        <div class="listEvents">
+            {{LIST_EVENTS}}
+        </div>
+
+        <a onclick="viewMoreEvents();" class="infoColumn lightColor viewMore" align="center">
+            @view_more@
+        </a>
+    </div>
+</div>
+
+<div class="floatRight span30">
+    {{USER_SUGGESTIONS}}
+
+    {{PAGE_SUGGESTIONS}}
+
+    {{GROUP_SUGGESTIONS}}
+
+    {{TRENDINGS}}
+    
+    {{CONFIG_AD_PLACE_TIMELINE}}
+
+    {{SIDEBAR_FOOTER}}
+</div>
+
+<div class="floatClear"></div>
+
+<script>
+function viewMoreEvents() {
+    afterId = $(".userColumn:last-of-type").attr('data-event-id');
+    type = $(".eventsListWrapper").find(".eventListHeader").find(".active").attr('data-type');
+    keepViewmore = false;
+    
+    $.get(
+        Sk_requestPath(),
+        {
+            t: "events",
+            a: "list",
+            after_id: afterId,
+            type: type
+        },
+        function(data)
+        {
+            if (data.status == 200)
+            {
+                if (data.html.length > 0)
+                {
+                    $(".listEvents").append(data.html);
+                    keepViewmore = true;
+                }
+            }
+        }
+    );
+
+    if (!keepViewmore)
+    {
+        $(".eventList .viewMore").slideUp(function(){
+            $(this).hide();
+        });
+    }
+}
+</script>

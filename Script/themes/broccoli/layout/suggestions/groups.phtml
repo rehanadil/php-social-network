@@ -1,0 +1,48 @@
+<div class="listJar groupSuggestionsJar">
+    <div class="headerJar multiTabJar">
+        <div class="floatLeft">
+            <div class="semiBoldTab lightColor">
+                <i class="ski-group"></i> @group_join_suggestions_label@
+            </div>
+        </div>
+
+        <div class="floatRight">
+            {{NEW_GROUP_LINK}}
+            
+            <a class="miniBoldTab cursorPointer" onclick="refreshGroupSuggestions();" title="@refresh_label@">
+                <i class="fa fa-refresh progress-icon" data-default-icon="fa-refresh"></i>
+            </a>
+        </div>
+
+        <div class="floatClear"></div>
+    </div>
+
+    <div class="groupSuggestions">
+        {{LIST_GROUPS}}
+    </div>
+</div>
+<script>
+function refreshGroupSuggestions()
+{
+    mainJar = $('.groupSuggestionsJar');
+    iconProgress(mainJar.find('i.fa-refresh'));
+    
+    $.get(
+        Sk_requestPath(),
+        {
+            t: 'search',
+            a: 'suggestions',
+            type: 'group'
+        },
+        function (data)
+        {
+            if (data.status === 200)
+            {
+                mainJar.find('.groupSuggestions').html(data.html);
+            }
+            
+            iconProgress(mainJar.find('i.fa-refresh'));
+        }
+    );
+}
+</script>

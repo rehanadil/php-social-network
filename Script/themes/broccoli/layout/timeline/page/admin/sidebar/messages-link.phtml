@@ -1,0 +1,6 @@
+<a class="infoColumn lightColor" href="{{MESSAGES_SETTINGS_URL}}" data-href="?a=timeline&b=settings&c=messages&id={{TIMELINE_USERNAME}}">
+	<i class="fa fa-comments"></i>
+    @messages_label@
+    <div id="pageMessagesCount" class="newAlert">{{MESSAGES_COUNT}}</div>
+</a>
+<script>if($("#pageMessagesCount").text() === "0") $("#pageMessagesCount").hide();</script>

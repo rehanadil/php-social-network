@@ -1,0 +1,22 @@
+<div class="userColumn potential-admin-{{LIST_PA_ID}}" data-role="{{LIST_PA_ROLE}}">
+    <div class="floatLeft imageJar">
+        <a href="{{LIST_PA_URL}}" data-href="?a=timeline&id={{LIST_PA_USERNAME}}">
+            <img class="borderRadius100" src="{{LIST_PA_THUMBNAIL_URL}}" alt="{{LIST_PA_NAME}}">
+        </a>
+    </div>
+
+    <div class="floatLeft textJar">
+        <strong>
+            <a href="{{LIST_PA_URL}}" data-href="?a=timeline&id={{LIST_PA_USERNAME}}">{{LIST_PA_NAME}}</a>
+        </strong>
+
+        <small>{{LIST_PA_INFO}}</small>
+    </div>
+
+    <div class="floatRight buttonJar">
+        <a data-add-role="admin" class="makeAdmin" onclick="SK_addAdmin({{TIMELINE_ID}},{{LIST_PA_ID}},'admin');">@make_admin@</a>
+        <a data-add-role="editor" class="makeEditor" onclick="SK_addAdmin({{TIMELINE_ID}},{{LIST_PA_ID}},'editor');">@make_editor@</a>
+    </div>
+
+    <div class="floatClear"></div>
+</div>

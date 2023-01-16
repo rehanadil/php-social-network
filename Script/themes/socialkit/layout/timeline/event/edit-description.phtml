@@ -1,0 +1,34 @@
+<div class="eventEditDescription">
+    <textarea placeholder="@event_description_textarea_label@">{{EVENT_RAW_DESCRIPTION}}</textarea>
+    <button class="active" onclick="submitDescription();">
+    	<i id="editDescriptionIcon" class="fa fa-pencil hide" data-icon="pencil"></i>
+    	@edit_save_label@
+    </button>
+</div>
+<script>
+function submitDescription()
+{
+	iconProgress($("#editDescriptionIcon"));
+    eventId = {{TIMELINE_ID}};
+    eventDescr = $(".eventEditDescription").find("textarea").val();
+
+    $.post(
+        Sk_requestPath() + "?t=event&a=edit_description",
+        {
+            event_id: eventId,
+            descr: eventDescr
+        },
+        function(data)
+        {
+        	iconProgress($("#editDescriptionIcon"));
+            if (data.status === 200)
+            {
+                $(".eventDescription").show();
+                $(".eventEditDescription").hide();
+                $(".eventDescription").find("span").html(data.html);
+            }
+        }
+    );
+}
+autosize($("textarea"));
+</script>

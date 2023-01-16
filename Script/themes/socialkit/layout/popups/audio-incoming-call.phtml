@@ -1,0 +1,77 @@
+<div id="incomingAudioCall-{{CALL_ID}}" class="incomingAudioCallContainer popupOverlay" data-manual="yes">
+    <div class="audioCallJar popupContainer">
+        <div class="callingJar">
+            <img src="{{CALLER_AVATAR_URL}}" width="64px">
+
+            <div class="receiverInfo">
+                <div class="receiverName">{{CALLER_NAME}}</div>
+                <div class="receiverUsername">@{{CALLER_USERNAME}}</div>
+            </div>
+
+            <div class="callingText"><i class="fa fa-phone"></i> <span>@incoming_audio_call@</span></div>
+            
+            <div class="popupButtons buttonJar">
+                <button class="btn btnBlue accept"><i class="fa fa-check"></i> <span class="text">Accept</span></button>
+                <button class="btn btnRed decline"><i class="fa fa-times"></i> <span class="text">Decline</span></button>
+            </div>
+        </div>
+    </div>
+    <audio preload="auto" autoplay="yes" loop="yes">
+        <source src="{{CONFIG_THEME_URL}}/sounds/incoming_audio_call.ogg" type="audio/ogg">
+        <source src="{{CONFIG_THEME_URL}}/sounds/incoming_audio_call.mp3" type="audio/mpeg">
+        <source src="{{CONFIG_THEME_URL}}/sounds/incoming_audio_call.wav" type="audio/wav">
+    </audio>
+    <script>
+    var incomingAudioPopup = $('#incomingAudioCall-{{CALL_ID}}');
+    var incomingAudio_acceptButton = incomingAudioPopup.find('button.accept');
+    var incomingAudio_declineButton = incomingAudioPopup.find('button.decline');
+
+    incomingAudio_acceptButton.click(function(){
+        incomingAudio_acceptButton
+        .attr('disabled', true)
+            .find('span.text')
+            .text('@accepting@...');
+        $.get(
+            Sk_requestPath(),
+            {
+                t: "audio_call",
+                a: "accept",
+                id: {{CALL_ID}}
+            },
+            function(response)
+            {
+                if (response.status === 200)
+                {
+                    Sk_popupClear();
+                    $(document.body).append(response.html);
+                }
+            }
+        );
+    });
+    incomingAudio_declineButton.click(function(){
+        incomingAudio_declineButton.attr('disabled', true);
+        $.get(
+            Sk_requestPath(),
+            {
+                t: "audio_call",
+                a: "decline",
+                id: {{CALL_ID}}
+            },
+            function(response)
+            {
+                if (response.status === 200)
+                {
+                    Sk_popupClear();
+                }
+            }
+        );
+    });
+    setTimeout(function(){
+        incomingAudioPopup.find('.callingText').html('<i class="fa fa-phone"></i> <span>@no_answer@</span>');
+        incomingAudioPopup.fadeOut('fast', function(){
+            $(this).remove();
+        });
+    }, 45000);
+    incomingAudioPopup.fadeIn('fast');
+    </script>
+</div>

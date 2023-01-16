@@ -1,0 +1,19 @@
+<div id="blocked-user-{{BLOCKED_USER_ID}}" class="userColumn">
+    <div class="floatLeft imageJar">
+        <img class="borderRadius100" src="{{BLOCKED_USER_THUMBNAIL_URL}}" alt="{{BLOCKED_USER_NAME}}">
+    </div>
+
+    <div class="floatLeft textJar">
+        <strong>
+            <a>{{BLOCKED_USER_NAME}}</a>
+        </strong>
+
+        <small>{{BLOCKED_USER_INFO}}</small>
+    </div>
+
+    <div class="floatRight buttonJar">
+        <a class="active" onclick="Sk_unblockUser({{BLOCKED_USER_ID}});">Unblock</a>
+    </div>
+
+    <div class="floatClear"></div>
+</div>

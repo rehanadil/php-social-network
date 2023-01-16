@@ -1,0 +1,54 @@
+<div id="delete-message-{{MESSAGE_ID}}" class="popupOverlay">
+    <div class="popupContainer">
+        <div class="popupHeader">
+            <div class="floatLeft">
+                <i class="fa fa-trash-o"></i> @delete_message@
+            </div>
+
+            <div class="floatRight">
+                <i class="fa fa-times-circle" onclick="Sk_popupClear();"></i>
+            </div>
+
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="popupContent">
+            @delete_message_confirmation@
+        </div>
+
+        <div class="popupButtons">
+            <button class="btn btnBlue" onclick="Sk_popupClear();">@cancel@</button>
+            <button class="btn btnRed" onclick="Sk_deleteMessage({{MESSAGE_ID}});"><i class="fa fa-trash"></i> @delete_message@</button>
+        </div>
+    </div>
+</div>
+<script>
+function Sk_deleteMessage(mid)
+{
+    $.ajax({
+        type: 'POST',
+        url: Sk_requestPath() + '?t=message&a=delete',
+        data: {
+            id: mid
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            $("#delete-message-{{MESSAGE_ID}}").find(".btnRed").attr("disabled", true);
+            setTimeout(function(){
+                Sk_popupClear();
+            }, 100);
+        },
+        success: function(result)
+        {
+            if (result.status == 200)
+            {
+                $("#message-" + mid + ", #msg-" + mid).slideUp(function(){
+                    $(this).remove();
+                });
+            }
+        }
+    });
+}
+$("#delete-message-{{MESSAGE_ID}}").fadeIn('fast');
+</script>

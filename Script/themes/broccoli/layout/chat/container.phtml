@@ -1,0 +1,531 @@
+<div id="chatOverlay"></div>
+<script>
+var chatOverlay = $("#chatOverlay");
+var chatReceivers = new Array();
+var Skemojis = Sk_getFromStorage('Skemojis');
+var useEmoticons = {{USER_SUBSCRIPTION_PLAN_USE_EMOTICONS}};
+var useChatColors = {{USER_SUBSCRIPTION_PLAN_USE_CHAT_COLORS}};
+var useAudioCall = {{USER_SUBSCRIPTION_PLAN_AUDIO_CALL}};
+var useVideoCall = {{USER_SUBSCRIPTION_PLAN_VIDEO_CALL}};
+var chatFriends = {{CHAT_FRIENDS}};
+
+function Sk_openChat(rid, rname, ruid)
+{
+    if (chatOverlay.length == 1)
+    {
+        $(document.body).attr("data-chat-receiverId", rid);
+        $.get(
+            Sk_requestPath(),
+            {
+                t: "chat",
+                a: "load_messages",
+                receiver_id: rid
+            },
+            function(t)
+            {
+                if ($(window).width() < 1281)
+                {
+                    window.location = t.href;
+                }
+                else
+                {
+                    if (t.status === 200)
+                    {
+                        if ($("#chat-" + rid).length === 0)
+                        {
+                            chatOverlay.prepend(t.html);
+                            if (typeof(chatReceivers[rid]) === "undefined") {
+                                chatReceivers[rid] = new Array();
+                                chatReceivers[rid]['divArea'] = $("#chat-" + rid + "-txtArea");
+                                chatReceivers[rid]['divHtml'] = $.trim(chatReceivers[rid]['divArea'].html());
+                                chatReceivers[rid]['divText'] = $.trim(chatReceivers[rid]['divArea'].text());
+                                chatReceivers[rid]['txtArea'] = $("#chat-" + rid + "-sndTxt").find("textarea");
+                                chatReceivers[rid]['txtVal'] = chatReceivers[rid]['txtArea'].val();
+                                chatReceivers[rid]['color'] = "";
+                                chatReceivers[rid]['colorPicker'] = $("#chat-" + rid + "-colorPicker");
+                                chatReceivers[rid]['colorShower'] = chatReceivers[rid]['colorPicker'].find(".colorShower");
+                                chatReceivers[rid]['firstMsgId'] = 0;
+                                chatReceivers[rid]['lastMsgId'] = 0;
+                                chatReceivers[rid]['showSeen'] = 1;
+                                chatReceivers[rid]['isOnline'] = false;
+                                chatReceivers[rid]['newMsgTimer'] = 3000;
+                            }
+
+                            $("#online_" + rid).find(".unread").text("");
+                            $("#chat-" + rid).find(".msgsContainer").scrollTop($("#chat-" + rid).find(".msgsContainer").prop('scrollHeight'));
+                            $("#chat-" + rid).find(".txtArea").focus();
+
+                            SK_intervalUpdates();
+
+                            if (typeof t.color !== "undefined")
+                            {
+                                chatReceivers[rid]['color'] = t.color;
+                                Sk_colorizeMsg(rid);
+                                chatReceivers[rid]['colorShower'].css("background", "#" + chatReceivers[rid]['color']);
+                            }
+
+                            Sk_loadChatSkemojis(rid);
+                            Sk_loadChatColors(rid);
+
+                            setTimeout(function(){
+                                Sk_loadNewMsgs(rid);
+                            }, chatReceivers[rid]['newMsgTimer']);
+                        }
+                    }
+                }
+            }
+        );
+    }
+}
+function Sk_loadNewMsgs(rid)
+{
+    if ($("#chat-" + rid).length === 1)
+    {
+        chatReceivers[rid]['lastMsgId'] = $("#chat-" + rid).find(".chatTxt:last").attr("data-msg-id");
+        $.ajax({
+            type: 'GET',
+            url: Sk_requestPath(),
+            data: {
+                t: 'chat',
+                a: 'load_new_messages',
+                receiver_id: rid,
+                after_id: chatReceivers[rid]['lastMsgId'],
+                show_seen: chatReceivers[rid]['showSeen']
+            },
+            dataType: "json",
+            success: function(result)
+            {
+                if (result.status == 200 && result.is_empty === false)
+                {
+                    $("#chat-" + rid).find(".msgsContainer").append(result.html).scrollTop($("#chat-" + rid).find(".msgsContainer").prop('scrollHeight'));
+
+                    if (!$("#chat-" + rid).find(".txtareaJar").is(':focus')) document.title = '(@chat_new_update_alert@) ' + documentTitle;
+
+                    document.getElementById('notification-sound').play();
+                    chatReceivers[rid]['newMsgTimer'] = 3000;
+                    SK_intervalUpdates();
+                }
+                else
+                {
+                    chatReceivers[rid]['newMsgTimer'] += 500;
+                }
+                
+                // Check if recipient is online
+                chatReceivers[rid]['isOnline'] = false;
+                if (typeof(result.online) == "boolean") if (result.online == true) chatReceivers[rid]['isOnline'] = true;
+                
+                if (chatReceivers[rid]['isOnline'] == true)
+                    $("#chat-" + rid).find(".headerJar").find('.offlineIcon').addClass('onlineIcon');
+                else
+                    $("#chat-" + rid).find(".headerJar").find('.offlineIcon').removeClass('onlineIcon');
+
+                if (result.is_seen === true)
+                {
+                    chatReceivers[rid]['showSeen'] = 0;
+                    if ($("#msg-" + chatReceivers[rid]['lastMsgId']).find(".seenJar").length === 0) $("#msg-" + chatReceivers[rid]['lastMsgId']).find(".msgBtns").before(result.seen);
+                }
+            }
+        });
+        
+        setTimeout(function(){
+            Sk_loadNewMsgs(rid);
+        }, chatReceivers[rid]['newMsgTimer']);
+    }
+}
+function Sk_loadPrevMsgs(rid)
+{
+    if ($("#chat-" + rid).find(".chatTxt:first").attr('data-msg-id') !== chatReceivers[rid]['firstMsgId'])
+    {
+        chatReceivers[rid]['firstMsgId'] = $("#chat-" + rid).find(".chatTxt:first").attr('data-msg-id');
+        $.ajax({
+            type: 'GET',
+            url: Sk_requestPath(),
+            data: {
+                t: "chat",
+                a: "load_previous_messages",
+                receiver_id: rid,
+                before_id: chatReceivers[rid]['firstMsgId']
+            },
+            dataType: "json",
+            success: function(result)
+            {
+                if (result.status === 200
+                    && result.is_empty === false)
+                {
+                    $("#chat-" + rid).find(".msgsContainer").prepend(result.html);
+                    Sk_colorizeMsg(rid);
+                }
+            }
+        });
+    }
+}
+function Sk_typeTxt(rid, event)
+{
+    document.title = documentTitle;
+
+    if (chatReceivers[rid]['divArea'].text() !== chatReceivers[rid]['divText'])
+    {
+        chatReceivers[rid]['divText'] = chatReceivers[rid]['divArea'].text();
+        if (event.ctrlKey == 0)
+        {
+            chatReceivers[rid]['divHtml'] = strip_tags($.trim(chatReceivers[rid]['divArea'].html()), "<em><br>");
+            messageTextarea.html(chatReceivers[rid]['divHtml']);
+            caretAdjust(document.getElementById("chat-" + rid + "-txtArea"));
+        }
+    }
+
+    if (event.keyCode == 13 && event.shiftKey == 0)
+    {
+        event.preventDefault();
+        if (strip_tags($.trim(chatReceivers[rid]['divArea'].html()), "<em>") !== "")
+        {
+            Sk_sndTxt(rid);
+        }
+        else
+        {
+            chatReceivers[rid]['divArea'].html('');
+            caretAdjust(document.getElementById("chat-" + rid + "-txtArea"));
+        }
+    }
+}
+function Sk_pasteTxt(rid, event)
+{
+    document.title = documentTitle;
+    setTimeout(function(){
+        chatReceivers[rid]['divHtml'] = strip_tags($.trim(chatReceivers[rid]['divArea'].html()), "<em><br>");
+        chatReceivers[rid]['divArea'].html(chatReceivers[rid]['divHtml']);
+        caretAdjust(document.getElementById("chat-" + rid + "-txtArea"));
+    }, 80);
+}
+function Sk_sndTxt(rid)
+{
+    divHtml = $.trim(chatReceivers[rid]['divArea'].html());
+    divHtml = divHtml.substring(0, divHtml.lastIndexOf("<br>"));
+
+    if (strip_tags(divHtml, "<em>") !== "")
+    {
+        $("form#chat-" + rid + "-sndTxt").ajaxSubmit({
+            url: Sk_requestPath() + '?t=chat&a=sndTxt',
+
+            beforeSerialize: function()
+            {
+                chatReceivers[rid]['txtArea'].val(divHtml);
+            },
+
+            beforeSend: function()
+            {
+                chatReceivers[rid]['divArea'].attr("contenteditable", false).html('');
+                $("#chat-" + rid).find(".msgsContainer").append('<div class="chatTxt outgoingMsg tempText"><div class="txtCntnr floatRight"><div class="txtJar">' + divHtml + '</div></div><div class="floatClear"></div></div>');
+                Sk_colorizeMsg(rid);
+                Sk_scrollChatLatest(rid);
+            },
+
+            success: function(responseText)
+            {
+                if (responseText.status === 200)
+                {
+                    $("#chat-" + rid).find('.tempText').remove();
+                    $("#chat-" + rid).find(".msgsContainer").append(responseText.html);
+                    Sk_colorizeMsg(rid);
+                    Sk_scrollChatLatest(rid);
+                    chatReceivers[rid]['showSeen'] = 1;
+                    SK_intervalUpdates();
+                }
+                chatReceivers[rid]['divArea'].attr("contenteditable", true);
+                caretAdjust(document.getElementById("chat-" + rid + "-txtArea"));
+            }
+        });
+    }
+}
+function Sk_sndFile(rid)
+{
+    iconProgress($("#chat-" + rid + "-sndFileIcon"));
+    $("form#chat-" + rid + "-sndFile").ajaxSubmit({
+        url: Sk_requestPath() + '?t=chat&a=sndFile',
+
+        success: function(responseText)
+        {
+            iconProgress("#chat-" + rid + "-sndFileIcon");
+            if (responseText.status === 200)
+            {
+                $("#chat-" + rid).find(".msgsContainer").append(responseText.html);
+                Sk_colorizeMsg(rid);
+                Sk_scrollChatLatest(rid);
+                chatReceivers[rid]['showSeen'] = 1;
+                SK_intervalUpdates();
+            }
+            chatReceivers[rid]['divArea'].attr("contenteditable", true);
+            caretAdjust(document.getElementById("chat-" + rid + "-txtArea"));
+        }
+    });
+}
+function Sk_sndAudio(rid)
+{
+    iconProgress($("#chat-" + rid + "-sndAudioIcon"));
+    $("form#chat-" + rid + "-sndAudio").ajaxSubmit({
+        url: Sk_requestPath() + '?t=chat&a=sndAudio',
+
+        success: function(responseText)
+        {
+            iconProgress("#chat-" + rid + "-sndAudioIcon");
+            if (responseText.status === 200)
+            {
+                $("#chat-" + rid).find(".msgsContainer").append(responseText.html);
+                Sk_colorizeMsg(rid);
+                Sk_scrollChatLatest(rid);
+                chatReceivers[rid]['showSeen'] = 1;
+                SK_intervalUpdates();
+            }
+            chatReceivers[rid]['divArea'].attr("contenteditable", true);
+            caretAdjust(document.getElementById("chat-" + rid + "-txtArea"));
+        }
+    });
+}
+function Sk_sndVid(rid)
+{
+    iconProgress($("#chat-" + rid + "-sndVidIcon"));
+    $("form#chat-" + rid + "-sndVid").ajaxSubmit({
+        url: Sk_requestPath() + '?t=chat&a=sndVid',
+
+        success: function(responseText)
+        {
+            iconProgress("#chat-" + rid + "-sndVidIcon");
+            if (responseText.status === 200)
+            {
+                $("#chat-" + rid).find(".msgsContainer").append(responseText.html);
+                Sk_colorizeMsg(rid);
+                Sk_scrollChatLatest(rid);
+                chatReceivers[rid]['showSeen'] = 1;
+                SK_intervalUpdates();
+            }
+            chatReceivers[rid]['divArea'].attr("contenteditable", true);
+            caretAdjust(document.getElementById("chat-" + rid + "-txtArea"));
+        }
+    });
+}
+function Sk_sndPhoto(rid)
+{
+    iconProgress($("#chat-" + rid + "-sndPhotoIcon"));
+    $("form#chat-" + rid + "-sndPhoto").ajaxSubmit({
+        url: Sk_requestPath() + '?t=chat&a=sndPhoto',
+
+        success: function(responseText)
+        {
+            iconProgress("#chat-" + rid + "-sndPhotoIcon");
+            if (responseText.status === 200)
+            {
+                $("#chat-" + rid).find(".msgsContainer").append(responseText.html);
+                Sk_colorizeMsg(rid);
+                Sk_scrollChatLatest(rid);
+                chatReceivers[rid]['showSeen'] = 1;
+                SK_intervalUpdates();
+            }
+            chatReceivers[rid]['divArea'].attr("contenteditable", true);
+            caretAdjust(document.getElementById("chat-" + rid + "-txtArea"));
+        }
+    });
+}
+function Sk_msgVideoCall(rid)
+{
+    if (useVideoCall == 0)
+    {
+        window.location = "{{SUBSCRIPTION_UPGRADE_URL}}";
+    }
+    else
+    {
+        iconProgress($("#chat-" + rid).find(".loadVideoCallIcon"));
+        createVideoCall(rid);
+        iconProgress($("#chat-" + rid).find(".loadVideoCallIcon"));
+    }
+}
+function Sk_msgAudioCall(rid)
+{
+    if (useAudioCall == 0)
+    {
+        window.location = "{{SUBSCRIPTION_UPGRADE_URL}}";
+    }
+    else
+    {
+        iconProgress($("#chat-" + rid).find(".loadAudioCallIcon"));
+        createAudioCall(rid);
+        iconProgress($("#chat-" + rid).find(".loadAudioCallIcon"));
+    }
+}
+function Sk_scrollChatLatest(rid)
+{
+    $("#chat-" + rid).find(".msgsContainer").scrollTop($("#chat-" + rid).find(".msgsContainer").prop('scrollHeight'));
+}
+function Sk_chatFocusTxt(rid)
+{
+    document.title = documentTitle;
+    chatReceivers[rid]['newMsgTimer'] = 3000;
+}
+function Sk_confirmMsgDelete(mid)
+{
+    iconProgress($("#msg-" + mid).find(".msgDeleteIcon"));
+    $.get(
+        Sk_requestPath(),
+        {
+            t: "message",
+            a: "confirm_delete",
+            id: mid
+        },
+        function (data)
+        {
+            iconProgress($("#msg-" + mid).find(".msgDeleteIcon"));
+            if (data.status === 200) $(document.body).append(data.html);
+        }
+    );
+}
+function Sk_closeChat(rid)
+{
+    $("#chat-" + rid).remove();
+    $(document.body).removeAttr('data-chat-receiverId');
+    delete chatReceivers[rid];
+    $.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: 'chat',
+            a: 'close',
+            rid: rid
+        },
+        dataType: "json"
+    });
+}
+function Sk_loadChatSkemojis(rid)
+{
+    if (useEmoticons == 1)
+        $("#chat-" + rid + "-skemojiContainer").html(Skemojis).find("i").attr("onclick", "Sk_inputSkemojiTag(this, " + rid + ");");
+}
+function Sk_inputSkemojiTag(emo, rid)
+{
+    destinationTxtarea = $("#chat-" + rid).find(".txtArea");
+    txtareaContent = destinationTxtarea.html();
+    if (typeof(destinationTxtarea.attr('placeholder')) !== "undefined")
+    {
+        if (destinationTxtarea.attr('placeholder') === txtareaContent)
+        {
+            destinationTxtarea.html('');
+            txtareaContent = destinationTxtarea.html();
+        }
+        
+    }
+    destinationTxtarea.append('<em class="' + $(emo).attr("class") + '" contenteditable="false"></em>');
+    caretAdjust(document.getElementById("chat-" + rid + "-txtArea"));
+}
+function Sk_toggleChatSkemoji(cid)
+{
+    if (useEmoticons == 0)
+        window.location = "{{SUBSCRIPTION_UPGRADE_URL}}";
+    else
+        $('#chat-' + cid + '-skemojiContainer').toggle();
+}
+function Sk_loadChatColors(rid)
+{
+    $.ajax({
+        type: 'GET',
+        url: '{{CONFIG_THEME_URL}}/json/colors.json',
+        dataType: "json",
+        success: function(result)
+        {
+            $(result).each(function(colorindex,colorvalue){
+                if (colorvalue === chatReceivers[rid]['color'])
+                    optVal = '<option value="#' + colorvalue + '" selected="yes">#' + colorvalue + '</option>';
+                else
+                    optVal = '<option value="#' + colorvalue + '">#' + colorvalue + '</option>';
+
+                $("#chat-" + rid).find("select.colorpicker").append(optVal);
+            });
+
+            $("#chat-" + rid).find("select.colorpicker").simplecolorpicker({
+                picker: false
+            }).on("change", function(){
+                if (useChatColors == 0)
+                {
+                    window.location = "{{SUBSCRIPTION_UPGRADE_URL}}";
+                }
+                else
+                {
+                    colorcode = $("#chat-" + rid).find("select.colorpicker").val();
+                    chatReceivers[rid]['color'] = colorcode.replace("#", "");
+                    Sk_colorizeMsg(rid);
+                    chatReceivers[rid]['colorShower'].css("background", "#" + chatReceivers[rid]['color']);
+
+                    $.ajax({
+                        type: 'GET',
+                        url: Sk_requestPath(),
+                        data: {
+                            t: 'chat',
+                            a: 'color',
+                            receiver_id: rid,
+                            color: colorcode.replace("#", "")
+                        },
+                        dataType: "json"
+                    });
+                }
+            });
+        }
+    });
+}
+function Sk_colorizeMsg(rid)
+{
+    chat_headerTag = $("#chat-" + rid).find(".headerJar");
+    chat_headerAnchor = chat_headerTag.find("a");
+    chat_txtTags = $("#chat-" + rid).find(".outgoingMsg").find(".txtJar, .docJar, .audioJar, .vidJar, .photoJar");
+    chat_txtAnchor = chat_txtTags.find("a");
+
+    if (typeof(chatReceivers[rid]['color']) !== "undefined"
+        && chatReceivers[rid]['color'] !== "")
+    {
+        colorcode = "#" + chatReceivers[rid]['color'];
+        
+        chat_headerTag.css("background", colorcode);
+        chat_txtTags.css("background", colorcode);
+        
+        $(".picker").find("span.color").removeClass("blacktick");
+        
+        chat_headerTag.css({"color":"#eeeeee","text-shadow":"0 1px 1px rgba(0, 0, 0, .25)"});
+        chat_headerAnchor.css("color", "#eeeeee");
+        chat_headerAnchor.hover(function(e){
+            $(this).css("color", e.type === "mouseenter" ? "white" :"#eeeeee");
+        });
+        chat_txtAnchor.css("color", "white");
+    }
+}
+$(document).on("mousewheel DOMMouseScroll", ".msgsContainer", function(e){
+    rid = $(this).parents('.chatContainer').attr("data-receiver");
+    scrollDirection = (e.originalEvent.wheelDelta || -e.originalEvent.detail);
+
+    if (scrollDirection > 0)
+    {
+        if ($("#chat-" + rid).find(".msgsContainer").height() === $("#chat-" + rid).find(".msgsContainer")[0].scrollHeight)
+            Sk_loadPrevMsgs(rid);
+        else if ($("#chat-" + rid).find(".msgsContainer").scrollTop() < 300)
+            Sk_loadPrevMsgs(rid);
+    }
+});
+$(document).on("click", function(e){
+    if(!$(e.target).closest('.skemojiBtn').length)
+    {
+        $('.skemojiContainer').hide();
+    }
+    if(!$(e.target).closest('.colorPickerJar').length)
+    {
+        $('.colorPickerJar .simplecolorpicker').hide();
+    }
+});
+$(document).on("click", ".chatContainer .headerJar", function(e){
+    if (e.target !== this) return;
+    rid = $(this).parents('.chatContainer').attr("data-receiver");
+    $("#chat-" + rid).find(".toggleJar").toggle();
+});
+$(function(){
+    if ($(window).width() > 1280)
+    {
+        $.each(chatFriends, function(i,f){
+            Sk_openChat(i,f.name,f.username);
+        });
+    }
+});
+</script>

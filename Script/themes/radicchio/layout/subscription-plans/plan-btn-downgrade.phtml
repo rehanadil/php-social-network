@@ -1,0 +1,22 @@
+<button id="plan_{{PLAN_ID}}_btn">Downgrade</button>
+<script>
+$('#plan_{{PLAN_ID}}_btn').click(function(e)
+{
+	if ({{IS_CURRENT}} == 0)
+	{
+		$.get(
+			Sk_requestPath(),
+			{
+				t: "subscription_plans",
+				a: "confirm_downgrade",
+				plan_id: {{PLAN_ID}}
+			},
+			function (data)
+			{
+				$(document.body).prepend(data.html);
+				$('.confirmDowngradePopup').fadeIn('fast');
+			}
+		);
+	}
+});
+</script>

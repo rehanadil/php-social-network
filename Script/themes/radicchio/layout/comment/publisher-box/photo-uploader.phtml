@@ -1,0 +1,6 @@
+<div class="photo-preview">
+    <img src="" alt="Loading preview...">
+</div>
+<i class="fa fa-cloud-upload progress-icon hide"></i>
+<i class="ski-camera-add img-upload-icon" onclick="selectCommentPhoto({{STORY_ID}});"></i>
+<input type="file" name="photos[]" accept="image/jpeg,image/png,image/gif" class="hidden comment-file-input" onchange="previewCommentPhoto(this, {{STORY_ID}});">

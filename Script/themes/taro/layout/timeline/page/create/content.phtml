@@ -1,0 +1,121 @@
+<div class="page-margin"></div>
+
+{{PAGE_NAVIGATION}}
+
+<div class="floatLeft span52">
+    <form class="create-page-form" method="post">
+        <div class="form-container">
+            <div class="multiTabJar">
+                <div class="boldTab">
+                    <i class="fa fa-cubes"></i>
+                    @page_create_label@
+                </div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">
+                    @page_category_label@:
+                </label>
+
+                <div class="input floatLeft span70">
+                    <select name="page_category_id">
+                        {{LIST_CATEGORIES}}
+                    </select>
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">
+                    @page_name_label@:
+                </label>
+
+                <div class="input floatLeft span70">
+                    <input type="text" value="@page_name_textarea_label@" placeholder="@page_name_textarea_label@" data-placeholder="@page_name_textarea_label@" onkeyup="SK_generateUsername(this.value);" data-copy-to=".page-name-input">
+                    
+                    <input class="page-name-input" type="hidden" name="page_name">
+                </div>
+                <div class="floatClear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">
+                    @username_label@:
+                </label>
+                
+                <div class="input floatLeft span70">
+                    <input class="username-textinput" type="text" value="@page_username_textarea_label@" placeholder="@page_username_textarea_label@" data-placeholder="@page_username_textarea_label@" autocomplete="off" data-copy-to=".page-username-input" onkeyup="SK_checkUsername(this.value,0,'.check-username-result',true);">
+                    
+                    <input class="page-username-input" type="hidden" name="page_username">
+                    
+                    <div class="check-username-result"></div>
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">
+                    @description_label@:
+                </label>
+                
+                <div class="input floatLeft span70">
+                    <textarea valign="top" name="page_about" placeholder="@page_description_textarea_label@" data-placeholder="@page_description_textarea_label@">@page_description_textarea_label@</textarea>
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <button id="createPageBtn" class="active">
+                    <i id="createPageBtnIcon" class="fa fa-check hide"></i>
+                    <span>@page_create_label@</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="floatRight span30">
+    {{USER_SUGGESTIONS}}
+
+    {{PAGE_SUGGESTIONS}}
+
+    {{GROUP_SUGGESTIONS}}
+    
+    {{TRENDINGS}}
+    
+    {{EVENT_BAR}}
+    
+    {{CONFIG_AD_PLACE_HOME}}
+
+    {{SIDEBAR_FOOTER}}
+</div>
+
+<div class="floatClear"></div>
+
+<script>
+$(function(){
+    autosize($("textarea"));
+
+    $('form.create-page-form').ajaxForm({
+        url: Sk_requestPath() + '?t=page&a=create',
+        
+        beforeSend: function()
+        {
+            iconProgress($("#createPageBtnIcon"));
+        },
+        
+        success: function(responseText)
+        {
+            iconProgress($("#createPageBtnIcon"));
+
+            if (responseText.status === 200)
+            {
+                window.location = responseText.url;
+            }
+        }
+    });
+});
+</script>

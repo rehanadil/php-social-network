@@ -1,0 +1,66 @@
+<div class="page-margin"></div>
+
+{{PAGE_NAVIGATION}}
+
+<div class="floatLeft span52">
+    <div class="albumsContainer">
+        <div class="multiTabJar">
+            <div class="boldTab">
+                <i class="fa fa-folder-open"></i>
+                @albums@
+            </div>
+        </div>
+        {{LI}}
+    </div>
+</div>
+
+<div class="floatRight span30">
+    {{FEATURED_USERS}}
+    
+    {{USER_SUGGESTIONS}}
+
+    {{PAGE_SUGGESTIONS}}
+
+    {{GROUP_SUGGESTIONS}}
+    
+    {{TRENDINGS}}
+    
+    {{EVENT_BAR}}
+    
+    {{CONFIG_AD_PLACE_HOME}}
+
+    {{SIDEBAR_FOOTER}}
+</div>
+<div class="floatClear"></div>
+<script>
+$(function()
+{
+    setInterval(function()
+    {
+        if ($('.singleStoryJar').length > 0)
+        {
+            element = $('.stories-container');
+            request_data = new Object();
+            request_data.t = 'post';
+            request_data.a = 'filter';
+            request_data.exclude_activity = 1;
+            request_data.before_id = $('.singleStoryJar:first').attr('data-story-id');
+            
+            if (typeof(element.attr('data-story-type') != "undefined")) {
+                request_data.type = element.attr('data-story-type');
+            }
+            
+            if (typeof(element.attr('data-story-timeline') != "undefined")) {
+                request_data.timeline_id = element.attr('data-story-timeline');
+            }
+            
+            $.get(Sk_requestPath(), request_data, function(data) {
+                
+                if (data.status == 200) {
+                    $('.stories-wrapper').prepend(data.html);
+                }
+            });
+        }
+    }, 120000);
+});
+</script>

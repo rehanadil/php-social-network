@@ -1,0 +1,56 @@
+<div class="page-margin"></div>
+
+{{PAGE_NAVIGATION}}
+
+<div class="floatLeft span52">
+    <div class="recommendedContainer">
+        <div class="multiTabJar">
+            <div class="boldTab">
+                <i></i>
+                {{PAGE_TITLE}}
+            </div>
+        </div>
+        {{LI}}
+    </div>
+</div>
+
+<div class="floatRight span30">
+    {{FEATURED_USERS}}
+    
+    {{USER_SUGGESTIONS}}
+
+    {{PAGE_SUGGESTIONS}}
+
+    {{GROUP_SUGGESTIONS}}
+    
+    {{TRENDINGS}}
+    
+    {{EVENT_BAR}}
+    
+    {{CONFIG_AD_PLACE_HOME}}
+
+    {{SIDEBAR_FOOTER}}
+</div>
+
+<div class="floatClear"></div>
+
+<script>
+var type = "{{TYPE}}";
+$(function(){
+    switch(type)
+    {
+        case 'users':
+            icon = 'ski ski-friends';
+            break;
+
+        case 'pages':
+            icon = 'fa fa-cubes';
+            break;
+
+        case 'groups':
+            icon = 'ski ski-group';
+            break;
+    }
+    $(".boldTab i").addClass(icon);
+});
+</script>

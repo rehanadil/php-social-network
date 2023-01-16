@@ -1,0 +1,287 @@
+<div class="page-margin"></div>
+<div class="floatLeft span100">
+	<div id="videoChatPage" data-hover="0">
+		<div id="receiverInfo">
+			<div id="imgFloat" class="floatLeft">
+				<img src="{{RECEIVER_THUMBNAIL_URL}}" width="48px">
+			</div>
+
+			<div id="infoFloat" class="floatLeft">
+				<a id="receiverName" href="{{RECEIVER_URL}}">{{RECEIVER_NAME}}</a>
+				{{FRIENDLY_STATUS}}
+			</div>
+
+			<div class="floatClear"></div>
+		</div>
+
+		<div id="bottomControls">
+			<div id="pauseCall" title="@pause_video@">
+				<i class="ski-video-camera unpaused"></i>
+				<i class="ski-video-camera-slash paused"></i>
+			</div>
+
+			<div id="muteCall" title="@mute_audio@">
+				<i class="fa fa-microphone unmuted"></i>
+				<i class="fa fa-microphone-slash muted"></i>
+			</div>
+
+			<div id="endCall" title="@end_call@">
+				<i class="ski-phone-hang-up"></i>
+			</div>
+		</div>
+
+		<div id="remoteMedia">
+			<div id="connectionResponse">
+				<p><i class="fa fa-spinner fa-spin"></i> @connecting@...</p>
+			</div>
+		</div>
+		<div id="controls">
+			<div id="preview">
+				<div id="localMedia"></div>
+			</div>
+			<div id="inviteControls"></div>
+			<div id="log">
+				<p></p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="floatClear"></div>
+<script>
+var activeRoom;
+var previewTracks;
+var token = "{{ACCESS_TOKEN}}";
+var identity = "{{CALL_ID}}";
+var roomName = "{{ROOM}}";
+
+// Attach the Tracks to the DOM.
+function attachTracks(tracks, container) {
+  tracks.forEach(function(track) {
+    container.appendChild(track.attach());
+  });
+}
+
+// Attach the Participant's Tracks to the DOM.
+function attachParticipantTracks(participant, container) {
+  var tracks = Array.from(participant.tracks.values());
+  attachTracks(tracks, container);
+}
+
+// Detach the Tracks from the DOM.
+function detachTracks(tracks) {
+  tracks.forEach(function(track) {
+    track.detach().forEach(function(detachedElement) {
+      detachedElement.remove();
+    });
+  });
+}
+
+// Detach the Participant's Tracks from the DOM.
+function detachParticipantTracks(participant) {
+  var tracks = Array.from(participant.tracks.values());
+  detachTracks(tracks);
+}
+
+// Check for WebRTC
+if (!navigator.webkitGetUserMedia && !navigator.mozGetUserMedia) {
+  alert('WebRTC is not available in your browser.');
+}
+
+// When we are about to transition away from this page, disconnect
+// from the room, if joined.
+window.addEventListener('beforeunload', leaveRoomIfJoined);
+
+
+// Bind button to join Room.
+log("Joining room '" + roomName + "'...");
+var connectOptions = {
+  name: roomName,
+  logLevel: 'debug'
+};
+
+if (previewTracks) {
+  connectOptions.tracks = previewTracks;
+}
+
+// Join the Room with the token from the server and the
+// LocalParticipant's Tracks.
+Twilio.Video.connect(token, connectOptions).then(roomJoined, function(error) {
+  log('Could not connect to Twilio: ' + error.message);
+});
+
+// Bind button to leave Room.
+/*document.getElementById('button-leave').onclick = function() {
+log('Leaving room...');
+activeRoom.disconnect();
+};*/
+
+
+// Successfully connected!
+function roomJoined(room) {
+  window.room = activeRoom = room;
+
+  $("#remoteMedia").empty();
+
+  log("Joined as '" + identity + "'");
+  //document.getElementById('button-join').style.display = 'none';
+  //document.getElementById('button-leave').style.display = 'inline';
+
+  // Attach LocalParticipant's Tracks, if not already attached.
+  var previewContainer = document.getElementById('localMedia');
+  if (!previewContainer.querySelector('video')) {
+    attachParticipantTracks(room.localParticipant, previewContainer);
+  }
+
+  // Attach the Tracks of the Room's Participants.
+  room.participants.forEach(function(participant) {
+    log("Already in Room: '" + participant.identity + "'");
+    var previewContainer = document.getElementById('remoteMedia');
+    attachParticipantTracks(participant, previewContainer);
+  });
+
+  // When a Participant joins the Room, log the event.
+  room.on('participantConnected', function(participant) {
+    log("Joining: '" + participant.identity + "'");
+  });
+
+  // When a Participant adds a Track, attach it to the DOM.
+  room.on('trackAdded', function(track, participant) {
+    log(participant.identity + " added track: " + track.kind);
+    var previewContainer = document.getElementById('remoteMedia');
+    attachTracks([track], previewContainer);
+
+    if (track.kind === "video")
+    {
+    	$("#remoteMedia").find("video").attr("id", "remoteMediaVideo");
+	    remoteMediaVideo = document.getElementById("remoteMediaVideo");
+	    remoteMediaVideo.addEventListener("loadedmetadata", function (e){
+	        remoteMediaVideoWidth = this.videoWidth,
+	        remoteMediaVideoHeight = this.videoHeight;
+
+	        if (remoteMediaVideoHeight > remoteMediaVideoWidth)
+	        {
+	            $("#remoteMediaVideo").removeClass("widthAdjust").addClass("heightAdjust");
+	        }
+	        else
+	        {
+	            $("#remoteMediaVideo").removeClass("heightAdjust").addClass("widthAdjust");
+	        }
+	    }, false );
+	    $("#remoteMediaVideo").resize(function(){
+	        remoteMediaVideo = document.getElementById("remoteMediaVideo");
+	        remoteMediaVideoWidth = this.videoWidth,
+	        remoteMediaVideoHeight = this.videoHeight;
+
+	        if (remoteMediaVideoHeight > remoteMediaVideoWidth)
+	        {
+	            $("#remoteMediaVideo").removeClass("widthAdjust").addClass("heightAdjust");
+	        }
+	        else
+	        {
+	            $("#remoteMediaVideo").removeClass("heightAdjust").addClass("widthAdjust");
+	        }
+	    });
+
+	    $("#videoChatPage").attr("data-active", 1).attr("data-hover", 1);
+	    $("#videoChatPage").on("mouseover", function(e){
+	        $(this).attr("data-hover", 1);
+	    });
+	    $("#videoChatPage").on("mouseout", function(e){
+	        $(this).attr("data-hover", 0);
+	    });
+	    $("#videoChatPage").on("click", function(e){
+	        if ($(this).attr("data-hover") === "1")
+	        {
+	            $(this).attr("data-hover", 0);
+	        }
+	        else
+	        {
+	            $(this).attr("data-hover", 1);
+	        }
+	    });
+	    $(document).on('click', '#pauseCall', function(e){
+	        if ($('#pauseCall').hasClass('paused'))
+	        {
+	            $('#pauseCall').removeClass('paused').attr('title', '@pause_video@');
+	            track.enable(true);
+	        }
+	        else
+	        {
+	            $('#pauseCall').addClass('paused').attr('title', '@unpause_video@');
+	            track.enable(false);
+	        }
+	    });
+	    $(document).on('click', 'a', function(e){
+	        leaveRoomIfJoined();
+	    });
+	    $(document).on('click', '#endCall', function(e){
+	        leaveRoomIfJoined();
+	    });
+    }
+    else if (track.kind === "audio")
+    {
+    	$(document).on('click', '#muteCall', function(e){
+	        if ($('#muteCall').hasClass('muted'))
+	        {
+	            $('#muteCall').removeClass('muted').attr('title', '@mute_audio@');
+	            track.enable(true);
+	        }
+	        else
+	        {
+	            $('#muteCall').addClass('muted').attr('title', '@unmute_audio@');
+	            track.enable(false);
+	        }
+	    });
+    }
+  });
+
+  // When a Participant removes a Track, detach it from the DOM.
+  room.on('trackRemoved', function(track, participant) {
+    log(participant.identity + " removed track: " + track.kind);
+    detachTracks([track]);
+  });
+
+  // When a Participant leaves the Room, detach its Tracks.
+  room.on('participantDisconnected', function(participant) {
+    log("Participant '" + participant.identity + "' left the room");
+    detachParticipantTracks(participant);
+
+    $("#remoteMedia").html('<div id="connectionResponse"><p><i class="ski ski-video-camera-slash"></i> @video_call_ended@</p></div>');
+    $("#videoChatPage").attr("data-active", 0).attr("data-hover", 0);
+    setTimeout(function(){
+        window.location.href = '{{CONFIG_SITE_URL}}';
+    }, 1000);
+  });
+
+  // Once the LocalParticipant leaves the room, detach the Tracks
+  // of all Participants, including that of the LocalParticipant.
+  room.on('disconnected', function() {
+    log('Left');
+    if (previewTracks) {
+      previewTracks.forEach(function(track) {
+        track.stop();
+      });
+    }
+    detachParticipantTracks(room.localParticipant);
+    room.participants.forEach(detachParticipantTracks);
+    activeRoom = null;
+    
+    $("#remoteMedia").html('<div id="connectionResponse"><p><i class="ski ski-video-camera-slash"></i> @video_call_ended@</p></div>');
+      $("#videoChatPage").attr("data-active", 0).attr("data-hover", 0);
+  });
+}
+
+// Activity log.
+function log(message) {
+  console.log(message);
+}
+
+// Leave Room.
+function leaveRoomIfJoined() {
+  if (activeRoom) {
+    activeRoom.disconnect();
+    $("#remoteMedia").html('<div id="connectionResponse"><p><i class="ski ski-video-camera-slash"></i> @video_call_ended@</p></div>');
+    $("#videoChatPage").attr("data-active", 0).attr("data-hover", 0);
+  }
+}
+</script>

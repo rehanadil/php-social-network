@@ -1,0 +1,103 @@
+<div id="callingVideo-{{CALL_ID}}" class="popupOverlay" data-manual="yes">
+    <div class="videoCallJar popupContainer">
+        <div class="callingJar">
+            <img src="{{RECEIVER_AVATAR_URL}}" width="64px">
+            
+            <div class="receiverInfo">
+                <div class="receiverName">{{RECEIVER_NAME}}</div>
+                <div class="receiverUsername">@{{RECEIVER_USERNAME}}</div>
+            </div>
+
+            <div class="callingText"><i class="fa fa-video-camera"></i> <span>@calling@</span>...</div>
+
+            <div class="popupButtons buttonJar">
+                <button class="btn btnRed cancel"><i class="fa fa-times"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <audio preload="auto" autoplay="yes" loop="yes">
+        <source src="{{CONFIG_THEME_URL}}/sounds/outgoing_video_call.ogg" type="audio/ogg">
+        <source src="{{CONFIG_THEME_URL}}/sounds/outgoing_video_call.mp3" type="audio/mpeg">
+        <source src="{{CONFIG_THEME_URL}}/sounds/outgoing_video_call.wav" type="audio/wav">
+    </audio>
+    
+    <script>
+    var callingVideoPopup = $('#callingVideo-{{CALL_ID}}');
+    var callingVideo_cancelButton = callingVideoPopup.find('button.cancel');
+
+    var callingVideoText = '@calling@';
+    var callingVideo_pleasewaitText = '@please_wait@';
+        callingVideoText = callingVideoText.replace(/[^A-Za-z0-9]/g, '');
+        callingVideo_pleasewaitText = callingVideo_pleasewaitText.replace(/[^A-Za-z0-9]/g, '');
+
+    var callingVideo_interval;
+    var callingVideo_toggleText = setInterval(function(){
+        callingVideoSpan = callingVideoPopup.find('.callingText').find('span');
+        callingVideo_currentText = callingVideoSpan.text().replace(/[^A-Za-z0-9]/g, '');
+        (callingVideo_currentText === callingVideoText) ? callingVideoSpan.text('@please_wait@') : callingVideoSpan.text('@calling@');
+    }, 4650);
+    
+    callingVideo_cancelButton.click(function(){
+        $.ajax({
+            type: 'GET',
+            url: Sk_requestPath(),
+            data: {
+                t: "video_call",
+                a: "cancel",
+                id: {{CALL_ID}}
+            },
+            dataType: "json",
+            beforeSend: function()
+            {
+                callingVideo_cancelButton.attr('disabled', true);
+                clearInterval(callingVideo_toggleText);
+                clearInterval(callingAudio_interval);
+                setTimeout(function(){
+                    Sk_popupClear();
+                }, 100);
+            }
+        });
+    });
+    callingAudio_interval = setInterval(function(){
+        $.get(
+            Sk_requestPath(),
+            {
+                t: "video_call",
+                a: "call_status",
+                id: {{CALL_ID}}
+            },
+            function(data)
+            {
+                if (data.status === 200)
+                {
+                    clearInterval(callingAudio_interval);
+                    
+                    if ($(window).width() > 960)
+                    {
+                        Sk_popupClear();
+                        $(document.body).append(data.html);
+                    }
+                    else
+                    {
+                        window.location = data.url;
+                    }
+                }
+                else if (data.status === 401)
+                {
+                    clearInterval(callingVideo_toggleText);
+                    callingVideoPopup.find('.callingText').html('<i class="fa fa-times"></i> <span>@call_denied@</span>');
+                }
+            }
+        );
+    }, 2000);
+    setTimeout(function(){
+        clearInterval(callingAudio_interval);
+        callingVideoPopup.find('.callingText').html('<i class="fa fa-phone"></i> <span>@no_answer@</span>');
+        callingVideoPopup.fadeOut('fast', function(){
+            $(this).remove();
+        });
+    }, 45000);
+    callingVideoPopup.fadeIn('fast');
+    </script>
+</div>

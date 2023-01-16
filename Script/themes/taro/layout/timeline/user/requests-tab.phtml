@@ -1,0 +1,68 @@
+<div class="listJar">
+    <div class="multiTabJar">
+        <div class="boldTab"><i class="ski ski-user-plus"></i> {{FOLLOW_REQUESTS_LABEL}}</div>
+    </div>
+
+    <div class="list-follow-requests">
+        {{LIST_FOLLOW_REQUESTS}}
+    </div>
+
+    <a class="infoColumn view-more-anchor hide" align="center" onclick="listFollowRequests();">
+        @view_more@
+    </a>
+</div>
+<script>
+$(function(){
+    if ($(".list-follow-requests").find(".userColumn").length > 0)
+    {
+        $(".view-more-anchor").removeClass("hide");
+    }
+});
+
+function listFollowRequests() {
+    lastFollowId = $(".list-follow-requests").find(".userColumn:last").attr('data-user-id');
+    $.get(
+        Sk_requestPath(),
+        {
+            t: "user",
+            a: "list_follow_requests",
+            before_id: lastFollowId
+        },
+        function(data)
+        {
+            if (data.status === 200)
+            {
+                if (data.html.length > 0)
+                {
+                    $(".list-follow-requests").append(data.html);
+                }
+                else
+                {
+                    $(".view-more-anchor").hide();
+                }
+            }
+        }
+    );
+}
+
+function SK_acceptFollowRequest(follower_id) {
+    iconProgress($("#acceptBtn" + follower_id));
+    $.post(Sk_requestPath() + '?t=user&a=accept_request', {follower_id: follower_id}, function(data) {
+        if (data.status === 200) {
+            $('.follow-request-'+follower_id).slideUp(function() {
+                $(this).remove();
+            });
+        }
+    });
+}
+function SK_declineFollowRequest(follower_id) {
+    iconProgress($("#declineBtn" + follower_id));
+    $.post(Sk_requestPath() + '?t=user&a=decline_request', {follower_id: follower_id}, function(data) {
+        if (data.status === 200) {
+            $('.follow-request-'+follower_id).slideUp(function() {
+                $(this).remove();
+            });
+        }
+    });
+}
+</script>

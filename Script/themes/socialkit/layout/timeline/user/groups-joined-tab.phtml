@@ -1,0 +1,48 @@
+<div class="listJar">
+    <div class="multiTabJar">
+        <div class="boldTab"><i class="ski ski-friends"></i> @groups_joined_label@</div>
+    </div>
+
+    <div class="list-groups-joined">
+    	{{LIST_GROUPS_JOINED}}
+    </div>
+
+    <a class="infoColumn view-more-anchor hide" align="center" onclick="listGroupsJoined();">
+    	@view_more@
+    </a>
+</div>
+<script>
+$(function(){
+	if ($(".list-groups-joined").find(".userColumn").length > 0)
+	{
+		$(".view-more-anchor").removeClass("hide");
+	}
+});
+
+function listGroupsJoined() {
+	lastFollowId = $(".list-groups-joined").find(".userColumn:last").attr('data-user-id');
+	$.get(
+		Sk_requestPath(),
+		{
+			t: "user",
+			a: "list_groups_joined",
+			timeline_id: {{TIMELINE_ID}},
+			before_id: lastFollowId
+		},
+		function(data)
+		{
+			if (data.status == 200)
+			{
+				if (data.html.length > 0)
+				{
+					$(".list-groups-joined").append(data.html);
+				}
+				else
+				{
+					$(".view-more-anchor").hide();
+				}
+			}
+		}
+	);
+}
+</script>

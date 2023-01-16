@@ -1,0 +1,26 @@
+<div id="boost-limit-popup" class="popupOverlay">
+    <div class="popupContainer">
+        <div class="popupHeader">
+            <div class="floatLeft">
+                <i class="fa fa-info-circle"></i> @oops@!
+            </div>
+
+            <div class="floatRight">
+                <i class="fa fa-times-circle" onclick="Sk_popupClear();"></i>
+            </div>
+
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="popupContent">
+            @you_can_boost_maximum_num_posts@
+        </div>
+
+        <div class="popupButtons">
+            <button class="btn btnBlue" onclick="Sk_popupClear();">@okay@</button>
+        </div>
+    </div>
+</div>
+<script>
+$("#boost-limit-popup").fadeIn('fast');
+</script>

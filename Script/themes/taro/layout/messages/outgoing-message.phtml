@@ -1,0 +1,15 @@
+<div id="message-{{MESSAGE_ID}}" class="messageJar outgoingMessage" data-message-id="{{MESSAGE_ID}}">
+    <div class="textContainer floatRight">
+        {{MESSAGE_TEXT}}
+        {{MESSAGE_MEDIA}}
+        {{MESSAGE_SEEN}}
+
+        <div class="messageButtons">
+	    	<a alt-title-top="@delete_message@">
+	    		<i class="fa fa-trash cursorPointer messageDeleteIcon" data-icon="trash" onclick="Sk_confirmMessageDelete({{MESSAGE_ID}});"></i>
+	    	</a>
+	    </div>
+    </div>
+
+    <div class="floatClear"></div>
+</div>

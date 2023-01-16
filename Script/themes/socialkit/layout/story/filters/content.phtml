@@ -1,0 +1,57 @@
+<div class="storyFilters">
+    {{FILTER_ALL}}
+
+    {{FILTER_TEXTS}}
+
+    {{FILTER_PHOTOS}}
+
+    {{FILTER_VIDEOS}}
+
+    {{FILTER_AUDIOS}}
+
+    {{FILTER_PLACES}}
+
+    {{FILTER_LIKES}}
+
+    {{FILTER_SHARES}}
+
+    {{FILTER_OTHERS}}
+</div>
+<script>
+function Sk_filterStories(type, uid, tag)
+{
+    if (typeof(tag) === "object") iconProgress($(tag).find("i"));
+    
+    sendData = new Object();
+    sendData.t = 'post';
+    sendData.a = 'filter';
+    sendData.type = type;
+    
+    if (typeof(uid) !== "undefined")
+    {
+        sendData.timeline_id = uid;
+        $(".stories-container").attr('data-story-timeline', uid);
+    }
+    
+    $(".stories-container").attr("data-story-type", type).find(".load-btn").fadeOut("fast");
+    
+    $.get(Sk_requestPath(), sendData, function (data)
+    {
+        if (typeof(tag) === "object") iconProgress($(tag).find("i"));
+        if (data.status == 200)
+        {
+            $(".storyFilters").find("a").removeClass("green");
+            $(tag).addClass("green");
+            $(".stories-container")
+                .find(".stories-wrapper")
+                    .html(data.html)
+                .end()
+                .find(".load-btn")
+                    .fadeIn("fast").attr("onclick", "SK_loadOldStories();").html('<i class="fa fa-align-justify hide"></i> View previous posts');
+        }
+        
+        $(".story-filters-wrapper").find(".filter-active").removeClass("filter-active");
+        $(".story-filters-wrapper").find("." + type + "-wrapper").addClass("filter-active");
+    });
+}
+</script>

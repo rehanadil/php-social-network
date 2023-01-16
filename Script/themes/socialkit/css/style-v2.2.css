@@ -1,0 +1,40 @@
+textarea.edit-post{
+	width: 94.5%;
+    height: 50px;
+    margin: 10px 10px -4px;
+	display: none;
+}
+div.edit-post-submit{
+	background: rgba(160, 183, 185, 0.34);
+    margin: 0 10px 10px;
+    padding: 3px;
+    text-align: right;
+	display: none;
+}
+div.edit-post-submit button{
+	margin: 0;
+}
+div.comment-imageView{
+	margin: 8px 0;
+}
+div.comment-imageView img{
+	width: 50%;
+	height: auto;
+}
+form.comment-textarea i.img-upload-icon{
+	position: absolute;
+    right: 8px;
+    top: 10px;
+    cursor:pointer;
+    opacity: 0.75;
+}
+form.comment-textarea i.img-upload-icon:hover{
+	opacity: 1;
+}
+form.comment-textarea div.photo-preview{
+	display: none;
+	padding: 0 0 6px 0;
+}
+form.comment-textarea div.photo-preview img{
+	width: 50%;
+}

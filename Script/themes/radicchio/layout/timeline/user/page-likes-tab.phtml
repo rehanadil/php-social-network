@@ -1,0 +1,48 @@
+<div class="listJar">
+    <div class="multiTabJar">
+        <div class="boldTab"><i class="fa fa-cubes"></i> @liked_pages_label@</div>
+    </div>
+
+    <div class="list-page-likes">
+    	{{LIST_PAGE_LIKES}}
+    </div>
+
+    <a class="infoColumn view-more-anchor hide" align="center" onclick="listPageLikes();">
+    	@view_more@
+    </a>
+</div>
+<script>
+$(function(){
+	if ($(".list-page-likes").find(".userColumn").length > 0)
+	{
+		$(".view-more-anchor").removeClass("hide");
+	}
+});
+
+function listPageLikes() {
+	lastFollowId = $(".list-page-likes").find(".userColumn:last").attr('data-user-id');
+	$.get(
+		Sk_requestPath(),
+		{
+			t: "user",
+			a: "list_page_likes",
+			timeline_id: {{TIMELINE_ID}},
+			before_id: lastFollowId
+		},
+		function(data)
+		{
+			if (data.status == 200)
+			{
+				if (data.html.length > 0)
+				{
+					$(".list-page-likes").append(data.html);
+				}
+				else
+				{
+					$(".view-more-anchor").hide();
+				}
+			}
+		}
+	);
+}
+</script>

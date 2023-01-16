@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SocialKit Android Webview</string>
+    <string name="url">https://demo.socialkit.net/follow/</string>
+</resources>

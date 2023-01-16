@@ -1,0 +1,93 @@
+<div id="callingAudio-{{CALL_ID}}" class="popupOverlay" data-manual="yes">
+    <div class="audioCallJar popupContainer">
+        <div class="callingJar">
+            <img src="{{RECEIVER_AVATAR_URL}}" width="64px">
+
+            <div class="receiverInfo">
+                <div class="receiverName">{{RECEIVER_NAME}}</div>
+                <div class="receiverUsername">@{{RECEIVER_USERNAME}}</div>
+            </div>
+
+            <div class="callingText"><i class="fa fa-phone"></i> <span>@calling@</span>...</div>
+            
+            <div class="popupButtons buttonJar">
+                <button class="btn btnRed cancel"><i class="fa fa-times"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+    <audio preload="auto" autoplay="yes" loop="yes">
+        <source src="{{CONFIG_THEME_URL}}/sounds/outgoing_audio_call.ogg" type="audio/ogg">
+        <source src="{{CONFIG_THEME_URL}}/sounds/outgoing_audio_call.mp3" type="audio/mpeg">
+        <source src="{{CONFIG_THEME_URL}}/sounds/outgoing_audio_call.wav" type="audio/wav">
+    </audio>
+    <script>
+    var callingAudioPopup = $("#callingAudio-{{CALL_ID}}");
+    var callingAudio_cancelButton = callingAudioPopup.find("button.cancel");
+
+    var callingAudioText = "@calling@";
+    var callingAudio_pleasewaitText = "@please_wait@";
+        callingAudioText = callingAudioText.replace(/[^A-Za-z0-9]/g, "");
+        callingAudio_pleasewaitText = callingAudio_pleasewaitText.replace(/[^A-Za-z0-9]/g, "");
+
+    var callingAudio_interval;
+    var callingAudio_toggleText = setInterval(function(){
+        callingAudioSpan = callingAudioPopup.find(".callingText").find("span");
+        callingAudio_currentText = callingAudioSpan.text().replace(/[^A-Za-z0-9]/g, "");
+        (callingAudio_currentText === callingAudioText) ? callingAudioSpan.text("@please_wait@") : callingAudioSpan.text("@calling@");
+    }, 4650);
+    
+    callingAudio_cancelButton.click(function(){
+        $.ajax({
+            type: 'GET',
+            url: Sk_requestPath(),
+            data: {
+                t: "audio_call",
+                a: "cancel",
+                id: {{CALL_ID}}
+            },
+            dataType: "json",
+            beforeSend: function()
+            {
+                callingAudio_cancelButton.attr("disabled", true);
+                clearInterval(callingAudio_toggleText);
+                clearInterval(callingAudio_interval);
+                setTimeout(function(){
+                    Sk_popupClear();
+                }, 100);
+            }
+        });
+    });
+    callingAudio_interval = setInterval(function(){
+        $.get(
+            Sk_requestPath(),
+            {
+                t: "audio_call",
+                a: "call_status",
+                id: {{CALL_ID}}
+            },
+            function(data)
+            {
+                if (data.status === 200)
+                {
+                    clearInterval(callingAudio_interval);
+                    Sk_popupClear();
+                    $(document.body).append(data.html);
+                }
+                else if (data.status === 401)
+                {
+                    clearInterval(callingAudio_toggleText);
+                    callingAudioPopup.find(".callingText").html('<i class="fa fa-times"></i> <span>@call_denied@</span>');
+                }
+            }
+        );
+    }, 2000);
+    setTimeout(function(){
+        clearInterval(callingAudio_interval);
+        callingAudioPopup.find(".callingText").html('<i class="fa fa-phone"></i> <span>@no_answer@</span>');
+        callingAudioPopup.fadeOut('fast', function(){
+            $(this).remove();
+        });
+    }, 45000);
+    callingAudioPopup.fadeIn("fast");
+    </script>
+</div>

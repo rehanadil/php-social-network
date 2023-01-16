@@ -1,0 +1,52 @@
+<div class="storyPrivacyContainer cursorPointer" onclick="javascript:$('.storyPrivacies').fadeToggle('fast');">
+	<i class="fa fa-globe storyPrivacyIcon"></i>
+	<span class="storyPrivacyTitle">@public@</span>
+
+	<div class="storyPrivacies">
+		<a class="publicPrivacy">
+			<input class="cursorPointer" type="radio" name="post_privacy" value="public">
+			<i class="fa fa-globe"></i>
+			<span>@public@</span>
+			<small>@public_privacy_description@</small>
+		</a>
+
+		<a class="friendsPrivacy">
+			<input class="cursorPointer" type="radio" name="post_privacy" value="friends">
+			<i class="ski ski-friends"></i>
+			<span>{{FOLLOWING_PRIVACY_TITLE}}</span>
+			<small>{{FOLLOWING_PRIVACY_DESCRIPTION}}</small>
+		</a>
+	</div>
+</div>
+<script>
+var storyPrivacyAllowed = {{USER_SUBSCRIPTION_PLAN_STORY_PRIVACY}};
+var storyDefaultPrivacy = "{{CONFIG_STORY_DEFAULT_PRIVACY}}";
+
+if (storyDefaultPrivacy === "friends")
+{
+	$(".friendsPrivacy input").attr("checked", true);
+	$(".storyPrivacyIcon").removeClass('fa fa-globe').addClass('ski ski-friends');
+	$(".storyPrivacyTitle").html($(".friendsPrivacy").find("span").html());
+}
+
+$(document).on("change", "input[name='post_privacy']", function(){
+	if (storyPrivacyAllowed == 0)
+	{
+		window.location = "{{SUBSCRIPTION_UPGRADE_URL}}";
+	}
+	else
+	{
+		$(".storyPrivacies").fadeOut('fast');
+		if ($("input[name='post_privacy']:checked").val() === "friends")
+		{
+			$(".storyPrivacyIcon").removeClass('fa fa-globe').addClass('ski ski-friends');
+			$(".storyPrivacyTitle").html($(".friendsPrivacy").find("span").html());
+		}
+		else
+		{
+			$(".storyPrivacyIcon").removeClass('ski ski-friends').addClass('fa fa-globe');
+			$(".storyPrivacyTitle").html($(".publicPrivacy").find("span").html());
+		}
+	}
+});
+</script>

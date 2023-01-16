@@ -1,0 +1,19 @@
+<div class="form-input-wrapper">
+        <label class="floatLeft span20">
+            @group_timeline_post_privacy_label@:
+        </label>
+
+        <div class="input floatLeft span65">
+            <select name="timeline_post_privacy">
+                <option value="members"{{POST_PRIVACY_MEMBERS_ATTR}}>
+                    @group_members_label@
+                </option>
+
+                <option value="admins"{{POST_PRIVACY_ADMINS_ATTR}}>
+                    @group_admins_label@
+                </option>
+            </select>
+        </div>
+
+        <div class="floatClear"></div>
+    </div>

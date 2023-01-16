@@ -1,0 +1,77 @@
+<div id="plan_{{PLAN_ID}}_downgradePopup" class="confirmDowngradePopup popupOverlay">
+    <div class="confirmDowngradeJar popupContainer">
+        <div class="headerJar popupHeader">
+            <div class="floatLeft">
+                <i class="fa fa-info-circle"></i> @confirm_downgradation@
+            </div>
+
+            <div class="floatRight">
+                <i class="fa fa-times-circle"></i>
+            </div>
+
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="confirmJar popupContent">
+            {{ARE_YOU_SURE}}
+        </div>
+
+        <div class="buttonJar popupButtons">
+            <button class="downgrade btn btnYellow"><i class="fa fa-arrow-circle-down"></i> @plan_downgrade_label@</button>
+            <button class="cancel btn btnBlue">@cancel@</button>
+        </div>
+    </div>
+    <script>
+    downgradePopup = $('#plan_{{PLAN_ID}}_downgradePopup');
+    downgradeButton = downgradePopup.find('button.downgrade');
+    cancelButton = downgradePopup.find('button.cancel');
+
+    cancelButton.click(function()
+    {
+        downgradePopup.fadeOut('fast', function()
+        {
+            $(this).remove();
+        })
+    });
+
+    downgradePopup.find('.fa-times-circle').click(function(){
+        cancelButton.click();
+    });
+
+    downgradeButton.click(function()
+    {
+        downgradeButton.attr('disabled', true).html('@please_wait@...');
+        setTimeout(function()
+        {
+            cancelButton.fadeOut('fast', function()
+            {
+                downgradeButton.removeClass('btnYellow').addClass('btnGreen');
+                $.post(
+                    Sk_requestPath() + '?t=subscription_plans&a=downgrade',
+                    {
+                        plan_id: {{PLAN_ID}}
+                    },
+                    function (data)
+                    {
+                        if (data.status === 200)
+                        {
+                            if (data.type === "stripe")
+                            {
+                                downgradeButton.attr('disabled', false).html('<i class="fa fa-check-circle"></i> @downgradation_successful@');
+                                setTimeout(function()
+                                {
+                                    window.location = data.url;
+                                }, 1500);
+                            }
+                            else if (data.type === "paypal")
+                            {
+                                window.location = data.url;
+                            }
+                        }
+                    }
+                );
+            });
+        }, 200);
+    });
+    </script>
+</div>

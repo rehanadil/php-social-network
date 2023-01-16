@@ -1,0 +1,110 @@
+<script src="{{CONFIG_THEME_URL}}/javascript/jquery.1.10.2.min.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/jquery.ui.touch-punch.min.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/jquery-timeago-full.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/jquery-timeago-short.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/jquery.form.min.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/datetimepicker.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/simplecolorpicker.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/twilio-common.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/twilio-conversations.js"></script>
+<script src="https://media.twiliocdn.com/sdk/js/video/releases/1.0.0/twilio-video.min.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/jquery.mentions.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/mediaelementjs/mediaelement-and-player.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/autosize.js"></script>
+<script src="{{CONFIG_THEME_URL}}/javascript/script.js"></script>
+<script>
+var historyState = 0;
+function Sk_requestPath()
+{
+    return "{{REQUEST_SOURCE}}";
+}
+function Sk_pagePath()
+{
+    return "{{PAGE_SOURCE}}";
+}
+function iconProgress(e)
+{
+    pi = $(e);
+    di = pi.attr('data-icon');
+
+    if (pi.hasClass("hide")
+        || pi.hasClass("hidden"))
+    {
+        pi.toggle();
+    }
+
+    if (pi.hasClass("skemoji"))
+    {
+        if (pi.hasClass('fa-spinner'))
+        {
+            pi.removeClass('fa fa-spinner fa-spin').addClass('skemoji-' + di);
+        }
+        else
+        {
+            pi.removeClass('skemoji-' + di).addClass('fa fa-spin fa-spinner');
+        }
+    }
+    else if (pi.hasClass("ski"))
+    {
+        if (pi.hasClass('fa-spinner'))
+        {
+            pi.removeClass('fa fa-spinner fa-spin').addClass('ski-' + di);
+        }
+        else
+        {
+            pi.removeClass('ski-' + di).addClass('fa fa-spin fa-spinner');
+        }
+    }
+    else if (pi.hasClass("fa"))
+    {
+        if (pi.hasClass('fa-spinner'))
+        {
+            pi.removeClass('fa-spinner fa-spin').addClass('fa-' + di);
+        }
+        else
+        {
+            pi.removeClass('fa-' + di).addClass('fa-spin fa-spinner');
+        }
+    }
+}
+
+function SK_checkUsername(query,uid,el,full)
+{
+    el = $(el);
+    $.get(
+        Sk_requestPath(),
+        {
+            t: "username",
+            a: "check",
+            q: query,
+            timeline_id: uid
+        },
+        function(data)
+        {
+            target_html = "";
+            if (data.status === 200)
+            {
+                target_html = (full == 1) ? '<span style="color: #94ce8c;"><i class="icon-ok"></i> @username_available@</span>' : '<span style="color: #94ce8c;"><i class="icon-ok"></i></span>';
+            }
+            else if (data.status === 201)
+            {
+                target_html = (full == 1) ? '<span style="color: #94ce8c;">@username_this_is_you@</span>' : '';
+            }
+            else if (data.status === 410)
+            {
+                target_html = (full == 1) ? '<span style="color: #ee2a33;"><i class="icon-remove"></i> @username_not_available@</span>' : '<span style="color: #ee2a33;"><i class="icon-remove"></i></span>';
+            }
+            else if (data.status === 406)
+            {
+                target_html = (full == 1) ? '<span style="color: #ee2a33;"><i class="icon-remove"></i> @username_requirements@</span>' : '<span style="color: #ee2a33;"><i class="icon-remove"></i></span>';
+            }
+
+            if (target_html.length > 0) el.html("").hide().html(target_html).show();
+        }
+    );
+}
+</script>
+
+{{POP_STATE}}

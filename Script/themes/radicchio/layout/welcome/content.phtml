@@ -1,0 +1,474 @@
+<div class="welcomeBackground">
+    <div id="bgImage" style="background:url('{{WBG_IMAGE_URL}}') no-repeat;"></div>
+
+    <video playsinline autoplay muted loop poster="{{WBG_IMAGE_URL}}" id="bgVideo" style="background:url('{{WBG_IMAGE_URL}}') no-repeat;">
+      <source src="{{WBG_VIDEO_URL}}" type="video/mp4">
+    </video>
+
+    <div class="welcomeBgImage"></div>
+</div>
+
+<div class="welcomeFormContainer">
+    <div class="welcomeKitLogo">
+        <img src="{{CONFIG_THEME_URL}}/images/logo/welcome.png">
+    </div>
+
+    <div class="welcomeForm">
+        {{PASSWORD_RESET_FORM}}
+
+        <form id="loginForm" method="post">
+            <div class="formInfo"></div>
+
+            <div id="loginUsernameInput" class="welcomeInput">
+                <i class="ski ski-user"></i>
+                <input id="loginId" type="text" name="login_id" placeholder="@login_id_label@" autocomplete="off" required>
+            </div>
+
+            <div id="loginPasswordInput" class="welcomeInput">
+                <i class="fa fa-lock"></i>
+                <input id="loginPassword" type="password" name="login_password" placeholder="@password_label@" autocomplete="off" required>
+                <a data-expand="forgotForm" class="endInfo" data-tooltip="@forgot_password@?" onclick="javascript:event.stopPropagation();"><i class="fa fa-question-circle"></i></a>
+            </div>
+
+            <div class="switchInput">
+                <label class="switch">
+                    <input type="checkbox" name="keep_logged_in" value="1">
+
+                    <div class="slider round"></div>
+                </label>
+
+                <label class="keepLogged">@keep_me_logged_in@</label>
+            </div>
+
+            <button id="loginBtn"><i id="loginBtnIcon" class="fa fa-sign-in" data-icon="pencil-square"></i> @log_in@</button>
+
+            <p class="message signupMessage">@not_registered@? <a data-expand="signupForm">@create_an_account@</a></p>
+        </form>
+
+        <form id="forgotForm" method="post">
+            <div class="formInfo"></div>
+
+            <div id="forgotUsernameInput" class="welcomeInput">
+                <i class="ski ski-user"></i>
+                <input id="forgotId" type="text" name="forgotpass_id" placeholder="@forgot_password_input@" autocomplete="off" required>
+                <a data-expand="loginForm" class="endInfo" onclick="javascript:event.stopPropagation();"><i class="fa fa-reply"></i></a>
+            </div>
+
+            <button id="forgotBtn"><i id="forgotBtnIcon" class="fa fa-inbox" data-icon="pencil-square"></i> @reset_password_reset@</button>
+
+            <p class="message signupMessage">@not_registered@? <a data-expand="signupForm">@create_an_account@</a></p>
+        </form>
+
+        {{SIGNUP_FORM}}
+
+        <div id="socialLogins">
+          {{FACEBOOK_LOGIN}}
+          {{GOOGLE_LOGIN}}
+          {{TWITTER_LOGIN}}
+          {{INSTAGRAM_LOGIN}}
+        </div>
+    </div>
+
+    <h1 class="welcomeHeadings">
+      <ul class="headingTexts">
+        <li>@site_description@</li>
+        <li>@go_mobile_description@</li>
+        <li>@trending_description@</li>
+      </ul>
+    </h1>
+</div>
+
+{{WELCOME_FOOTER}}
+
+<div class="userProfiles">
+  <div class="userProfile first closeLeft">
+    <a><img></a>
+    <div class="msgWrap left">
+      <div class="msg"></div>
+    </div>
+  </div>
+
+  <div class="userProfile second farLeft">
+    <a><img></a>
+    <div class="msgWrap right">
+      <div class="msg"></div>
+    </div>
+  </div>
+
+  <div class="userProfile third closeLeft">
+    <a><img></a>
+    <div class="msgWrap left">
+      <div class="msg"></div>
+    </div>
+  </div>
+
+  <div class="userProfile fourth farLeft">
+    <a><img></a>
+    <div class="msgWrap right">
+      <div class="msg"></div>
+    </div>
+  </div>
+
+  <div class="userProfile fifth closeLeft">
+    <a><img></a>
+    <div class="msgWrap left">
+      <div class="msg"></div>
+    </div>
+  </div>
+
+
+  <div class="userProfile first closeRight">
+    <a><img></a>
+    <div class="msgWrap right">
+      <div class="msg"></div>
+    </div>
+  </div>
+
+  <div class="userProfile second farRight">
+    <a><img></a>
+    <div class="msgWrap left">
+      <div class="msg"></div>
+    </div>
+  </div>
+
+  <div class="userProfile third closeRight">
+    <a><img></a>
+    <div class="msgWrap right">
+      <div class="msg"></div>
+    </div>
+  </div>
+
+  <div class="userProfile fourth farRight">
+    <a><img></a>
+    <div class="msgWrap left">
+      <div class="msg"></div>
+    </div>
+  </div>
+
+  <div class="userProfile fifth closeRight">
+    <a><img></a>
+    <div class="msgWrap right">
+      <div class="msg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+if ($(window).width() > 1358 && $(window).height() > 640)
+{
+  var wbg_videos = {{WBG_VIDEOS}};
+  var wbg_images = {{WBG_IMAGES}};
+
+  var userProfileImages = {{USER_PROFILE_IMAGES}};
+  var userProfileIds = {{USER_PROFILE_IDS}};
+  var userProfileUrls = {{USER_PROFILE_URLS}};
+
+  var selectedUserIndex = 0;
+  var selectedUserId = 0;
+  var selectedUserText;
+  var selectedTextColor;
+  var userCurrentIds = [];
+  var userCurrentTexts = [];
+  var hiddenIndexes = [];
+
+  for (i = 1; i < 11; i++)
+  {
+    hiddenIndexes.push(i);
+  }
+
+  $.ajax({
+      type: 'GET',
+      url: '{{CONFIG_THEME_URL}}/json/welcome-texts.json',
+      data: {},
+      dataType: "json",
+      success: function(result)
+      {
+        userProfileTexts = [
+          "Don't tell people your dreams, SHOW THEM!",
+          "Life is better when you're laughing",
+          "Go for someone who is not only proud to have you but will also take every risk just to be with you.",
+          "Whatever you decide to do, make sure it makes you happy.",
+          "Never get rid of the person who understands you more than anyone else.",
+          "Be vigilant; guard your mind against negative thoughts",
+          "The happiness of your life depends on the quality of your thoughts",
+          "Remember that great love and great achievements involve great risk",
+          "The happiness of your life depends on the quality of your thoughts",
+          "Always stand up for what you believe in, even if it means standing alone.",
+          "The longest journey in a person's life is the journey inwards!",
+          "Don't wait for the perfect moment... Take the moment and make it perfect.",
+          "Smile more than you cry, give more than you take & love more than you hate.",
+          "When we seek to discover the best in others, we somehow bring out the best in ourselves.",
+          "A little inaccuracy sometimes saves a ton of explanation.",
+          "Good thing happen to those who wait, but the best things happen to those who fight for them.",
+          "Life is what it is... but it will become what you make it",
+          "Be yourself, not what others want you to be.",
+          "Nothing is impossible, the word itself says I'm possible!",
+          "Something that was so obvious in the end was just something overlooked in the beginning.",
+          "Sometimes all the words in the world can't describe a single feeling.",
+          "Everyday is a new beginning. Begin your day with a positive mindset to get positive results.",
+          "Everyone is not good, but there's something good in everyone.",
+          "Time, you can't keep it, but you can spend it.",
+          "You will learn that the best experience are made by mistake.",
+          "It is simple to be happy but its difficult to be simple.",
+          "We become what we think about.",
+          "Whatever happens, take responsibility."
+        ];
+      }
+  });
+
+  $.ajax({
+      type: 'GET',
+      url: '{{CONFIG_THEME_URL}}/json/welcome-text-colors.json',
+      data: {},
+      dataType: "json",
+      success: function(result)
+      {
+        userTextColors = result;
+      }
+  });
+
+  function nextUserProfile()
+  {
+    ci = Math.floor((Math.random() * userProfileIds.length) + 0);
+    if (userCurrentIds.indexOf(ci) >= 0)
+    {
+      return nextUserProfile();
+    }
+
+    selectedUserId = ci;
+  }
+
+  function nextUserText()
+  {
+    ci = Math.floor((Math.random() * userProfileTexts.length) + 0);
+    if (userCurrentTexts.indexOf(ci) >= 0)
+    {
+      return nextUserText();
+    }
+
+    selectedUserText = ci;
+  }
+
+  function nextTextColor()
+  {
+    ci = Math.floor((Math.random() * userTextColors.length) + 0);
+    if (ci == selectedTextColor)
+    {
+      return nextUserText();
+    }
+
+    selectedTextColor = userTextColors[ci];
+  }
+
+  function userProfileRefresh()
+  {
+    if (userProfileIds.length > 9)
+    {
+      $(".userProfile .msgWrap").fadeOut();
+
+      nextUserIndex();
+      nextUserText();
+      nextTextColor();
+      nextUserProfile();
+      userCurrentIds[selectedUserIndex] = selectedUserId;
+      userCurrentTexts[selectedUserIndex] = selectedUserText;
+
+      $(".userProfile:nth-child(" + selectedUserIndex +")")
+        .find("a").attr("href", userProfileUrls[selectedUserId])
+        .end()
+        .find("img").fadeTo(200,0.30, function() {
+            $(this).attr("src", userProfileImages[selectedUserId]);
+        }).fadeTo(200,1)
+        .end()
+        .find(".msg")
+        .text(userProfileTexts[selectedUserText])
+        .end()
+        .find(".msgWrap")
+        .css("background", selectedTextColor)
+        .fadeIn()
+        .end()
+        .fadeIn();
+      setTimeout(userProfileRefresh, 2500);
+    }
+  }
+
+  function nextUserIndex()
+  {
+    if ($(".userProfile:hidden").length > 0)
+    {
+      selectedHiddenIndex = Math.floor((Math.random() * hiddenIndexes.length) + 0);
+      r = hiddenIndexes[selectedHiddenIndex];
+      hiddenIndexes.splice(hiddenIndexes.indexOf(r), 1);
+      hiddenIndexes.filter(function (item) { return item != undefined }).join();
+    }
+    else
+    {
+      r = Math.floor((Math.random() * $(".userProfile").length) + 1);
+    }
+    
+    if (r == selectedUserIndex)
+    {
+      return nextUserIndex();
+    }
+
+    if (r > $(".userProfile").length) r = 1;
+    selectedUserIndex = r;
+  }
+
+  $(function(){
+    setTimeout(function(){
+      userProfileRefresh();
+    }, 1000);
+  });
+}
+
+if ($("#signupForm").length !== 1)
+{
+  $(".signupMessage").remove();
+}
+
+var isCaptchaFilled = true;
+
+if ($("#regCaptchaInput").length > 0)
+{
+  isCaptchaFilled = false;
+}
+
+$(".welcomeHeadings").textillate({
+  selector: ".headingTexts",
+  in: {
+    effect: "fadeInLeftBig"
+  },
+  out: {
+    effect: "fadeOutRightBig",
+    reverse: true
+  },
+  loop: true,
+  minDisplayTime: 2000
+});
+
+$("*[data-expand]").click(function(){
+  if ($("#" + $(this).attr("data-expand")).attr("id") === "signupForm")
+  {
+    $(".welcomeKitLogo,.welcomeHeadings").addClass("welcomeResponsive");
+  }
+  else
+  {
+    $(".welcomeKitLogo,.welcomeHeadings").removeClass("welcomeResponsive");
+  }
+
+  $('form').animate({
+    height: "hide",
+    opacity: "hide"
+  }, "slow");
+
+  $("#" + $(this).attr("data-expand")).animate({
+    height: "toggle",
+    opacity: "toggle"
+  }, "slow");
+});
+$(document).on("click", ".welcomeInput", function(){
+    $(this).find("input,textarea").focus();
+});
+$(document).on("focus", "input[type=text],input[type=password],textarea", function(){
+    $(this).parents(".welcomeInput").addClass("focused");
+});
+$(document).on("focusout", "input[type=text],input[type=password],textarea", function(){
+    $(this).parents(".welcomeInput").removeClass("focused");
+});
+
+$("#loginBtn").click(function(event){
+  event.preventDefault();
+  if ($("#loginId").val() === ""
+    && $("#loginPassword").val() === "")
+  {
+    $("#loginForm .formInfo").hide().addClass("error").html('<i class="fa fa-info-circle"></i> @error_empty_login@').fadeIn('fast');
+  }
+  else
+  {
+    $("#loginForm").ajaxSubmit({
+      url: Sk_requestPath() + "?t=login",
+      
+      beforeSend: function()
+      {
+        iconProgress($("#loginBtnIcon"));
+        $("#loginForm input,button").attr("disabled", true);
+      },
+          
+      success: function(responseText)
+      {
+        iconProgress($("#loginBtnIcon"));
+        if (responseText.status === 200)
+        {
+          $("#loginBtn").addClass("success").html('<i class="fa fa-check-circle"></i> @login_successful@').attr("disabled", false);
+          setTimeout(function(){
+            document.location = responseText.redirect_url;
+          }, 500);
+        }
+        else
+        {
+          $("#loginBtn").html('<i class="fa fa-info-circle"></i> @login_failed@');
+
+          if (responseText.error_type === "UNVERIFIED")
+          {
+            $("#loginForm .formInfo").hide().addClass("error").html('<i class="fa fa-info-circle"></i> @error_verify_email@').fadeIn('fast');
+          }
+          else if (responseText.error_type === "INCORRECT_PASSWORD")
+          {
+            $("#loginForm .formInfo").hide().addClass("error").html('<i class="fa fa-info-circle"></i> @incorrect_password@').fadeIn('fast');
+          }
+          else if (responseText.error_type === "NO_USER_FOUND")
+          {
+            $("#loginForm .formInfo").hide().addClass("error").html('<i class="fa fa-info-circle"></i> @no_user_found@').fadeIn('fast');
+          }
+
+          setTimeout(function(){
+            $("#loginBtn").html('<i id="loginBtnIcon" class="fa fa-sign-in"></i> @log_in@').attr("disabled", false);
+            $("#loginForm input,button").attr("disabled", false);
+
+            if (responseText.error_type === "INCORRECT_PASSWORD")
+            {
+              $("#loginPassword").val('').focus();
+            }
+            else if (responseText.error_type === "NO_USER_FOUND")
+            {
+              $("#loginId, #loginPassword").val('').focus();
+              $("#loginId").focus();
+            }
+          }, 1000);
+        }
+      }
+    });
+  }
+});
+
+$("#forgotBtn").click(function(){
+  $("#forgotForm").ajaxSubmit({
+    url: Sk_requestPath() + "?t=forgot_password",
+    
+    beforeSend: function()
+    {
+      iconProgress($("#forgotBtnIcon"));
+      $("#forgotForm input, #forgotForm button").attr("disabled", true);
+    },
+        
+    success: function(responseText)
+    {
+      if (responseText.status === 200)
+      {
+        $("#forgotForm .formInfo").hide().addClass("success").html('<i class="fa fa-check-circle"></i> @password_reset_mail_confirm@').fadeIn('fast');
+      }
+      else
+      {
+        if (responseText.error_type === "MAIL_UNKNOWN")
+        {
+          $("#forgotForm .formInfo").hide().addClass("error").html('<i class="fa fa-info-circle"></i> @password_reset_mail_unknown@').fadeIn('fast');
+        }
+      }
+    }
+  });
+});
+$(document).on("click", ".footerLink", function(){
+  $(this).find(".dropup").slideToggle('fast');
+});
+</script>

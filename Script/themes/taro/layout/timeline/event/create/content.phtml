@@ -1,0 +1,161 @@
+<div class="page-margin"></div>
+
+{{PAGE_NAVIGATION}}
+
+<div class="floatLeft span52">
+    <form class="create-event-form" method="post">
+        <div class="form-container">
+            <div class="multiTabJar">
+                <div class="boldTab">
+                    <i class="fa fa-calendar"></i>
+                    @event_create_label@
+                </div>
+            </div>
+
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">@event_name_label@:</label>
+                
+                <div class="input floatLeft span70">
+                    <input type="text" value="@event_name_textarea_label@" placeholder="@event_name_textarea_label@" data-placeholder="@event_name_textarea_label@" onkeyup="SK_generateUsername(this.value);" data-copy-to=".event-name-input">
+                    
+                    <input class="event-name-input" type="hidden" name="event_name">
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">@event_location_label@:</label>
+                
+                <div class="input floatLeft span70">
+                    <input type="text" name="event_location" value="@event_location_textarea_label@" placeholder="@event_location_textarea_label@" data-placeholder="@event_location_textarea_label@">
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">@event_start_time@:</label>
+                
+                <div class="input floatLeft span70">
+                    <input type="text" name="start_date" id="start-date" value="{{CURRENT_DATE}}" style="width:30%;margin-right:8px;">
+                    <input type="text" name="start_time" id="start-time" value="{{CURRENT_TIME}}" style="width:30%;">
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">@event_end_time@:</label>
+                
+                <div class="input floatLeft span70">
+                    <input type="text" name="end_date" id="end-date" value="{{FINISH_DATE}}" style="width:30%;margin-right:8px;">
+                    <input type="text" name="end_time" id="end-time" value="{{FINISH_TIME}}" style="width:30%;">
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="floatLeft span20">
+                    @event_description_label@:
+                </label>
+                
+                <div class="input floatLeft span70">
+                    <textarea valign="top" name="event_descr" placeholder="@event_description_textarea_label@" data-placeholder="@event_description_textarea_label@">@event_description_textarea_label@</textarea>
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+            
+            <div class="form-input-wrapper" style="display:none;">
+                <label class="floatLeft span20">
+                    @privacy_label@:
+                </label>
+                
+                <div class="input floatLeft span70">
+                    <div style="margin-bottom: 15px;">
+                        <input valign="top" type="radio" name="event_privacy" value="0" checked>
+
+                        <label><i class="fa fa-globe"></i> @public_event_label@</label>
+
+                        <div class="short-descr">
+                            @public_event_description@.
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <input valign="top" type="radio" name="event_privacy" value="1">
+
+                        <label><i class="fa fa-lock"></i> @private_event_label@</label>
+
+                        <div class="short-descr">
+                            @private_event_description@.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="floatClear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <button id="createEventBtn" class="active">
+                    <i id="createEventBtnIcon" class="fa fa-check hide"></i>
+                    @event_create_label@
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="floatRight span30">
+    {{USER_SUGGESTIONS}}
+
+    {{PAGE_SUGGESTIONS}}
+
+    {{GROUP_SUGGESTIONS}}
+    
+    {{TRENDINGS}}
+    
+    {{EVENT_BAR}}
+    
+    {{CONFIG_AD_PLACE_HOME}}
+
+    {{SIDEBAR_FOOTER}}
+</div>
+
+<div class="floatClear"></div>
+
+<script>
+$('#start-date, #end-date').datetimepicker({
+    timepicker:false,
+    format:'Y/m/d'
+});
+
+$('#start-time, #end-time').datetimepicker({
+    datepicker:false,
+    format:'h:i A'
+});
+
+$(function(){
+    autosize($("textarea"));
+    $('form.create-event-form').ajaxForm({
+        url: Sk_requestPath() + '?t=event&a=create',
+        
+        beforeSend: function()
+        {
+            iconProgress($("#createEventBtnIcon"));
+        },
+
+        success: function(responseText)
+        {
+            iconProgress($("#createEventBtnIcon"));
+
+            if (responseText.status === 200)
+            {
+                window.location = responseText.url;
+            }
+        }
+    });
+});
+</script>

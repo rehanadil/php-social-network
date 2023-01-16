@@ -1,0 +1,10 @@
+<div class="avatar-change-wrapper">
+    <i class="fa fa-camera" title="@change_avatar_label@" onclick="javascript:$('.change-avatar-input').click();"></i>
+</div>
+
+<form class="change-avatar-form hidden" method="post" enctype="multipart/form-data" action="{{CONFIG_REQUEST_SOURCE}}?t=avatar&a=post_upload">
+    <input class="change-avatar-input hidden" type="file" name="image" accept="image/jpeg,image/png" onchange="javascript:$('form.change-avatar-form').submit();">
+    <input name="timeline_id" value="{{TIMELINE_ID}}" type="hidden">
+</form>
+
+<div class="avatar-progress-wrapper"></div>

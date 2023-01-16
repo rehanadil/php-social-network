@@ -1,0 +1,12 @@
+<div class="form-input-wrapper">
+        <label class="floatLeft span20">
+            @username_label@:
+        </label>
+
+        <div class="input floatLeft span65">
+            <input type="text" name="username" value="{{TIMELINE_USERNAME}}" autocomplete="off" onkeyup="SK_checkUsername(this.value,{{TIMELINE_ID}},'.check-username-result',true);">
+            <div class="check-username-result ajax-result"></div>
+        </div>
+
+        <div class="floatClear"></div>
+    </div>

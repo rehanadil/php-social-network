@@ -1,0 +1,90 @@
+<form class="update-timeline-form" method="post">
+    <div class="form-container">
+        <div class="multiTabJar">
+            <div class="boldTab">
+                <i class="fa fa-inbox"></i>
+                @email_notifications_label@
+            </div>
+        </div>
+        
+        {{FOLLOW_EMAIL_ROW}}
+
+        {{FRIENDREQUEST_EMAIL_ROW}}
+        
+        <div class="form-input-wrapper">
+            <label>
+                <input type="checkbox" name="mailnotif_comment" value="yes" {{COMMENT_EMAIL_NOTIFICATION_CHECKED}}>
+                @email_notification_comment_label@
+            </label>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label>
+				<input type="checkbox" name="mailnotif_postlike" value="yes" {{POSTLIKE_EMAIL_NOTIFICATION_CHECKED}}>
+                @email_notification_postlike_label@
+            </label>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label>
+				<input type="checkbox" name="mailnotif_postshare" value="yes" {{POSTSHARE_EMAIL_NOTIFICATION_CHECKED}}>
+                @email_notification_postshare_label@
+            </label>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label>
+				<input type="checkbox" name="mailnotif_groupjoined" value="yes" {{GROUPJOINED_EMAIL_NOTIFICATION_CHECKED}}>
+                @email_notification_groupjoined_label@
+            </label>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label>
+				<input type="checkbox" name="mailnotif_pagelike" value="yes" {{PAGELIKE_EMAIL_NOTIFICATION_CHECKED}}>
+                @email_notification_pagelike_label@
+            </label>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label>
+				<input type="checkbox" name="mailnotif_message" value="yes" {{MESSAGE_EMAIL_NOTIFICATION_CHECKED}}>
+                @email_notification_message_label@
+            </label>
+        </div>
+
+        <div class="form-input-wrapper">
+            <label>
+				<input type="checkbox" name="mailnotif_timelinepost" value="yes" {{TIMELINEPOST_EMAIL_NOTIFICATION_CHECKED}}>
+                @email_notification_timelinepost_label@
+            </label>
+        </div>
+
+        <div class="form-input-wrapper">
+            <button class="active">
+                <i id="updateEmailNotificationsIcon" class="fa fa-lightbulb progress-icon hide"></i> 
+                @save_changes_button@
+            </button>
+        </div>
+    </div>
+
+    <input type="hidden" name="username" value="{{USER_USERNAME}}">
+    <input type="hidden" name="mailnotif_settings" value="yes">
+</form>
+
+<script>
+$('form.update-timeline-form').ajaxForm({
+    url: Sk_requestPath()+'?t=user&a=settings',
+    
+    beforeSend: function()
+    {
+        iconProgress($("#updateEmailNotificationsIcon"));
+    },
+    
+    success: function (responseText)
+    {
+        if (responseText.status === 200) location.reload();
+        iconProgress($("#updateEmailNotificationsIcon"));
+    }
+});
+</script>

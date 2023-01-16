@@ -1,0 +1,45 @@
+<form class="update-group-settings-form" method="post">
+<div class="form-container">
+    <div class="multiTabJar">
+        <div class="boldTab">
+            <i class="fa fa-gear"></i>
+            @group_settings_label@
+        </div>
+    </div>
+
+    {{USERNAME_HTML}}
+
+    {{NAME_HTML}}
+
+    {{ABOUT_HTML}}
+
+    {{GROUP_PRIVACY_HTML}}
+
+    {{ADD_PRIVACY_HTML}}
+
+    {{POST_PRIVACY_HTML}}
+    
+    <div class="form-input-wrapper">
+        <button class="active">
+            @save_changes_button@
+        </button>
+    </div>
+</div>
+<input name="timeline_id" value="{{TIMELINE_ID}}" type="hidden">
+</form>
+<script>
+$('form.update-group-settings-form').ajaxForm({
+    url: Sk_requestPath() + '?t=group&a=update_settings',
+    
+    beforeSend: function() {
+        $('form.update-group-settings-form').find('input[type="submit"]')
+        .val('Saving...');
+    },
+    success: function(responseText) {
+        
+        if (responseText.status == 200) {
+            window.location = responseText.url;
+        }
+    }
+});
+</script>

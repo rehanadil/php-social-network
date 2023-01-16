@@ -1,0 +1,116 @@
+<div class="floatLeft span35">
+	{{TIMELINE_BUTTONS}}
+	
+	<div class="eventInviteStatistics">
+		<table border="0" width="100%" cellspacing="5" cellpadding="5">
+			<tbody>
+				<tr>
+					<td align="center" width="32%">
+						<a class="goingStat" onclick="view_inviteactions('going');">
+							<span class="count">{{GOING_COUNT}}</span>
+							<br>
+							@event_going_label@
+						</a>
+					</td>
+					<td align="center" width="32%">
+						<a class="interestedStat" onclick="view_inviteactions('interested');">
+							<span class="count">{{INTERESTED_COUNT}}</span>
+							<br>
+							@event_interested_label@
+						</a>
+					</td>
+					<td align="center" width="32%">
+						<a class="invitedStat" onclick="view_inviteactions('invited');">
+							<span class="count">{{INVITED_COUNT}}</span>
+							<br>
+							@event_invited_label@
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+    <div class="listJar">
+    	<div class="multiTabJar">
+    		<div class="semiBoldTab lightColor">
+    			<i class="fa fa-inbox"></i>
+    			@invite_people_label@
+    		</div>
+    	</div>
+
+    	<div class="inputTextColumn">
+            <div class="inputContainer">
+                <i class="fa fa-search loadPeopleSearchIcon" data-icon="search"></i>
+                <input id="eventInviteInput" type="text" placeholder="@search_by_name_label@" onkeyup="searchEventInvite(this.value);">
+            </div>
+        </div>
+
+    	<div class="eventInvitePeopleWrapper">
+    		{{LIST_INVITES}}
+    	</div>
+    </div>
+</div>
+<script>
+function view_inviteactions(act) {
+	$.get(
+    	Sk_requestPath(),
+    	{
+    		t: "event",
+    		a: "view_inviteactions",
+    		action: act,
+    		event_id: {{TIMELINE_ID}}
+    	},
+    	function(data)
+    	{
+	        if (data.status == 200) {
+	            $(document.body)
+	                .append(data.html)
+	                .css('overflow','hidden');
+	            
+	            if ($('#mainHeaderJar').width() < 920) {
+	                $('.window-wrapper').css('margin-top',($(document).scrollTop()+10)+'px');
+	            }
+	        }
+    	}
+    );
+}
+function searchEventInvite(q) {
+	iconProgress($(".loadPeopleSearchIcon"));
+	$.get(
+		Sk_requestPath(),
+		{
+			t: "event",
+			a: "invite_search",
+			event_id: {{TIMELINE_ID}},
+			query: q
+		},
+		function(data)
+		{
+			iconProgress($(".loadPeopleSearchIcon"));
+			if (data.status === 200) $("div.eventInvitePeopleWrapper").html(data.html);
+		}
+	);
+}
+function eventInvite(uid) {
+	$('.userColumn[data-invite-id="' + uid + '"]').slideUp();
+    $.get(
+        Sk_requestPath(),
+        {
+            t: "event",
+            a: "invite",
+            event_id: {{TIMELINE_ID}},
+            timeline_id: uid
+        },
+        function(data)
+        {
+            if (data.status == 200)
+            {
+                $(".goingStat").find("span.count").text(data.going_count);
+                $(".interestedStat").find("span.count").text(data.interested_count);
+                $(".invitedStat").find("span.count").text(data.invited_count);
+            }
+        }
+    );
+}
+</script>

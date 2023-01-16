@@ -1,0 +1,49 @@
+<div id="block-user-{{BLOCK_ID}}" class="popupOverlay">
+    <div class="popupContainer">
+        <div class="popupHeader">
+            <div class="floatLeft">
+                <i class="fa fa-trash-o"></i> {{BLOCK_USER}}
+            </div>
+
+            <div class="floatRight">
+                <i class="fa fa-times-circle" onclick="Sk_popupClear();"></i>
+            </div>
+
+            <div class="floatClear"></div>
+        </div>
+
+        <div class="popupContent">
+            {{BLOCK_USER_CONFIRMATION}}
+        </div>
+
+        <div class="popupButtons">
+            <button class="btn btnBlue" onclick="Sk_popupClear();">@cancel@</button>
+            <button class="btn btnRed" onclick="Sk_blockUser({{BLOCK_ID}});"><i class="ski ski-user-minus"></i> @block@</button>
+        </div>
+    </div>
+</div>
+<script>
+function Sk_blockUser()
+{
+    $.ajax({
+        type: 'POST',
+        url: Sk_requestPath() + "?t=user&a=block",
+        data: {
+            id: {{BLOCK_ID}}
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            $("#block-user-{{BLOCK_ID}}").find(".btnRed").attr("disabled", true);
+        },
+        success: function(result)
+        {
+            if (result.status === 200)
+            {
+                window.location = result.url;
+            }
+        }
+    });
+}
+$("#block-user-{{BLOCK_ID}}").fadeIn('fast');
+</script>

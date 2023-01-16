@@ -1,0 +1,15 @@
+<div id="msg-{{MSG_ID}}" class="chatTxt outgoingMsg" name="msg-{{MSG_ID}}" data-msg-id="{{MSG_ID}}">
+    <div class="txtCntnr floatRight">
+        {{MSG_TXT}}
+        {{MSG_MEDIA}}
+        {{MSG_SEEN}}
+
+        <div class="msgBtns">
+	    	<a>
+	    		<i class="fa fa-trash cursorPointer msgDeleteIcon" data-icon="trash" onclick="Sk_confirmMsgDelete({{MSG_ID}});"></i>
+	    	</a>
+	    </div>
+    </div>
+
+    <div class="floatClear"></div>
+</div>

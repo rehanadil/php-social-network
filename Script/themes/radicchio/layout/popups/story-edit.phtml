@@ -1,0 +1,64 @@
+<div id="edit-story-{{STORY_ID}}" class="popupOverlay" data-manual="yes">
+    <div class="popupContainer">
+        <div class="popupHeader">
+            <div class="floatLeft">
+                <i class="fa fa-pencil"></i> @edit_story@
+            </div>
+
+            <div class="floatRight">
+                <i class="fa fa-times-circle" onclick="Sk_popupClear();"></i>
+            </div>
+
+            <div class="floatClear"></div>
+        </div>
+
+        <div id="edit-story-{{STORY_ID}}-text" class="popupContent" contenteditable="true" onkeyup="Sk_typeEditStory(event);">
+            {{STORY_EDIT_TEXT}}
+        </div>
+
+        <div class="popupButtons">
+            <button class="btn btnBlue" onclick="Sk_popupClear();">@cancel@</button>
+            <button class="btn btnYellow" onclick="Sk_editStory({{STORY_ID}});"><i class="fa fa-pencil"></i> @edit_story@</button>
+        </div>
+    </div>
+</div>
+<script>
+var editStory = $("#edit-story-{{STORY_ID}}");
+var editStoryContentEditable = $("#edit-story-{{STORY_ID}}-text");
+function Sk_editStory()
+{
+    contenteditableHtml = $.trim(editStoryContentEditable.html());
+    contenteditableHtml = contenteditableHtml.replace(/\<em data\-mention\=\"\@([0-9]+)\" contenteditable\=\"false\"\>(.*?)\<\/em\>/g, '@$1');
+
+    $.ajax({
+        type: 'POST',
+        url: Sk_requestPath() + '?t=post&a=edit&post_id=' + {{STORY_ID}},
+        data: {
+            edit_text: contenteditableHtml
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            $("#edit-story-{{STORY_ID}}").find(".btnYellow").attr("disabled", true);
+            setTimeout(function(){
+                Sk_popupClear();
+            }, 100);
+        },
+        success: function(result)
+        {
+            if (result.status === 200)
+            {
+                $("#story_{{STORY_ID}}").find('.textJar').after(result.html).remove();
+            }
+        }
+    });
+}
+function Sk_typeEditStory(event)
+{
+    
+}
+editStory.fadeIn('fast');
+editStoryContentEditable.mentionsInput({
+    source: Sk_requestPath() + "?t=search&a=mentions"
+});
+</script>

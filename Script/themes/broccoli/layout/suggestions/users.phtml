@@ -1,0 +1,46 @@
+<div class="listJar userSuggestionsJar">
+    <div class="headerJar multiTabJar">
+        <div class="floatLeft">
+            <div class="semiBoldTab lightColor">
+                <i class="ski-friends"></i> @user_follow_suggestions_label@
+            </div>
+        </div>
+
+        <div class="floatRight">
+            <a class="miniBoldTab cursorPointer" onclick="refreshUserSuggestions();" title="@refresh_label@">
+                <i class="fa fa-refresh progress-icon" data-default-icon="fa-refresh"></i>
+            </a>
+        </div>
+
+        <div class="floatClear"></div>
+    </div>
+
+    <div class="userSuggestions">
+        {{LIST_USERS}}
+    </div>
+</div>
+<script>
+function refreshUserSuggestions()
+{
+    mainJar = $('.userSuggestionsJar');
+    iconProgress(mainJar.find('i.fa-refresh'));
+    
+    $.get(
+        Sk_requestPath(),
+        {
+            t: 'search',
+            a: 'suggestions',
+            type: 'user'
+        },
+        function (data)
+        {
+            if (data.status == 200)
+            {
+                mainJar.find('.userSuggestions').html(data.html);
+            }
+            
+            iconProgress(mainJar.find('i.fa-refresh'));
+        }
+    );
+}
+</script>

@@ -1,0 +1,28 @@
+<div class="planDisplayContainer">
+    <div id="plan_{{PLAN_ID}}" class="planDisplayJar" data-current-plan="{{IS_CURRENT}}">
+		<div class="nameJar">
+			<img class="icon" src="{{ICON}}" data-default-icon="{{DEFAULT_ICON}}">
+			{{NAME}}
+		</div>
+
+		<div class="priceJar">
+			<span class="currency">{{CURRENCY}}</span>
+			<span class="price">{{PRICE}}</span>
+			<span class="cycle">/{{BILLING_CYCLE}}</span>
+		</div>
+
+		<ul class="featureJar">
+			{{FEATURES}}
+		</ul>
+
+		<div class="buyJar">
+			{{BUTTON}}
+		</div>
+	</div>
+</div>
+<script>
+$('#plan_{{PLAN_ID}}').css({
+	'background-color': '{{COLOR}}'
+});
+$('#plan_{{PLAN_ID}}').find('.priceJar, .buyJar button').css('color', '{{COLOR}}');
+</script>

@@ -1,0 +1,285 @@
+<script src="{{CONFIG_THEME_URL}}/javascript/datepicker.js"></script>
+<link href="{{CONFIG_THEME_URL}}/css/datepicker.css" rel="stylesheet">
+<style>
+.startContainer {
+	background: white;
+	border-radius: 8px;
+}
+.startHeader {
+	background: inherit;
+	padding: 15px 10px;
+	border-radius: 8px 8px 0 0;
+}
+.startSteps {
+	display: inline-block;
+	position: relative;
+	z-index: 2;
+}
+.startSteps:after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 10px;
+	right: 10px;
+	border-top: 1px dashed #81c0e6;
+	z-index: -1;
+}
+.startSteps span.step {
+	display: inline-block;
+	background: white;
+	color: #81c0e6;
+	font-weight: bold;
+	font-size: 15px;
+	border: 1px dashed #81c0e6;
+	padding: 8px 13px 9px;
+	margin: 0 10px;
+	z-index: 2;
+	border-radius: 100%;
+}
+.startSteps span.stepped {
+	background: #81c0e6;
+	color: white;
+}
+
+#startPhotoContainer {
+	display: block;
+	background: inherit;
+	text-align: center;
+	font-size: 40px;
+	color: #b0c4d0;
+	border: 3px dashed;
+	border-radius: 0 0 8px 8px;
+	cursor: pointer;
+	transition: all 100ms ease-in-out;
+}
+#startPhotoContainer label {
+	cursor: pointer;
+}
+#startPhotoContainer:hover {
+	color: #97abb7;
+}
+#startPhotoContainer input {
+	display: none;
+}
+#startPhotoContainer .profilePhotoContainer {
+	padding: 10px 0 10px 10px;
+}
+#startPhotoContainer .profilePhotoContainer img {
+	border-radius: 8px;
+	height: 250px;
+}
+#startPhotoContainer .floatRight {
+	padding: 100px;
+}
+
+#startBioContainer {
+	border-top: 1px solid rgba(99, 114, 144, .09);
+	padding: 0 15px 15px;
+}
+#startBioContainer h1 {
+	color: #4e5665;
+}
+#startBioContainer .bioInputContainer {
+	margin-bottom: 15px;
+}
+#startBioContainer .bioInput {
+	width: 52%;
+	display: inline-block;
+	background: white;
+	border: 1px solid rgba(99, 114, 144, .18);
+	border-radius: 8px;
+	padding-right: 5px;
+}
+#startBioContainer .bioInput span {
+	display: inline-block;
+	background: rgba(99, 114, 144, .14);
+	border-radius: 8px 0 0 8px;
+	padding: 10px;
+	font-size: 13px;
+	color: #8c97ad;
+}
+#startBioContainer .bioInput input {
+	width: 75%;
+	background: white;
+	border: 0;
+	padding: 9px 5px;
+}
+#startBioContainer .bioInput select {
+	width: 80%;
+	border: 0;
+}
+
+#startFollowContainer {
+	border-top: 1px solid rgba(99, 114, 144, .09);
+	padding: 0 15px 15px;
+}
+#startFollowContainer .followLi {
+	display: inline-block;
+	padding: 25px;
+}
+#startFollowContainer .checkJar {
+	margin-top: 15px;
+}
+#startFollowContainer .imageJar {
+	height: 48px;
+	position: relative;
+	width: 48px;
+}
+#startFollowContainer .imageJar img {
+	display: block;
+	border: 0;
+	width: 100%;
+	height: 100%;
+}
+#startFollowContainer .textJar {
+	margin: 1px 0 0 6px;
+	width: 91px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+#startFollowContainer .textJar strong {
+	display: inline-block;
+	color: #7d8696;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 91px;
+}
+#startFollowContainer .textJar small {
+	display: block;
+	color: #898f9c;
+	font-size: 80%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 91px;
+}
+
+#startDoneContainer {
+	border-top: 1px solid rgba(99, 114, 144, .09);
+	text-align: center;
+	padding: 10px 0 35px;
+}
+#startDoneContainer h1 {
+	padding: 20px 0;
+}
+
+.startPage {
+	display: none;
+}
+.startPage:first-of-type {
+	display: block;
+}
+.startBtn {
+	position: relative;
+	font-size: 14px !important;
+	font-weight: bold;
+	text-transform: uppercase;
+	padding: 8px 20px;
+	cursor: pointer;
+	border-top: 1px solid rgba(0, 0, 0, 0.05);
+	border-bottom: 2px solid rgba(0, 0, 0, 0.125);
+	border-left: 1px solid rgba(0, 0, 0, 0.05);
+	border-right: 1px solid rgba(0, 0, 0, 0.05);
+	border-radius: 30px;
+	outline: none;
+	transition: all 75ms ease-in-out;
+	background: rgb(229, 194, 62);
+	color: rgb(255, 255, 255);
+}
+.startBtn:disabled,
+.startBtn.disabled {
+	background: rgb(223, 223, 223) !important;
+	color: rgb(159, 159, 159) !important;
+	cursor: auto !important;
+	border: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+.continueBtn {
+	background: rgb(68, 216, 121) !important;
+}
+.followBtn {
+	display: none;
+	background: rgb(62, 168, 229) !important;
+}
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+	color: #aaa;
+}
+input:-moz-placeholder,
+textarea:-moz-placeholder {
+	color: #aaa;
+	opacity: 1;
+}
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+	color: #aaa;
+	opacity: 1;
+}
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+	color: #aaa;
+}
+
+/* Base for label styling */
+[type="checkbox"]:not(:checked),
+[type="checkbox"]:checked {
+	position: absolute;
+	left: -9999px;
+}
+[type="checkbox"]:not(:checked) + label,
+[type="checkbox"]:checked + label {
+	position: relative;
+	padding-left: 1.95em;
+	cursor: pointer;
+}
+/* checkbox aspect */
+[type="checkbox"]:not(:checked) + label:before,
+[type="checkbox"]:checked + label:before {
+	content: '';
+	position: absolute;
+	left: 0; top: 0;
+	width: 1em; height: 1em;
+	border: 1px solid #ccc;
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: inset 0 1px 3px rgba(0,0,0,.1);
+}
+/* checked mark aspect */
+[type="checkbox"]:not(:checked) + label:after,
+[type="checkbox"]:checked + label:after {
+	content: '✔';
+	position: absolute;
+	top: .18em; left: .19em;
+	font-size: 1.1em;
+	line-height: 0.8;
+	color: #5890ff;
+	transition: all .2s;
+}
+/* checked mark aspect changes */
+[type="checkbox"]:not(:checked) + label:after {
+	opacity: 0;
+	transform: scale(0);
+}
+[type="checkbox"]:checked + label:after {
+	opacity: 1;
+	transform: scale(1);
+}
+/* disabled checkbox */
+[type="checkbox"]:disabled:not(:checked) + label:before,
+[type="checkbox"]:disabled:checked + label:before {
+	box-shadow: none;
+	border-color: #bbb;
+	background-color: #ddd;
+}
+[type="checkbox"]:disabled:checked + label:after {
+	color: #999;
+}
+[type="checkbox"]:disabled + label {
+	color: #aaa;
+}
+/* hover style just for information */
+label:hover:before {
+	border-color: #4778d9 !important;
+}
+</style>

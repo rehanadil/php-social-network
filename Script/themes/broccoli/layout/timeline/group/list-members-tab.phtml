@@ -1,0 +1,77 @@
+<div class="listJar">
+    <div class="multiTabJar">
+        <div class="boldTab">
+            <i class="ski ski-friends"></i>
+            @group_members_label@
+        </div>
+    </div>
+
+    <div class="list-members">
+        {{LIST_MEMBER_USERLISTS}}
+    </div>
+
+    <a class="infoColumn view-more-anchor hide" align="center" onclick="listMembers();">
+        @view_more@
+    </a>
+</div>
+
+<script>
+$(function(){
+    if ($(".list-members").find(".userColumn").length > 0)
+    {
+        $(".view-more-anchor").removeClass("hide");
+    }
+});
+
+function listMembers() {
+    lastFollowId = $(".list-members").find(".userColumn:last").attr('data-user-id');
+    $.get(
+        Sk_requestPath(),
+        {
+            t: "user",
+            a: "list_group_members",
+            timeline_id: {{TIMELINE_ID}},
+            before_id: lastFollowId
+        },
+        function(data)
+        {
+            if (data.status == 200)
+            {
+                if (data.html.length > 0)
+                {
+                    $(".list-members").append(data.html);
+                }
+                else
+                {
+                    $(".view-more-anchor").hide();
+                }
+            }
+        }
+    );
+}
+
+function SK_removeGroupMember(group_id, member_id) {
+    $('.group-member-' + member_id).find('.removeBtn').text('@removing@..');
+    
+    $.post(Sk_requestPath() + '?t=group&a=remove_member', {group_id: group_id, member_id: member_id}, function (data) {
+        
+        if (data.status == 200) {
+            $('.group-member-' + member_id).slideUp(function () {
+                $(this).remove();
+            });
+        }
+    });
+}
+
+function SK_addGroupAdmin(group_id, admin_id) {
+    $('.group-member-' + admin_id).find('.makeAdminBtn').text('@making@..');
+    
+    $.post(Sk_requestPath() + '?t=group&a=add_admin', {group_id: group_id, admin_id: admin_id}, function (data) {
+        if (data.status == 200) {
+            $('.group-member-'+admin_id).slideUp(function () {
+                $(this).remove();
+            });
+        }
+    });
+}
+</script>

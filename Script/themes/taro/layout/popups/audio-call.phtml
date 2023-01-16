@@ -1,0 +1,213 @@
+<div id="audioCall-{{CALL_ID}}" class="popupOverlay" data-manual="yes">
+    <div class="audioCallJar popupContainer">
+        <div class="callingJar">
+            <img src="{{RECEIVER_AVATAR_URL}}" width="64px">
+            
+            <div class="receiverInfo">
+                <div class="receiverName">{{RECEIVER_NAME}}</div>
+                <div class="receiverUsername">@{{RECEIVER_USERNAME}}</div>
+            </div>
+
+            <div class="callingText"><i class="fa fa-phone"></i> <span>@connecting@...</span></div>
+
+            <div class="callTimer">
+                <span class="hours">00</span>:<span class="minutes">00</span>:<span class="seconds">00</span>
+            </div>
+
+            <div id="remoteMedia"></div>
+
+            <div class="popupButtons buttonJar">
+                <button id="endCall" class="btn btnRed">
+                  <i class="ski ski-phone-hang-up"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    var audiocallPopup = $("#audioCall-{{CALL_ID}}");
+    var seconds = 0;
+    var minutes = 0;
+    var hours = 0;
+    var timer;
+
+    audiocallPopup.fadeIn("fast");
+
+    var activeRoom;
+    var previewTracks;
+    var token = "{{ACCESS_TOKEN}}";
+    var identity = "{{CALL_ID}}";
+    var roomName = "{{ROOM}}";
+
+    // Attach the Tracks to the DOM.
+    function attachTracks(tracks, container) {
+      tracks.forEach(function(track) {
+        container.appendChild(track.attach());
+      });
+    }
+
+    // Attach the Participant's Tracks to the DOM.
+    function attachParticipantTracks(participant, container) {
+      var tracks = Array.from(participant.tracks.values());
+      attachTracks(tracks, container);
+    }
+
+    // Detach the Tracks from the DOM.
+    function detachTracks(tracks) {
+      tracks.forEach(function(track) {
+        track.detach().forEach(function(detachedElement) {
+          detachedElement.remove();
+        });
+      });
+    }
+
+    // Detach the Participant's Tracks from the DOM.
+    function detachParticipantTracks(participant) {
+      var tracks = Array.from(participant.tracks.values());
+      detachTracks(tracks);
+    }
+
+    // Check for WebRTC
+    if (!navigator.webkitGetUserMedia && !navigator.mozGetUserMedia) {
+      alert('WebRTC is not available in your browser.');
+    }
+
+    // When we are about to transition away from this page, disconnect
+    // from the room, if joined.
+    window.addEventListener('beforeunload', leaveRoomIfJoined);
+
+
+    // Bind button to join Room.
+    log("Joining room '" + roomName + "'...");
+    var connectOptions = {
+      name: roomName,
+      logLevel: 'debug'
+    };
+
+    if (previewTracks) {
+      connectOptions.tracks = previewTracks;
+    }
+
+    // Join the Room with the token from the server and the
+    // LocalParticipant's Tracks.
+    Twilio.Video.connect(token, connectOptions).then(roomJoined, function(error) {
+      log('Could not connect to Twilio: ' + error.message);
+    });
+
+    // Bind button to leave Room.
+    /*document.getElementById('button-leave').onclick = function() {
+    log('Leaving room...');
+    activeRoom.disconnect();
+    };*/
+
+
+    // Successfully connected!
+    function roomJoined(room) {
+      window.room = activeRoom = room;
+
+      $("#remoteMedia").empty();
+
+      log("Joined as '" + identity + "'");
+      //document.getElementById('button-join').style.display = 'none';
+      //document.getElementById('button-leave').style.display = 'inline';
+
+      $(".callingText").find("span").text("@call_in_session@");
+      timer = setInterval(function(){
+          seconds += 1;
+          
+          if (seconds > 59)
+          {
+              minutes += 1;
+              seconds = 0;
+          }
+
+          if (minutes > 59)
+          {
+              hours += 1;
+              minutes = 0;
+          }
+
+          $(".seconds").text(Sk_formatInt(seconds, 2));
+          $(".minutes").text(Sk_formatInt(minutes, 2));
+          $(".hours").text(Sk_formatInt(hours, 2));
+      }, 1000);
+
+      // Attach the Tracks of the Room's Participants.
+      room.participants.forEach(function(participant) {
+        log("Already in Room: '" + participant.identity + "'");
+        var previewContainer = document.getElementById('remoteMedia');
+        attachParticipantTracks(participant, previewContainer);
+      });
+
+      // When a Participant joins the Room, log the event.
+      room.on('participantConnected', function(participant)
+      {
+        log("Joining: '" + participant.identity + "'");
+      });
+
+      // When a Participant adds a Track, attach it to the DOM.
+      room.on('trackAdded', function(track, participant)
+      {
+        if (track.kind === "audio")
+        {
+          log(participant.identity + " added track: " + track.kind);
+          var previewContainer = document.getElementById('remoteMedia');
+          attachTracks([track], previewContainer);
+
+          $(document).on('click', '#endCall', function(e){
+              leaveRoomIfJoined();
+          });
+        }
+      });
+
+      // When a Participant removes a Track, detach it from the DOM.
+      room.on('trackRemoved', function(track, participant) {
+        log(participant.identity + " removed track: " + track.kind);
+        detachTracks([track]);
+      });
+
+      // When a Participant leaves the Room, detach its Tracks.
+      room.on('participantDisconnected', function(participant) {
+        log("Participant '" + participant.identity + "' left the room");
+        detachParticipantTracks(participant);
+        $("#endCall").attr("disabled", true);
+
+        $(".callingText").html('<i class="ski ski-phone-hang-up"></i> @call_ended@');
+      });
+
+      // Once the LocalParticipant leaves the room, detach the Tracks
+      // of all Participants, including that of the LocalParticipant.
+      room.on('disconnected', function() {
+        clearInterval(timer);
+        log('Left');
+        $("#endCall").attr("disabled", true);
+        if (previewTracks) {
+          previewTracks.forEach(function(track) {
+            track.stop();
+          });
+        }
+        detachParticipantTracks(room.localParticipant);
+        room.participants.forEach(detachParticipantTracks);
+        activeRoom = null;
+        
+        $(".callingText").html('<i class="ski ski-phone-hang-up"></i> @call_ended@');
+        setTimeout(function(){
+            location.reload();
+        }, 1000);
+      });
+    }
+
+    // Activity log.
+    function log(message) {
+      console.log(message);
+    }
+
+    // Leave Room.
+    function leaveRoomIfJoined() {
+      if (activeRoom) {
+        activeRoom.disconnect();
+        $(".callingText").html('<i class="ski ski-phone-hang-up"></i> @call_ended@</p>');
+      }
+    }
+    </script>
+</div>

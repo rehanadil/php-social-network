@@ -1,0 +1,60 @@
+<div id="storyPublisherHtml" contenteditable="true" placeholder="{{POSTBOX_PLACEHOLDER}}"></div>
+<textarea id="storyPublisherTextarea" name="text" style="display:none"></textarea>
+<script>
+var newStoryText;
+var newStoryHtml;
+
+$(document).on("focus", "#storyPublisherHtml", function(){
+	$(this).attr("data-focused", 1);
+});
+$(document).on("focusout", "#storyPublisherHtml", function(){
+	if ($(this).html().length == 0) $(this).removeAttr("data-focused");
+});
+
+$('#storyPublisherHtml').mentionsInput({
+	source: Sk_requestPath() + "?t=search&a=mentions"
+});
+
+function isUrl(s)
+{
+    var regexp = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i
+    return regexp.test(s);
+}
+$("#storyPublisherHtml").keyup(function(){
+	storyPreText = $(this).text();
+	
+	if (isUrl(storyPreText))
+	{
+		if ($(".storyPreviewHTML").length == 0)
+		{
+			$(".photo-wrapper").before('<div class="storyPreviewHTML" data-load="1"></div>');
+		}
+
+		if ($(".storyPreviewHTML").attr("data-load") == true)
+		{
+			$(".storyPreviewHTML").html('<div class="cssload-wrap"><div class="cssload-container"><span class="cssload-dots"></span><span class="cssload-dots"></span><span class="cssload-dots"></span><span class="cssload-dots"></span><span class="cssload-dots"></span><span class="cssload-dots"></span><span class="cssload-dots"></span><span class="cssload-dots"></span><span class="cssload-dots"></span><span class="cssload-dots"></span></div></div>');
+
+			$.post(
+				Sk_requestPath() + "?t=post&a=pre_url_preview",
+				{
+					text: storyPreText
+				},
+				function (data)
+				{
+					if (data.status == 200)
+					{
+						$(".storyPreviewHTML").html(data.html).attr("data-load", false);
+					}
+				}
+			);
+		}
+	}
+	else
+	{
+		if ($(".storyPreviewHTML").length == 1)
+		{
+			$(".storyPreviewHTML").html("").attr("data-load", true);
+		}
+	}
+});
+</script>

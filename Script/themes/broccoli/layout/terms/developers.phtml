@@ -1,0 +1,13 @@
+<div class="listJar">
+	<div class="multiTabJar">
+        <div class="boldTab">@api_documentation_label@ (@api_version_label@ {{API_VERSION}})</div>
+    </div>
+
+    <iframe class="api-iframe" src="{{CONFIG_SITE_URL}}/api/v{{API_VERSION}}/documentation.php" width="100%" frameborder="0" onload="adjustiFrameHeight(this);"></iframe>
+</div>
+<script>
+	function adjustiFrameHeight(elm)
+	{
+		$(elm).height($(elm).contents().height());
+	}
+</script>

@@ -1,0 +1,28 @@
+<div class="input-wrapper skemojiJar" data-group="C">
+</div>
+<script>
+$(function(){
+    $("#storyPublisherJar .skemojiJar").html(Sk_getFromStorage('Skemojis')).find("i").attr("onclick", "storyPublishEmoji(this);");
+});
+
+function storyPublishEmoji(emo)
+{
+	inputTag = $("#storyPublisherJar").find("#storyPublisherHtml");
+    inputVal = inputTag.html();
+    
+    if (typeof(inputTag.attr('placeholder')) != "undefined")
+    {
+        inputPlaceholder = inputTag.attr('placeholder');
+        
+        if (inputPlaceholder == inputVal)
+        {
+            inputTag.html('');
+            inputVal = inputTag.html();
+        }
+        
+    }
+
+    inputTag.append('<em class="' + $(emo).attr("class") + '" contenteditable="false"></em>');
+    caretAdjust(document.getElementById("storyPublisherHtml"));
+}
+</script>

@@ -1,0 +1,253 @@
+<div class="page-margin"></div>
+
+<div class="startContainer">
+	<div class="startHeader">
+		<div class="floatLeft">
+			<div class="startSteps">
+				<span class="step">1</span>
+				<span class="step">2</span>
+				<span class="step">3</span>
+			</div>
+		</div>
+
+		<div class="floatRight">
+			<button id="followBtn" class="startBtn followBtn">{{FOLLOW_ALL}}</button>
+			<button id="skipBtn" class="startBtn">@skip@</button>
+		</div>
+
+		<div class="floatClear"></div>
+	</div>
+
+	<div>
+		<div id="startPhotoContainer" class="startPage">
+			<label>
+				<div class="floatLeft">
+					<div class="profilePhotoContainer">
+						<img id="startPhotoPreview" src="{{CONFIG_USER_DEFAULT_AVATAR}}">
+					</div>
+				</div>
+
+				<div class="floatRight">
+					<i class="fa fa-camera"></i>
+					<span id="startPhotoUploadText">@start_upload_profile_photo@</span>
+				</div>
+
+				<div class="floatClear"></div>
+
+				<form id="startPhotoForm" method="post" enctype="multipart/form-data">
+					<input id="startPhotoFile" type="file" name="image" accept="image/*">
+					<input type="hidden" name="timeline_id" value="{{USER_ID}}">
+				</form>
+			</label>
+		</div>
+
+		<div id="startBioContainer" class="startPage">
+			<h1>@tell_us_more_about_yourself@</h1>
+
+			<form id="bioForm" method="post">
+				{{BIRTHDAY_INPUT}}
+
+				<div class="bioInputContainer">
+					<div class="bioInput">
+						<span><i class="fa fa-flag"></i> @country@</span>
+						<select id="bioCountryPicker" name="country"></select>
+					</div>
+				</div>
+
+				<div class="bioInputContainer">
+					<div class="bioInput">
+						<span><i class="fa fa-map-marker"></i> @current_city@</span>
+						<input type="text" name="current_city" placeholder="@where_do_you_live@?">
+					</div>
+				</div>
+
+				<div class="bioInputContainer">
+					<div class="bioInput">
+						<span><i class="fa fa-map-signs"></i> @hometown@</span>
+						<input type="text" name="hometown" placeholder="@where_are_you_from@?">
+					</div>
+				</div>
+
+				<div class="bioInputContainer">
+					<button id="bioSaveBtn" class="startBtn continueBtn">@save_and_continue@</button>
+				</div>
+			</form>
+		</div>
+
+		<div id="startFollowContainer" class="startPage">
+			<h1>{{FOLLOW_PEOPLE}}!</h1>
+
+			<form id="startFollowForm" method="post">{{FOLLOW_LI}}</form>
+		</div>
+
+		<div id="startDoneContainer" class="startPage">
+			<h1>@start_ready_to_go@!</h1>
+
+			<a id="doneBtn" class="startBtn continueBtn">@continue@</a>
+		</div>
+	</div>
+</div>
+<script>
+var step = 0;
+var countries = {{COUNTRIES}};
+var followAll = "{{FOLLOW_ALL}}";
+var followNone = "{{FOLLOW_NONE}}";
+var followNum = "{{FOLLOW_NUM}}";
+
+$("#skipBtn").click(function(){
+	step++;
+
+	$(".startPage").animate({
+		height: "hide",
+		opacity: "hide"
+	}, "slow");
+	$(".startPage:nth-of-type(" + (step+1) + ")").animate({
+		height: "toggle",
+		opacity: "toggle"
+	}, "slow");
+
+	$("#skipBtn").removeClass("continueBtn").text("@skip@");
+
+	if (step === 2)
+		$("#followBtn").show();
+	else
+		$("#followBtn").hide();
+
+	if (step === 3)
+		$("#skipBtn").hide();
+	else
+		$("#skipBtn").show();
+
+	for (i = 1; i <= step; i++)
+	{
+		$(".startSteps").find("span.step:nth-child(" + i + ")").addClass("stepped");
+	}
+});
+
+// Step 1
+$("#startPhotoFile").change(function(){
+	$("#startPhotoForm").ajaxSubmit({
+		url: Sk_requestPath() + '?t=avatar&a=new',
+		uploadProgress: function(event, position, total, percentComplete)
+		{
+			var percentVal = percentComplete+'%';
+			$("#startPhotoUploadText").html("@uploading@... (" + percentVal + ")");
+		},
+		success: function(responseText)
+		{
+			if (responseText.status === 200)
+			{
+				$("#startPhotoPreview").prop("src", responseText.avatar_url);
+				$("#startPhotoUploadText").html("@start_upload_profile_photo@");
+				$("#skipBtn").text("@continue@").addClass("continueBtn").prop("disabled", false);
+			}
+		}
+	});
+});
+
+// Step 2
+$('[data-toggle="datepicker"]').datepicker({
+	autoPick: true,
+	autoHide: true,
+	startView: 2,
+	endDate: new Date()
+});
+$.each(countries, function(i,co){
+	$optionTag = '<option value="' + i + '">' + co + '</option>';
+	$("#bioCountryPicker").append($optionTag);
+});
+$("#bioSaveBtn").click(function(e){
+	e.preventDefault();
+	$("#bioForm").ajaxSubmit({
+		url: Sk_requestPath()+'?t=user&a=settings',
+
+		beforeSend: function()
+		{
+			$("#bioSaveBtn").prop("disabled", true).text("@saving@...");
+		},
+
+		success: function(responseText)
+		{
+			if (responseText.status === 200)
+			{
+				step = 2;
+				$(".startPage").animate({
+					height: "hide",
+					opacity: "hide"
+				}, "slow");
+				$("#startFollowContainer").animate({
+					height: "toggle",
+					opacity: "toggle"
+				}, "slow");
+				$("#followBtn").show();
+				$(".startSteps").find("span.step:nth-child(1),span.step:nth-child(2)").addClass("stepped");
+			}
+		}
+	});
+})
+
+// Step 3
+$(".followCheck").change(function(){
+	if ($(".followCheck:checked").length === $(".followLi").length)
+	{
+		$("#followBtn").text(followAll).attr("disabled", false);
+	}
+	else if ($(".followCheck:checked").length === 0)
+	{
+		$("#followBtn").text(followNone).attr("disabled", true);
+	}
+	else
+	{
+		$("#followBtn").text(followNum.replace("{num}", $(".followCheck:checked").length)).attr("disabled", false);
+	}
+});
+$("#followBtn").click(function(){
+	$("#startFollowForm").ajaxSubmit({
+		url: Sk_requestPath() + '?t=start',
+		beforeSend: function()
+		{
+			$("#followBtn").attr("disabled", true).text("@following@...");
+		},
+		success: function(responseText)
+		{
+			step = 3;
+			$(".startPage").animate({
+				height: "hide",
+				opacity: "hide"
+			}, "slow");
+			$("#startDoneContainer").animate({
+				height: "toggle",
+				opacity: "toggle"
+			}, "slow");
+			$("#followBtn").hide();
+			$(".startSteps").find("span.step:nth-child(1),span.step:nth-child(2),span.step:nth-child(3)").addClass("stepped");
+		}
+	});
+});
+
+// Last step
+$("#doneBtn").click(function(){
+	$.ajax({
+        type: 'GET',
+        url: Sk_requestPath(),
+        data: {
+            t: "start",
+            a: "done"
+        },
+        dataType: "json",
+        beforeSend: function()
+        {
+            $("#doneBtn").addClass("disabled");
+        },
+        success: function(result)
+        {
+            if (result.status === 200)
+            {
+                window.location = result.url;
+            }
+        }
+    });
+});
+</script>
+
+{{BOTTOM_FOOTER}}

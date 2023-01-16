@@ -1,0 +1,67 @@
+RewriteEngine on
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^welcome(\/|)$  index.php?a=welcome [NC,QSA]
+RewriteRule ^forgot-password(\/|)$  index.php?a=welcome&b=forgot_password [NC,QSA]
+RewriteRule ^password-reset/([^\/]+)(\/|)$  index.php?a=welcome&b=password_reset&id=$1 [NC,QSA]
+RewriteRule ^start(\/|)$  index.php?a=start [NC,QSA]
+RewriteRule ^home(\/|)$  index.php?a=home [NC,QSA]
+RewriteRule ^photos(\/|)$  index.php?a=photos [NC,QSA]
+RewriteRule ^albums(\/|)$  index.php?a=albums [NC,QSA]
+RewriteRule ^my-pages(\/|)$  index.php?a=my-pages [NC,QSA]
+RewriteRule ^my-groups(\/|)$  index.php?a=my-pages [NC,QSA]
+RewriteRule ^recommended/([^\/]+)(\/|)$  index.php?a=recommended&b=$1 [NC,QSA]
+RewriteRule ^create-page(\/|)$  index.php?a=create-page [NC,QSA]
+RewriteRule ^create-group(\/|)$  index.php?a=create-group [NC,QSA]
+RewriteRule ^create-event(\/|)$  index.php?a=create-event [NC,QSA]
+RewriteRule ^terms(\/|)$  index.php?a=terms [NC,QSA]
+RewriteRule ^terms/([^\/]+)(\/|)$  index.php?a=terms&b=$1 [NC,QSA]
+RewriteRule ^events(\/|)$  index.php?a=event [NC,QSA]
+RewriteRule ^events/search/([^\/]+)(\/|)$  index.php?a=events&b=search&query=$1 [NC,QSA]
+RewriteRule ^events/([^\/]+)(\/|)$  index.php?a=events&b=$1 [NC,QSA]
+RewriteRule ^event/new(\/|)$  index.php?a=create-event [NC,QSA]
+RewriteRule ^event/([0-9]+)(\/|)$  index.php?a=timeline&type=event&id=$1 [NC,QSA]
+RewriteRule ^album/([^\/]+)(\/|)$  index.php?a=album&b=$1 [NC,QSA]
+RewriteRule ^messages(\/|)$  index.php?a=messages [NC,QSA]
+RewriteRule ^messages/([^\/]+)(\/|)$  index.php?a=messages&recipient_id=$1 [NC,QSA]
+RewriteRule ^story/([^\/]+)(\/|)$  index.php?a=story&id=$1 [NC,QSA]
+RewriteRule ^search(\/|)$  index.php?a=search [NC,QSA]
+RewriteRule ^search/([^\/]+)(\/|)$  index.php?a=search&query=$1 [NC,QSA]
+RewriteRule ^hashtag(\/|)$  index.php?a=hashtag [NC,QSA]
+RewriteRule ^hashtag/([^\/]+)(\/|)$  index.php?a=hashtag&query=$1 [NC,QSA]
+RewriteRule ^saved-posts(\/|)$  index.php?a=saved-posts [NC,QSA]
+RewriteRule ^boosted-posts(\/|)$  index.php?a=boosted-posts [NC,QSA]
+RewriteRule ^settings/([^\/]+)(\/|)$  index.php?a=settings&b=$1 [NC,QSA]
+RewriteRule ^settings(\/|)$  index.php?a=settings [NC,QSA]
+RewriteRule ^subscription-plans(\/|)$  index.php?a=subscription-plans [NC,QSA]
+RewriteRule ^subscription-plans/([^\/]+)(\/|)$  index.php?a=subscription-plans&b=$1 [NC,QSA]
+RewriteRule ^video-call/([^\/]+)(\/|)$  index.php?a=video-call&id=$1 [NC,QSA]
+RewriteRule ^logout(\/|)$  index.php?a=logout [NC,QSA]
+
+RewriteRule ^social-login/([^\/]+)(\/|)$  social-login.php?site=$1 [NC,QSA]
+
+RewriteRule ^api/v([^\/]+)(\/|)$  api.php?v=$1 [NC,QSA]
+RewriteRule ^api/v([^\/]+)/([^\/]+)(\/|)$  api.php?v=$1&a=$2 [NC,QSA]
+RewriteRule ^api/v([^\/]+)/([^\/]+)/([^\/]+)(\/|)$  api.php?v=$1&a=$2&b=$3 [NC,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^([^\/]+)/([^\/]+)/([^\/]+)/([^\/]+)(\/|)$  index.php?a=timeline&b=$2&c=$3&recipient_id=$4&id=$1 [QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^([^\/]+)/([^\/]+)/([^\/]+)(\/|)$  index.php?a=timeline&b=$2&c=$3&id=$1 [QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^([^\/]+)/([^\/]+)(\/|)$  index.php?a=timeline&b=$2&id=$1 [QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^([^\/]+)(\/|)$  index.php?a=timeline&id=$1 [QSA]

@@ -1,0 +1,698 @@
+<div class="page-margin"></div>
+<div class="floatRight span71">
+    <div id="conversationContainer">
+        <div class="multiTabJar">
+            <div class="floatLeft">
+                <div class="boldTab">
+                    <i class="fa fa-comments loadMessageIcon" data-icon="fa-comments"></i> <strong id="recipient-name"></strong>
+                </div>
+            </div>
+            
+            <div id="extendedFeatures" class="floatRight">
+                <a class="audio" onclick="messageAudioCall();"><i class="fa fa-phone loadAudioCallIcon" data-icon="phone"></i></a>
+                <a class="video" onclick="messageVideoCall();"><i class="fa fa-video-camera loadVideoCallIcon" data-icon="video-camera"></i></a>
+                <a class="delete" onclick="Sk_confirmConversationDelete();"><i class="fa fa-trash conversationDeleteIcon" data-icon="trash"></i></a>
+            </div>
+            
+            <div class="floatClear"></div>
+        </div>
+        
+        <div id="messagesOuterContainer">
+            <div class="viewMoreJar hidden" align="center">
+                <a onclick="SK_getPreviousMessages();">
+                    <i class="fa fa-arrow-up loadPreviousIcon" data-icon="arrow-up"></i>
+                    @view_previous_messages_label@
+                </a>
+            </div>
+            
+            <div id="messagesInnerContainer">
+                {{NO_TEXT}}
+            </div>
+
+            <div class="messageJar outgoingMessage sendingJar" data-message-id="{{MESSAGE_ID}}">
+                <div class="textContainer floatRight">
+                    <div class="textJar">
+                        <img src="{{CONFIG_THEME_URL}}/images/ellipsis.gif">
+                    </div>
+                </div>
+
+                <div class="floatClear"></div>
+            </div>
+        </div>
+        
+        <div class="textareaJar">
+            <div id="messageTextarea" contenteditable="false" class="textarea" placeholder="@write_a_message_label@..." onkeyup="Sk_typeMessage(event);" onfocus="Sk_clearpageTitle();"></div>
+
+            <div class="inputsContainer">
+                <div class="floatLeft">
+                    <form id="sendFile" class="inputForm" method="post" enctype="multipart/form-data">
+                       <input class="receiverId" type="hidden" name="receiver_id" value="{{RECEIVER_ID}}">
+                       <i class="ski ski-attachment cursorPointer loadDocumentIcon" data-icon="attachment" onclick="javascript:$('form#sendFile').find('input').click();"></i>
+                       <input class="hidden" name="sharedfiles[]" type="file" onchange="Sk_sendFile();">
+                    </form>
+                </div>
+
+                <div class="floatLeft">
+                    <form id="sendAudio" class="inputForm" method="post" enctype="multipart/form-data">
+                       <input class="receiverId" type="hidden" name="receiver_id" value="{{RECEIVER_ID}}">
+                       <i class="fa fa-file-audio-o cursorPointer loadAudioIcon" data-icon="file-audio-o" onclick="javascript:$('form#sendAudio').find('input').click();"></i>
+                       <input class="hidden" name="audio[]" type="file" onchange="Sk_sendAudio();">
+                    </form>
+                </div>
+
+                <div class="floatLeft">
+                    <form id="sendVideo" class="inputForm" method="post" enctype="multipart/form-data">
+                     <i class="fa fa-file-video-o cursorPointer loadVideoIcon" data-icon="file-video-o" onclick="javascript:$('form#sendVideo').find('input').click();"></i>
+                       <input class="hidden" name="video[]" type="file" onchange="Sk_sendVideo();">
+                       <input class="receiverId" type="hidden" name="receiver_id" value="{{RECEIVER_ID}}">
+                    </form>
+                </div>
+
+                <div class="floatLeft">
+                    <form id="sendPhoto" class="inputForm" method="post" enctype="multipart/form-data">
+                        <input class="receiverId" type="hidden" name="receiver_id" value="{{RECEIVER_ID}}">
+                        <i class="ski ski-camera-add cursorPointer loadPhotoIcon" data-icon="camera-add" onclick="javascript:$('form#sendPhoto').find('input').click();"></i>
+                        <input class="hidden" name="photos[]" type="file" accept="image/jpeg,image/png" onchange="Sk_sendPhoto();">
+                    </form>
+                </div>
+
+                <div class="floatLeft">
+                    <div class="inputForm">
+                        <i class="ski-smileface cursorPointer" onclick="javascript:$('.skemojiTags').toggleClass('skemojiTags-active');"></i>
+                    </div>
+                </div>
+
+                <div class="floatLeft">
+                    <div class="inputForm buttonContainer">
+                        <i class="fa fa-send cursorPointer" onclick="Sk_sendText();"></i>
+                    </div>
+                </div>
+
+                <div class="floatClear"></div>
+
+                <form id="sendText" class="hidden" method="post">
+                    <input class="receiverId" type="hidden" name="receiver_id" value="{{RECEIVER_ID}}">
+                    <textarea class="textInput hidden" name="text"></textarea>
+                </form>
+            </div>
+
+            <audio id="newMessageSound" class="hidden" preload="auto">
+                <source src="{{CONFIG_THEME_URL}}/sounds/new-message.ogg" type="audio/ogg">
+                <source src="{{CONFIG_THEME_URL}}/sounds/new-message.mp3" type="audio/mpeg">
+                <source src="{{CONFIG_THEME_URL}}/sounds/new-message.wav" type="audio/wav">
+            </audio>
+
+            <div class="skemojiTags"></div>
+        </div>
+        <input id="recipientId" value="0" type="hidden">
+    </div>
+</div>
+
+<div class="floatLeft span27">
+    <div id="messagingPeopleContainer" class="listJar">
+        <div class="multiTabJar">
+            <div class="semiBoldTab lightColor">
+                <i class="ski-friends"></i>
+                @people_and_pages@
+            </div>
+        </div>
+
+        <div class="inputTextColumn">
+            <div class="inputContainer">
+                <i class="fa fa-search loadPeopleSearchIcon" data-icon="search"></i>
+                <input type="text" placeholder="@messages_search_label@" onkeyup="Sk_keyupRecipients(this.value);" onkeydown="Sk_keydownRecipients(this.value);">
+            </div>
+        </div>
+
+        <div class="messagingPeopleJar" data-query=""></div>
+        <div class="viewMoreJar cursorPointer" onclick="Sk_viewMoreRecipients();">
+            <i id="viewMoreRecipientsIcon" class="fa fa-caret-down"></i> View more
+        </div>
+    </div>
+    
+    {{CONFIG_AD_PLACE_MESSAGES}}
+    {{SIDEBAR_FOOTER}}
+</div>
+<div class="floatClear"></div>
+
+<script>
+var typingTimer;
+var recipientId = $("#recipientId").val();
+var recipientStart = 1;
+var recipientLimit = 10;
+var messagingPeopleContainer = $("#messagingPeopleContainer");
+var viewMoreRecipients = messagingPeopleContainer.find(".viewMoreJar");
+var messagingPeopleJar = $(".messagingPeopleJar");
+var conversationContainer = $("#conversationContainer");
+var extendedFeatures = $("#extendedFeatures")
+var viewMoreMessages = conversationContainer.find('.viewMoreJar');
+var messagesOuterContainer = $("#messagesOuterContainer");
+var messagesInnerContainer = $("#messagesInnerContainer");
+var messageTextarea = $("#messageTextarea");
+var messageText = messageTextarea.text();
+var messageHtml = messageTextarea.html();
+var inputsContainer = conversationContainer.find(".inputsContainer");
+var skemojiTags = conversationContainer.find(".skemojiTags");
+var userColor = "";
+var firstMessageId = 0;
+var newMessageInterval = 3000;
+var receiverRefreshInterval = 7000;
+var showSeen = 1;
+var pageTitle;
+
+function Sk_refreshReceivers()
+{
+    query = messagingPeopleJar.attr('data-query');
+    
+    $.get(
+        Sk_requestPath(),
+        {
+            t: 'search',
+            a: 'recipients',
+            query: query,
+            limit: (recipientLimit * recipientStart)
+        },
+        function (data)
+        {
+            if (data.status == 200)
+            {
+                messagingPeopleJar.html(data.html);
+                $("#receiver-" + recipientId).addClass("userColumn-active");
+                updateCountAlert();
+            }
+        }
+    );
+
+    setTimeout(function(){
+        Sk_refreshReceivers();
+    }, receiverRefreshInterval);
+}
+
+function Sk_keyupRecipients(q)
+{
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(function(){
+        Sk_searchRecipients(q);
+    }, 300);
+}
+function Sk_keydownRecipients(q)
+{
+    clearTimeout(typingTimer);
+}
+function Sk_searchRecipients(q)
+{
+    iconProgress($(".loadPeopleSearchIcon"));
+    messagingPeopleJar.attr('data-query', q);
+    $.get(
+        Sk_requestPath(),
+        {
+            t: 'search',
+            a: 'recipients',
+            query: q
+        },
+        function (data)
+        {
+            if (data.status === 200)
+            {
+                messagingPeopleJar.html(data.html);
+                $("#receiver-" + recipientId).addClass("userColumn-active");
+                viewMoreRecipients.slideDown('fast');
+                updateCountAlert();
+            }
+            iconProgress($(".loadPeopleSearchIcon"));
+        }
+    );
+}
+function Sk_viewMoreRecipients()
+{
+    query = messagingPeopleJar.attr('data-query');
+    iconProgress($("#viewMoreRecipientsIcon"));
+    $.get(
+        Sk_requestPath(),
+        {
+            t: 'search',
+            a: 'recipients',
+            query: query,
+            limit: recipientLimit,
+            start: recipientStart
+        },
+        function (data)
+        {
+            iconProgress($("#viewMoreRecipientsIcon"));
+            if (data.status === 200)
+            {
+                messagingPeopleJar.append(data.html);
+            }
+            else
+            {
+                viewMoreRecipients.slideUp('fast');
+            }
+        }
+    );
+    recipientStart += 1;
+}
+
+function Sk_getMessages(rid,rname,ruid)
+{
+    if (rname !== "")
+    {
+        pageTitle = rname;
+        document.title = pageTitle;
+    }
+
+    firstMessageId = 0;
+    recipientId = rid;
+    $("#recipientId").val(rid);
+    $("#recipient-name").text(rname).show();
+
+    $(".messagingPeopleJar").find(".userColumn").removeClass("userColumn-active");
+    $("#receiver-" + rid).addClass("userColumn-active");
+
+    messageTextarea.attr('contenteditable', false);
+    $(document).scrollTop(0);
+    
+    iconProgress(".loadMessageIcon");
+    
+    $.get(
+        Sk_requestPath(),
+        {
+            t: 'message',
+            a: 'load_messages',
+            receiver_id: rid
+        },
+        function (data)
+        {
+            if (data.status == 200)
+            {
+                history.pushState('', rname, data.href);
+                viewMoreMessages.hide();
+                messagesInnerContainer.html(data.html);
+
+                if (data.is_empty === false)
+                {
+                    viewMoreMessages.show();
+                    Sk_scrollLatest();
+                    showSeen = 1;
+                }
+                
+                if (data.reply === true)
+                {
+                    messageTextarea.attr({'placeholder':'@write_a_message_label@...','contenteditable':true});
+                    if ($(window).width() > 960) messageTextarea.focus();
+                    inputsContainer.show();
+                    extendedFeatures.show();
+                }
+                else
+                {
+                    messageTextarea.attr('placeholder', '@cannot_reply_to_conversation@');
+                    inputsContainer.hide();
+                    extendedFeatures.hide();
+                }
+
+                userColor = (typeof data.color !== "undefined") ? data.color : "";
+                Sk_colorizeMessage();
+            }
+            
+            iconProgress(".loadMessageIcon");
+            messagesOuterContainer.scrollTop(messagesOuterContainer.prop('scrollHeight'));
+        }
+    );
+}
+
+function SK_getPreviousMessages()
+{
+    if ($(".messageJar:first").attr('data-message-id') !== firstMessageId)
+    {
+        firstMessageId = $(".messageJar:first").attr('data-message-id');
+        iconProgress($(".loadPreviousIcon"));
+        
+        $.get(
+            Sk_requestPath(),
+            {
+                t: "message",
+                a: "load_previous_messages",
+                receiver_id: recipientId,
+                before_id: firstMessageId
+            },
+            function (data)
+            {
+                viewMoreMessages.hide();
+
+                if (data.status === 200
+                    && data.is_empty === false)
+                {
+                    messagesInnerContainer.prepend(data.html);
+                    viewMoreMessages.show();
+                    Sk_colorizeMessage();
+                    window.location.href = "#message-" + firstMessageId;
+                }
+                
+                iconProgress($(".loadPreviousIcon"));
+            }
+        );
+    }
+}
+
+function Sk_getNewMessages()
+{
+    if ($(".messageJar").length > 0)
+    {
+        latestMessageId = $(".messageJar:last-of-type").attr('data-message-id');
+        newMessageInterval += 500;
+        if (newMessageInterval > 60000) newMessageInterval = 3000;
+        $.get(
+            Sk_requestPath(),
+            {
+                t: 'message',
+                a: 'load_new_messages',
+                receiver_id: recipientId,
+                after_id: latestMessageId,
+                show_seen: showSeen
+            },
+            function (data)
+            {
+                if (data.status === 200)
+                {
+                    if (data.is_empty === false)
+                    {
+                        newMessageInterval = 3000;
+                        messagesInnerContainer.append(data.html);
+                        document.getElementById("newMessageSound").play();
+                        Sk_scrollLatest();
+                        
+                        if (!messageTextarea.is(':focus'))
+                        {
+                            document.title = '(@chat_new_update_alert@) ' + pageTitle;
+                        }
+                    }
+
+                    if (data.is_seen === true)
+                    {
+                        if ($("#message-" + latestMessageId).find(".seenJar").length === 0) $("#message-" + latestMessageId).find(".messageButtons").before(data.seen);
+                        Sk_scrollLatest();
+                        showSeen = 0;
+                    }
+                }
+            }
+        );
+    }
+    setTimeout(function(){
+        Sk_getNewMessages();
+    }, newMessageInterval);
+}
+
+function Sk_insertSkemoji(emo)
+{
+    messageHtml = messageTextarea.html();
+    
+    if (typeof(messageTextarea.attr('placeholder')) !== "undefined")
+    {
+        inputPlaceholder = messageTextarea.attr('placeholder');
+        
+        if (inputPlaceholder === messageHtml)
+        {
+            messageTextarea.html('');
+            messageHtml = messageTextarea.html();
+        }
+        
+    }
+
+    messageTextarea.append('<em class="' + $(emo).attr("class") + '" contenteditable="false"></em>');
+    caretAdjust(document.getElementById("messageTextarea"));
+}
+
+function Sk_typeMessage(event)
+{
+    document.title = pageTitle;
+
+    if (event.keyCode == 13 && event.shiftKey == 0)
+    {
+        event.preventDefault();
+        if (strip_tags(messageTextarea.html().trim(), "<em>") !== "")
+        {
+            Sk_sendText();
+        }
+        else
+        {
+            messageTextarea.html('');
+            caretAdjust(document.getElementById("messageTextarea"));
+        }
+    }
+}
+
+function Sk_sendText()
+{
+    if (strip_tags(messageTextarea.html().trim(), "<em>") !== "")
+    {
+        $(".sendingJar").show();
+        Sk_scrollLatest();
+        $("form#sendText").ajaxSubmit({
+            url: Sk_requestPath() + '?t=message&a=sendText',
+
+            beforeSerialize: function()
+            {
+                $("form#sendText .textInput").val($("#messageTextarea").html());
+                $("input.receiverId").val($("#recipientId").val());
+            },
+
+            beforeSend: function()
+            {
+                $("#messageTextarea").attr("contenteditable", false).html('');
+            },
+
+            success: function(responseText)
+            {
+                if (responseText.status === 200)
+                {
+                    messagesInnerContainer.append(responseText.html);
+                    Sk_colorizeMessage();
+                    Sk_scrollLatest();
+                    showSeen = 1;
+                }
+                $(".sendingJar").hide();
+                $("#messageTextarea").attr("contenteditable", true);
+                caretAdjust(document.getElementById("messageTextarea"));
+            }
+        });
+    }
+}
+
+function Sk_sendFile()
+{
+    iconProgress($(".loadDocumentIcon"));
+    $("form#sendFile").ajaxSubmit({
+        url: Sk_requestPath() + '?t=message&a=sendFile',
+
+        beforeSerialize: function()
+        {
+            $("input.receiverId").val($("#recipientId").val());
+        },
+
+        success: function(responseText)
+        {
+            if (responseText.status === 200)
+            {
+                messagesInnerContainer.append(responseText.html);
+                Sk_colorizeMessage();
+                Sk_scrollLatest();
+                showSeen = 1;
+            }
+            iconProgress($(".loadDocumentIcon"));
+            $("form#sendFile").clearForm();
+        }
+    });
+}
+
+function Sk_sendAudio()
+{
+    iconProgress($(".loadAudioIcon"));
+    $("form#sendAudio").ajaxSubmit({
+        url: Sk_requestPath() + '?t=message&a=sendAudio',
+
+        beforeSerialize: function()
+        {
+            $("input.receiverId").val($("#recipientId").val());
+        },
+
+        success: function(responseText)
+        {
+            if (responseText.status === 200)
+            {
+                messagesInnerContainer.append(responseText.html);
+                Sk_colorizeMessage();
+                Sk_scrollLatest();
+                showSeen = 1;
+            }
+            iconProgress($(".loadAudioIcon"));
+            $("form#sendAudio").clearForm();
+        }
+    });
+}
+
+function Sk_sendVideo()
+{
+    iconProgress($(".loadVideoIcon"));
+    $("form#sendVideo").ajaxSubmit({
+        url: Sk_requestPath() + '?t=message&a=sendVideo',
+
+        beforeSerialize: function()
+        {
+            $("input.receiverId").val($("#recipientId").val());
+        },
+
+        success: function(responseText)
+        {
+            setTimeout(function(){
+                if (responseText.status === 200)
+                {
+                    messagesInnerContainer.append(responseText.html);
+                    Sk_colorizeMessage();
+                    Sk_scrollLatest();
+                    showSeen = 1;
+                }
+                iconProgress($(".loadVideoIcon"));
+            }, 1000);
+            $("form#sendVideo").clearForm();
+        }
+    });
+}
+
+function Sk_sendPhoto()
+{
+    iconProgress($(".loadPhotoIcon"));
+    $("form#sendPhoto").ajaxSubmit({
+        url: Sk_requestPath() + '?t=message&a=sendPhoto',
+
+        beforeSerialize: function()
+        {
+            $("input.receiverId").val($("#recipientId").val());
+        },
+
+        success: function(responseText)
+        {
+            if (responseText.status === 200)
+            {
+                messagesInnerContainer.append(responseText.html);
+                Sk_colorizeMessage();
+                Sk_scrollLatest();
+                showSeen = 1;
+            }
+            iconProgress($(".loadPhotoIcon"));
+            $("form#sendPhoto").clearForm();
+        }
+    });
+}
+function messageVideoCall()
+{
+    iconProgress(conversationContainer.find(".loadVideoCallIcon"));
+    if (recipientId > 0) createVideoCall(recipientId);
+    iconProgress(conversationContainer.find(".loadVideoCallIcon"));
+}
+function messageAudioCall()
+{
+    iconProgress(conversationContainer.find(".loadAudioCallIcon"));
+    if (recipientId > 0) createAudioCall(recipientId);
+    iconProgress(conversationContainer.find(".loadAudioCallIcon"));
+}
+
+function Sk_confirmMessageDelete(mid)
+{
+    iconProgress($("#message-" + mid).find(".messageDeleteIcon"));
+    $.get(
+        Sk_requestPath(),
+        {
+            t: "message",
+            a: "confirm_delete",
+            id: mid
+        },
+        function (data)
+        {
+            if (data.status === 200) $(document.body).append(data.html);
+            iconProgress($("#message-" + mid).find(".messageDeleteIcon"));
+        }
+    );
+}
+function Sk_confirmConversationDelete()
+{
+    iconProgress($(".conversationDeleteIcon"));
+    $.get(
+        Sk_requestPath(),
+        {
+            t: "message",
+            a: "confirm_delete",
+            conversation: true,
+            id: recipientId
+        },
+        function (data)
+        {
+            if (data.status === 200) $(document.body).append(data.html);
+            iconProgress($(".conversationDeleteIcon"));
+        }
+    );
+}
+
+function Sk_clearpageTitle()
+{
+    document.title = pageTitle;
+}
+
+function Sk_colorizeMessage()
+{
+    if (userColor !== "")
+    {
+        colorcode = "#" + userColor;
+        backgroundTags = $("#conversationContainer .outgoingMessage .textJar, #conversationContainer .outgoingMessage .textJar a, #conversationContainer .outgoingMessage .audioJar, #conversationContainer .outgoingMessage .videoJar, #conversationContainer .outgoingMessage .photoJar, #conversationContainer .outgoingMessage .documentJar, #conversationContainer .viewMoreJar a");
+        colorTags = $("#conversationContainer .inputsContainer .buttonContainer i");
+        
+        backgroundTags.css("background", colorcode);
+        colorTags.css("color", colorcode);
+        
+        backgroundTags.css({"color":"#eeeeee"});
+    }
+    else
+    {
+        backgroundTags = $("#conversationContainer .outgoingMessage .textJar, #conversationContainer .outgoingMessage .textJar a, #conversationContainer .outgoingMessage .audioJar, #conversationContainer .outgoingMessage .videoJar, #conversationContainer .outgoingMessage .photoJar, #conversationContainer .outgoingMessage .documentJar, #conversationContainer .viewMoreJar a");
+        colorTags = $("#conversationContainer .inputsContainer .buttonContainer i");
+        
+        backgroundTags.css("background", "");
+        colorTags.css("color", "");
+        backgroundTags.css({"color":"","text-shadow":""});
+    }
+}
+
+function Sk_scrollLatest()
+{
+    messagesOuterContainer.scrollTop(messagesOuterContainer.prop('scrollHeight'));
+}
+
+$(function(){
+    skemojiTags.html(Sk_getFromStorage('Skemojis')).find("i").attr("onclick", "Sk_insertSkemoji(this);");
+    Sk_refreshReceivers();
+    Sk_getMessages({{RECIPIENT_ID}},'{{RECIPIENT_NAME}}','{{RECIPIENT_USERNAME}}');
+
+    setTimeout(function(){
+        Sk_getNewMessages();
+    }, newMessageInterval);
+
+    setTimeout(function(){
+        Sk_refreshReceivers();
+    }, receiverRefreshInterval);
+});
+
+messagesOuterContainer.on('mousewheel DOMMouseScroll', function (e)
+{
+    scrollDirection = (e.originalEvent.wheelDelta || -e.originalEvent.detail);
+
+    if (scrollDirection > 0)
+    {
+        if (messagesOuterContainer.height() === messagesOuterContainer[0].scrollHeight)
+        {
+            SK_getPreviousMessages();
+        }
+        else if (messagesOuterContainer.scrollTop() < 300)
+        {
+            SK_getPreviousMessages();
+        }
+    }
+});
+</script>

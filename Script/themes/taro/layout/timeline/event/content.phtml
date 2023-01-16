@@ -1,0 +1,89 @@
+<div class="timeline-header-wrapper event-header-wrapper">
+    <div class="cover-container">
+        <div class="cover-wrapper">
+            <img src="{{TIMELINE_COVER_URL}}" alt="{{TIMELINE_NAME}}">
+            <div class="cover-progress"></div>
+        </div>
+        
+        <div class="cover-resize-wrapper">
+            <img src="{{TIMELINE_ACTUAL_COVER_URL}}" alt="{{TIMELINE_NAME}}">
+
+            <div class="drag-div" align="center">
+                @reposition_drag_label@
+            </div>
+            
+            <div class="cover-progress"></div>
+        </div>
+
+        <div class="event-date-wrapper">{{EVENT_DATE}}</div>
+        
+        <div class="timeline-name-wrapper event-name">
+            <a href="{{TIMELINE_URL}}" data-href="?a=timeline&id={{TIMELINE_USERNAME}}">
+                {{TIMELINE_NAME}}
+            </a>
+
+            <div class="event-info">
+                <span class="event-time"><i class="fa fa-clock-o"></i> {{EVENT_TIME}}</span> &#183; <span class="event-location"><i class="fa fa-map-marker"></i>  {{EVENT_LOCATION}}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="eventStatisticsWrapper">
+        <div class="floatLeft">
+            <i class="fa fa-{{EVENT_PRIVACY_ICON}}"></i> {{EVENT_PRIVACY}} - @event_hosted_by_label@ <a href="{{EVENT_HOST_URL}}">{{EVENT_HOST_NAME}}</a>
+        </div>
+
+        <div class="floatClear"></div>
+    </div>
+</div>
+
+{{SIDEBAR}}
+
+<div class="floatRight span63">
+    <div class="eventDescription">
+        <span>{{EVENT_DESCRIPTION}}</span>
+        {{EDIT_DESCRIPTION_BUTTON}}
+    </div>
+
+    {{EDIT_DESCRIPTION}}
+
+    {{TAB_CONTENT}}
+</div>
+
+<div class="floatClear"></div>
+
+{{END}}
+
+<script>
+function openEditDescription()
+{
+    $(".eventDescription").hide();
+    $(".eventEditDescription").show(function(){
+        $(".eventEditDescription textarea").keyup();
+    });
+}
+function eventAction(act)
+{
+    $(".eventButtons a").removeAttr("data-active");
+    $(".eventButtons a." + act + "Btn").attr("data-active", "1");
+
+    $.get(
+        Sk_requestPath(),
+        {
+            t: "event",
+            a: "action",
+            action: act,
+            event_id: {{TIMELINE_ID}}
+        },
+        function(data)
+        {
+            if (data.status === 200)
+            {
+                $(".goingStat").find("span.count").text(data.going_count);
+                $(".interestedStat").find("span.count").text(data.interested_count);
+                $(".invitedStat").find("span.count").text(data.invited_count);
+            }
+        }
+    );
+}
+</script>

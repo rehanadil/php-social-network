@@ -1,0 +1,145 @@
+<div id="storyPublisherJar">
+    <form method="post" enctype="multipart/form-data">
+        {{STORY_PUBLISHER_HEADER}}
+        
+        <div class="inputs-container">
+            {{ALL_WRAPPERS}}
+        </div>
+        
+        <div class="more-wrapper">
+            <div class="floatLeft">
+                {{ALL_LAUNCHER_ICONS}}
+            </div>
+
+            <div class="floatRight">
+                {{PRIVACY_SELECTOR}}
+                
+                <button class="submit-btn active abcBtn" name="story_submit_btn">
+                    <i class="fa fa-pencil progress-icon"></i> 
+                    <span>@post_button@</span>
+                </button>
+            </div>
+
+            <div class="floatClear"></div>
+        </div>
+        <input type="hidden" name="timeline_id" value="{{PUBLISHER_ID}}">
+        <input type="hidden" name="recipient_id" value="{{RECIPIENT_ID}}">
+    </form>
+</div>
+<script>
+$('#storyPublisherJar form').ajaxForm({
+    url: Sk_requestPath() + '?t=post&a=new',
+
+    beforeSerialize: function() {
+        main_wrapper = $('#storyPublisherJar');
+        contenteditable = main_wrapper.find('#storyPublisherHtml');
+        textarea = main_wrapper.find('#storyPublisherTextarea');
+        inputs = main_wrapper.find('input[type="text"]');
+        button = main_wrapper.find('button.submit-btn');
+
+        contenteditableHtml = contenteditable.html();
+        contenteditableHtml = contenteditableHtml.replace(/\<em data\-mention\=\"\@([0-9]+)\" contenteditable\=\"false\"\>(.*?)\<\/em\>/g, '@$1');
+        textarea.val(contenteditableHtml);
+    },
+    
+    beforeSend: function() {
+        button_default_text = button.find('span').text();
+        
+        textarea.attr('disabled', true);
+        inputs.attr('disabled', true);
+        button.attr('disabled', true);
+        
+        SK_progressIconLoader(button);
+    },
+    
+    uploadProgress: function(event, position, total, percentComplete) {
+        button
+            .find('span').text(percentComplete + '%');
+        
+        if (percentComplete == 100) {
+            button
+                .find('span').text('@processing@');
+        }
+    },
+    
+    success: function(responseText)
+    {
+        if (responseText.status === 417 && typeof responseText.url !== 'undefined')
+        {
+            window.location.href = responseText.url;
+        }
+        
+        if (responseText.status === 200)
+        {
+            $(".stories-wrapper .noFeed").remove();
+            $(".stories-wrapper").prepend(responseText.html);
+        }
+
+        $(".storyPreviewHTML").html("").attr("data-load", true);
+        
+        $('#storyPublisherJar form').resetForm();
+        $("#storyPublisherHtml").html("");
+        setTimeout(function(){
+            $("#storyPublisherHtml").focusout();
+        }, 500);
+        
+        main_wrapper
+            .find('.result-container')
+            .remove()
+            
+            .end().find('.input-wrapper')
+                .find('.result-container')
+                .remove()
+                
+                .end()
+                .find('.input-result-wrapper')
+                .empty()
+                
+                .end().find('input')
+                .show()
+                .val('')
+                
+                .end().find('.remove-btn')
+                .remove()
+                
+                .end().find('.youtube-link')
+                .remove()
+            .end().slideUp();
+        
+        textarea.removeAttr('disabled');
+        inputs.removeAttr('disabled');
+        
+        button.removeAttr('disabled').find('span').text(button_default_text);
+        
+        SK_progressIconLoader(button);
+    }
+});
+
+function toggleMediaGroup(chosen_input_selector) {
+    input_wrapper = $(chosen_input_selector);
+    group_id = input_wrapper.attr('data-group');
+    if (input_wrapper.css('display') == "none") {
+        $('.input-wrapper[data-group=' + group_id + ']')
+            .slideUp()
+            .find('input').val('').show()
+            .end()
+            .find('.result-container').remove()
+            .end()
+            .find('.remove-btn').remove();
+        input_wrapper.slideDown();
+    } else {
+        $('.input-wrapper[data-group=' + group_id + ']').slideUp();
+    }
+}
+
+// Photo On-Upload Function
+function SK_writeStoryPhotoUpload(input)
+{
+    parent_wrapper = $('#storyPublisherJar');
+    input_wrapper = parent_wrapper.find('.photo-wrapper');
+    group_id = input_wrapper.attr('data-group');
+    parent_wrapper.find('.photos-container').text(input.files.length + ' photo(s) selected');
+    $('.input-wrapper[data-group=' + group_id + ']').slideUp();
+    input_wrapper.slideDown();
+}
+</script>

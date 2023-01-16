@@ -1,0 +1,14 @@
+<div id="regBirthdayInput" class="welcomeInput">
+    <i class="fa fa-calendar"></i>
+
+    <input data-toggle="datepicker" type="text" name="birthday">
+    
+    <script>
+    $('[data-toggle="datepicker"]').datepicker({
+        autoPick: true,
+        autoHide: true,
+        startView: 2,
+        endDate: new Date()
+    });
+    </script>
+</div>
